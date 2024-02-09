@@ -1,0 +1,125 @@
+.sidebarMain {
+  width: 300px;
+  height: 100vh;
+  box-shadow: var(--shad-3d);
+  padding: 20px 20px 50px 20px;
+  transition: all 0.7s ease;
+  gap: 20px;
+  border-radius: 0 20px 20px 0;
+  background-color: var(--white-primary);
+}
+.sidebarMainClose {
+  transition: all 0.7s ease;
+  width: 80px;
+}
+.sidebarMainClose:hover {
+  transition: all 0.7s ease;
+  width: 300px;
+}
+.sidebarMainClose:hover .iconOpacity {
+  display: block;
+}
+.sidebarMainClose:hover .sidebarOpacity {
+  display: flex;
+}
+
+.sidebarToogle {
+  width: 100%;
+  height: auto;
+  justify-content: flex-end;
+  margin-bottom: -80px;
+}
+.sidebarToogle button {
+  margin-right: -50px;
+}
+.sideIcon {
+  width: 100%;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  color: var(--blue-primary-opacity);
+}
+.sideIcon:hover {
+  color: var(--blue-primary);
+}
+.sidebarLogo {
+  height: 25%;
+  position: relative;
+}
+.sidebarLogo button {
+  position: absolute;
+  right: -43px;
+}
+.sidebarLogoDiv {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: var(--blue-primary);
+  transition: all 0.7s ease;
+}
+.sidebarOpacity {
+  padding: 15px;
+  border-radius: 10px;
+  background-color: var(--blue-primary);
+  display: none;
+  transition: all 0.7s ease;
+}
+
+.iconOpacity {
+  display: none;
+}
+.sidebarFooter {
+  width: 100%;
+  height: 30%;
+  justify-content: flex-start;
+  padding: 0px 5px;
+}
+.sidebarMenuItens {
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 40px 5px;
+  transition: all 1s ease;
+}
+.sidebarMenuItemActive {
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  padding: 5px 1px;
+  border-left: 5px solid transparent;
+}
+
+.sidebarMenuItemActive:hover {
+  background-color: var(--white-secondary);
+  border-radius: 6px;
+  padding: 5px 15px;
+  text-align: left;
+  transition: all 1s ease;
+  width: 100%;
+  justify-content: flex-start;
+  border-left: 5px solid rgb(0, 0, 97);
+}
+
+.sidebarMenuItemActive:hover .sidebarMenuIcon {
+  color: rgb(0, 0, 97) !important;
+}
+
+.sidebarTextMenu {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--title);
+  transition: all 1s ease;
+}
+.sidebarTextMenu:hover {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--title);
+}
+.sidebarTextmenuActive {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--title);
+  transition: all 1s ease;
+}

@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+
+  --primary: #071930;
+  --secondary: #25335a;
+
+  --blue-primary: #071930;
+  --blue-secondary: #25335a;
+
+  --red-primary: #ff0000;
+
+  --grey-ligth: #777777;
+
+  --blue-primary-opacity: rgba(7, 25, 48, 0.269);
+  --blue-secondary-opacity: #25335a5a;
+
+  --white-primary: #ffffff;
+  --white-secondary: #f3f3f3;
+
+  --black-primary: #000000;
+
+  --acent: #60f4ca;
+
+  --title: #000000;
+  --text: #222222;
+  --other-text: #444444;
+
+  --gradient: radial-gradient(
+    circle,
+    rgba(11, 21, 56, 1) 0%,
+    rgba(16, 33, 57, 1) 100%
+  );
+
+  --shad-3d: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  --shad-dark: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  --shad-ligth: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* :root {
+    --background: #000000;
+
+    --primary: #071930;
+    --secondary: #25335a;
+
+    --acent: #60f4ca;
+
+    --title: #ffffff;
+    --text: #babec8;
+    --other-text: #89abb5;
+
+    --gradient: radial-gradient(
+      circle,
+      rgba(11, 21, 56, 1) 0%,
+      rgba(16, 33, 57, 1) 100%
+    );
+
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+  } */
+}
+
+body {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: var(--background);
+  color: var(--title);
+  font-family: "Poppins", sans-serif;
+}
+main {
+  width: 100vw;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-weight: 500;
+  font-size: 32px;
+}
+
+h2 {
+  font-weight: 500;
+  font-size: 28px;
+}
+
+p {
+  font-weight: 300;
+  font-size: 16px;
+}
+form {
+  --tw-ring-color: none;
+}
+
+.flexr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+.flexc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.inputStyle {
+  width: 100%;
+  height: auto;
+}
+.btnBlue {
+  width: auto;
+  height: auto;
+  padding: 10px 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  border: 1px solid var(--blue-primary);
+  background-color: var(--blue-primary);
+  color: var(--white-primary);
+  font-size: 20px;
+  font-weight: bold;
+}
+.btnBlue:hover {
+  border: 1px solid var(--blue-secondary);
+  background-color: var(--blue-secondary);
+  color: var(--white-primary);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

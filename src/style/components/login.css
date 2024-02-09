@@ -1,0 +1,101 @@
+@keyframes slideRightWithOpacity {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.1;
+  }
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+
+.loginContent {
+  width: 100vw;
+  height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2vh 2vw;
+}
+.loginDiv {
+  width: 750px;
+  height: 100%;
+  background-color: var(--background);
+  border-radius: 12px;
+  box-shadow: var(--shad-3d);
+  animation: slideRightWithOpacity 0.7s ease-in-out;
+  padding: 30px;
+  justify-content: space-around;
+}
+.logoLoginDiv {
+  width: 340px;
+  height: auto;
+  background-color: var(--primary);
+  border-radius: 10px;
+  padding: 20px 40px;
+}
+.logoLoginDiv img {
+  width: 300px;
+}
+.titleLogin {
+  width: 500px;
+  align-items: flex-start !important;
+  margin-top: -40px;
+  margin-bottom: -40px;
+}
+.titleLogin h1 {
+  font-size: 30px;
+}
+
+.titleRecover {
+  width: 500px;
+  justify-content: flex-start !important;
+  margin-top: -40px;
+  margin-bottom: -40px;
+}
+.titleRecover h1 {
+  font-size: 22px;
+}
+
+.inputsDivLogin {
+  width: 500px;
+  align-items: flex-start;
+  gap: 20px;
+}
+.inputDiv {
+  width: 100%;
+}
+.inputDivPassword {
+  width: 100%;
+  position: relative;
+}
+.inputDivPassword .passwordIcon {
+  position: absolute;
+  right: 15px;
+  z-index: 1;
+}
+.btnLoginDiv {
+  width: 100%;
+}
+.forgotLoginDiv {
+  width: 100%;
+  gap: 15px;
+  cursor: pointer;
+}
+.forgotLoginDiv p {
+  color: var(--secondary);
+  text-decoration: underline;
+  font-weight: 500;
+}
+.helpLoginDiv {
+  width: 100%;
+  gap: 15px;
+}
+.helpLoginDiv a {
+  color: var(--secondary);
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
+}
