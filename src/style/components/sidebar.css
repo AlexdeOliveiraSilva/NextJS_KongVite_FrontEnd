@@ -22,16 +22,6 @@
 .sidebarMainClose:hover .sidebarOpacity {
   display: flex;
 }
-
-.sidebarToogle {
-  width: 100%;
-  height: auto;
-  justify-content: flex-end;
-  margin-bottom: -80px;
-}
-.sidebarToogle button {
-  margin-right: -50px;
-}
 .sideIcon {
   width: 100%;
   z-index: 2;
@@ -48,7 +38,7 @@
 }
 .sidebarLogo button {
   position: absolute;
-  right: -43px;
+  right: -45px;
 }
 .sidebarLogoDiv {
   width: 100%;
@@ -122,4 +112,93 @@
   font-weight: 700;
   color: var(--title);
   transition: all 1s ease;
+}
+
+@media (max-width: 900px) {
+  .sidebarMain {
+    display: none !important;
+  }
+}
+
+/* ******************** FLOAT BAR */
+
+.floatMainIcon {
+  display: none;
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 50%;
+  background-color: var(--blue-primary);
+}
+
+.floatMainIcon .floatIcon {
+  width: 35px;
+  height: 35px;
+  color: var(--white-primary);
+}
+
+.floatmain {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  min-width: 280px;
+  min-height: 40vh;
+  box-shadow: var(--shad-3d);
+  transition: all 0.4s ease;
+  border-radius: 20px;
+  background-color: var(--white-primary);
+  animation: menuGetUp 0.5s ease-in-out;
+}
+
+.menuGetDown {
+  animation: menuGetDown 0.5s ease-in-out;
+}
+
+.floatmainInside {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 30px 20px;
+  justify-content: flex-start;
+}
+.floatInsideClose {
+  position: absolute;
+  top: -20px;
+  right: 0px;
+}
+
+@media (max-width: 900px) {
+  .floatMainIcon {
+    display: flex !important;
+  }
+  .floatmainOpened {
+    display: flex !important;
+  }
+  .floatmain {
+    display: flex !important;
+  }
+}
+
+@keyframes menuGetUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0.1;
+  }
+  to {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+@keyframes menuGetDown {
+  from {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0.1;
+  }
 }

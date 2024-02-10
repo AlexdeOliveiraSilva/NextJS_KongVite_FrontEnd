@@ -1,6 +1,9 @@
 import { Inter } from "next/font/google";
 import "@/style/globals.css";
 import "@/style/components/login.css";
+import "@/style/components/sidebar.css";
+import "@/style/components/topbar.css";
+import "@/style/pages/dashboard.css";
 import { GlobalProvider } from "@/context/global"
 
 const inter = Inter({ subsets: ["latin"] });
@@ -10,7 +13,7 @@ export const metadata = {
   description: "That's a next app created for Kong Vite.",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
   return (
     <GlobalProvider>
       <html lang="pt-br">

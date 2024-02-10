@@ -30,6 +30,19 @@ export default function Login() {
     setForgotPassword(!forgotPassword)
   }
 
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    router.push('/admin/dashboard/');
+  };
+
+  const sendEmail = () => {
+    setEmailSended(true)
+  }
+  const resetRecoverFlow = () => {
+    setEmailSended(false);
+    setForgotPassword(false);
+  }
+
   const checkboxLabel = { inputProps: { 'aria-label': 'Checkbox demo' } };
   return (
     <main>
@@ -43,6 +56,9 @@ export default function Login() {
               <div className="flexc titleLogin">
                 <h1>Olá! <WavingHandIcon style={{ marginLeft: 20, color: "#EAAC03" }} fontSize="60px" color="#FFCE48" /></h1>
                 <p>Insira suas credenciais para fazer o seu Login.</p>
+              </div>
+              <div className="flexc titleLoginLitle">
+                <p>Insira suas credenciais.</p>
               </div>
               <form className="flexc inputsDivLogin">
                 <div className="flexr inputDiv">
@@ -59,13 +75,13 @@ export default function Login() {
                 <div
                   className="btnLoginDiv flexr">
                   <button
-                    onClick={() => router.push('/abc')}
+                    onClick={(e) => handleLogin(e)}
                     className="btnBlue"
                     style={{ width: "60%" }}>Entrar</button></div>
               </form>
             </>
             :
-            forgotPassword == true && emailSended == true ?
+            forgotPassword == true && emailSended == false ?
               <>
                 <div className="flexr titleRecover" onClick={changeSetForgotPassword}>
                   <h1><ArrowBackIcon style={{ marginRight: 20, color: "#00276E" }} fontSize="60px" color="#00276E" />Login </h1>
@@ -75,16 +91,20 @@ export default function Login() {
                     <TextField className="inputStyle" label="E-mail" id="outlined-size-normal" placeholder="Digite seu E-mail" type="text" />
                   </div>
 
-                  <div className="btnLoginDiv flexr"><button className="btnBlue" style={{ width: "60%", marginTop: "40px" }}>Recuperar Senha</button></div>
+                  <div className="btnLoginDiv flexr">
+                    <button
+                      onClick={() => sendEmail()}
+                      className="btnBlue btnRecoverPassword" style={{ width: "60%", marginTop: "40px" }}>Recuperar Senha</button>
+                  </div>
                 </form>
               </>
               :
               <>
                 <div className="flexr titleRecover" onClick={changeSetForgotPassword}>
-                  <h1><ArrowBackIcon style={{ marginRight: 20, color: "#00276E" }} fontSize="60px" color="#00276E" />Login </h1>
+                  <h1 onClick={() => resetRecoverFlow()} style={{ cursor: "pointer" }}><ArrowBackIcon style={{ marginRight: 20, color: "#00276E" }} fontSize="60px" color="#00276E" />Login </h1>
                 </div>
-                <div className="flexr" onClick={changeSetForgotPassword}>
-                  <h1 style={{ fontSize: "25px" }}>Verifique seu e-mail. <CheckBoxIcon style={{ marginLeft: 20, color: "#00AE0F" }} sx={{ fontSize: 40 }} color="#00AE0F" /></h1>
+                <div className="flexr verifyEmail" onClick={changeSetForgotPassword}>
+                  <h1 style={{ fontSize: "25px" }}>Verifique seu e-mail. <CheckBoxIcon className="verifyEmail" style={{ marginLeft: 20, color: "#00AE0F" }} sx={{ fontSize: 40 }} color="#00AE0F" /></h1>
                 </div>
               </>
           }

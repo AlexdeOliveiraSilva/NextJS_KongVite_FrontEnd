@@ -99,3 +99,78 @@
   font-weight: 500;
   cursor: pointer;
 }
+
+.titleLoginLitle {
+  display: none;
+}
+
+@media (max-width: 750px) {
+  .loginDiv {
+    width: 100%;
+  }
+  .titleLogin {
+    width: 80%;
+  }
+  .titleRecover {
+    width: 80%;
+  }
+
+  .inputsDivLogin {
+    width: 80%;
+  }
+}
+@media (max-width: 560px) {
+  .titleLogin {
+    width: 95%;
+  }
+  .titleRecover {
+    width: 95%;
+  }
+
+  .inputsDivLogin {
+    width: 95%;
+  }
+  .btnRecoverPassword {
+    width: auto !important;
+  }
+}
+
+@media (max-width: 460px) {
+  .titleLogin {
+    width: 100%;
+  }
+  .titleRecover {
+    width: 100%;
+  }
+
+  .inputsDivLogin {
+    width: 100%;
+  }
+  .logoLoginDiv {
+    width: 100%;
+  }
+  .logoLoginDiv img {
+    width: auto;
+  }
+}
+@media (max-width: 410px) {
+  .forgotLoginDiv {
+    flex-direction: column;
+  }
+  .titleLogin {
+    display: none;
+  }
+  .titleLoginLitle {
+    display: flex;
+  }
+  .verifyEmail h1 {
+    font-size: 18px !important;
+  }
+  .verifyEmail {
+    margin-left: 5px !important;
+    font-size: 30px !important;
+  }
+  .btnRecoverPassword {
+    font-size: 18px !important;
+  }
+}

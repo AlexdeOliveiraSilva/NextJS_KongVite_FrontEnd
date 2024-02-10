@@ -16,7 +16,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboardMain flexr">
-      <h1>dashboard</h1>
+      <h1></h1>
     </div>
   );
 }

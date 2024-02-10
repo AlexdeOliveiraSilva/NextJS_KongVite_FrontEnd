@@ -14,12 +14,14 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import LogoutIcon from '@mui/icons-material/Logout';
+import CancelIcon from '@mui/icons-material/Cancel';
 
-export default function Sidebar({ itens }) {
+export default function FloatBar({ itens }) {
     const [barOpen, setBarOpen] = useState(true);
-    const { adminSidebarItens, setAdminSidebarItens, theme, setTheme } = useContext(GlobalContext);
-
+    const [floatOpen, setFloatOpen] = useState(false);
     const router = useRouter();
+
+    const { adminSidebarItens, setAdminSidebarItens, theme, setTheme } = useContext(GlobalContext);
 
     const getIcon = (x) => {
         switch (x) {
@@ -60,35 +62,41 @@ export default function Sidebar({ itens }) {
         }
     }, [barOpen]);
 
-    return (
-        <div id="sidebarMain" className="sidebarMain flexc">
-            {/* <div className="sidebarToogle flexr">
 
-            </div> */}
-            <div className="flexr sidebarLogo">
-                <div className={!barOpen ? "flexr sidebarOpacity" : "flexr sidebarLogoDiv"}>
-                    <img src="/logos/logo-kongvite.png" className={!barOpen ? "iconOpacity" : undefined}></img>
-                </div>
-                <button onClick={() => setBarOpen(!barOpen)}>{!!barOpen == true ? <ArrowCircleLeftIcon className="sideIcon" /> : <ArrowCircleRightIcon className="sideIcon" />}</button>
+    if (floatOpen == false) {
+        return (
+            <div className="floatMainIcon flexc" onClick={() => setFloatOpen(true)} >
+                <MenuIcon className="floatIcon" />
             </div>
-            <div className="flexc sidebarMenuItens">
-                {!!adminSidebarItens && adminSidebarItens.map((e, y) => {
-                    return (
-                        <div key={y} className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
-                            {getIcon(e)}
-                            <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{e}</p>
+        )
+    } else {
+        return (
+            <div id="floatmain" className="floatmain flexc">
+                <div className="floatmainInside flexc">
+                    <div className="floatInsideClose flexc" onClick={() => setFloatOpen(false)}>
+                        <CancelIcon style={{ width: "45px", height: "45px", color: "var(--blue-primary)" }} />
+                    </div>
+                    <div className="flexc sidebarMenuItens" style={{ height: "70%" }}>
+                        {!!adminSidebarItens && adminSidebarItens.map((e, y) => {
+                            return (
+                                <div key={y} className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
+                                    {getIcon(e)}
+                                    <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{e}</p>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    <div className="flexr sidebarFooter" style={{ height: "30%" }}>
+                        <div
+                            onClick={(e) => logout(e)}
+                            className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
+                            <LogoutIcon className="sidebarMenuIcon" style={{ color: "var(--red-primary)" }} />
+                            <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>Sair</p>
                         </div>
-                    )
-                })}
-            </div>
-            <div className="flexr sidebarFooter">
-                <div
-                    onClick={(e) => logout(e)}
-                    className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
-                    <LogoutIcon className="sidebarMenuIcon" style={{ color: "var(--red-primary)" }} />
-                    <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>Sair</p>
+                    </div>
                 </div>
             </div>
-        </div >
-    );
+        )
+    }
+
 }

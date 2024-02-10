@@ -1,5 +1,5 @@
 'use client'
-import Dashboard from '@/app/admin/dashboard/page';
+
 import React, { createContext, useEffect, useState } from 'react';
 
 export const GlobalContext = createContext();

@@ -1,5 +1,110 @@
 .topbarMain {
   width: 100%;
-  height: 100px;
+  padding: 20px 50px;
+}
+.topbarContent {
   background-color: var(--white-primary);
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 15px;
+  box-shadow: var(--shad-ligth);
+}
+.topbarPageTitle {
+  width: 30%;
+}
+.topbarPageTitle h1 {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--blue-primary);
+}
+.topbarPageTitle .topbarTitleIcon {
+  font-size: 32px;
+  color: var(--blue-primary);
+}
+.topbarPageHello {
+  width: 20%;
+  height: 40px;
+}
+.topbarPageMidle {
+  width: 100%;
+}
+.topbarPageHello h2 {
+  font-size: 18px;
+  font-weight: 400;
+}
+.topbarPageHello span {
+  font-size: 26px;
+  font-weight: 500;
+}
+.topbarMidleContent {
+  background-color: var(--white-secondary);
+  padding: 0 0 0 30px;
+  min-height: 40px;
+  border-radius: 40px;
+  gap: 20px;
+}
+.topbarMidleContent h4 {
+  white-space: nowrap;
+}
+.topbarMidleButton {
+  background-color: var(--blue-third);
+  padding: 10px 30px;
+  min-height: 40px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+.topbarMidleButton:hover {
+  background-color: var(--blue-fourth);
+}
+@media (max-width: 1050px) {
+  .topbarMidleContent {
+    background-color: transparent;
+    padding: 0;
+    min-height: 0;
+    border-radius: 40px;
+    gap: 0;
+  }
+  .topbarMidleContent h4 {
+    display: none;
+  }
+}
+
+@media (max-width: 650px) {
+  .topbarPageTitle {
+    width: auto;
+  }
+  .topbarPageTitle h1 {
+    font-size: 22px;
+  }
+  .topbarPageHello h2 {
+    font-size: 16px;
+  }
+  .topbarPageHello span {
+    font-size: 18px;
+  }
+  .topbarMain {
+    padding: 20px 3vw;
+  }
+  .topbarContent {
+    padding: 20px 10px;
+  }
+}
+@media (max-width: 550px) {
+  .topbarPageTitle {
+    display: none;
+  }
+  .topbarPageHello {
+    width: 40%;
+    height: 40px;
+  }
+  .topbarPageMidle {
+    width: 60%;
+    height: 40px;
+  }
+  .topbarMidleButton {
+    padding: 10px 20px;
+  }
 }
