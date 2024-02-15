@@ -19,37 +19,69 @@ import CancelIcon from '@mui/icons-material/Cancel';
 export default function FloatBar({ itens }) {
     const [barOpen, setBarOpen] = useState(true);
     const [floatOpen, setFloatOpen] = useState(false);
+    const { KONG_URL, estbSidebarItens, adminSidebarItens, user, setUserName, setUserEmail, setUserType, setUserJwt } = useContext(GlobalContext);
+    const [userLogged, setUserLogged] = useState({
+        name: "",
+        email: "",
+        type: 0,
+        jwt: ""
+    });
+
     const router = useRouter();
 
-    const { adminSidebarItens, setAdminSidebarItens, theme, setTheme } = useContext(GlobalContext);
-
     const getIcon = (x) => {
-        switch (x) {
-            case "Dashboard":
-                return <DashboardIcon className="sidebarMenuIcon" style={{ color: 'var(--grey-ligth)' }
-                } />
-                break;
-            case "Usuários":
-                return <AccountCircleIcon className="sidebarMenuIcon" style={{ color: 'var(--grey-ligth)' }} />
-                break;
-            case "Empresas":
-                return <AddBusinessIcon className="sidebarMenuIcon" style={{ color: 'var(--grey-ligth)' }} />
-                break;
-            case "Convidados":
-                return <PeopleAltIcon className="sidebarMenuIcon" style={{ color: 'var(--grey-ligth)' }} />
-                break;
-            case "Configurações":
-                return <PermDataSettingIcon className="sidebarMenuIcon" style={{ color: 'var(--grey-ligth)' }} />
-                break;
+        const commonStyle = { color: 'var(--grey-light)' };
 
+        switch (x) {
+            case "dashboard":
+                return <DashboardIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "admin-users":
+                return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "Empresas":
+                return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "Convidados":
+                return <PeopleAltIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "Configurações":
+                return <PermDataSettingIcon className="sidebarMenuIcon" style={commonStyle} />;
             default:
-                break;
+                return null;
+        }
+    }
+
+    const getName = (x) => {
+        switch (x) {
+            case "dashboard":
+                return "Dashboard";
+            case "admin-users":
+                return "Admin Users";
+            case "Empresas":
+                return "Empresas";
+            case "Convidados":
+                return "Convidados";
+            case "Configurações":
+                return "Configurações";
+            default:
+                return "";
         }
     }
 
     const logout = (e) => {
         e.preventDefault()
+        localStorage.clear("user_jwt");
+        localStorage.clear("user_name");
+        localStorage.clear("user_type");
+        localStorage.clear("user_email");
+        setUserName('')
+        setUserEmail('')
+        setUserType('')
+        setUserJwt('')
+
         router.push('/');
+    }
+
+    const Redirect = (e, path) => {
+        e.preventDefault()
+        router.push(`${path}`)
     }
 
     useEffect(() => {
@@ -61,6 +93,16 @@ export default function FloatBar({ itens }) {
             sidebarMain.classList.remove('sidebarMainClose');
         }
     }, [barOpen]);
+
+
+    useEffect(() => {
+        setUserLogged({
+            name: localStorage.getItem("user_name"),
+            email: localStorage.getItem("user_email"),
+            type: localStorage.getItem("user_type"),
+            jwt: localStorage.getItem("user_jwt")
+        })
+    }, [])
 
 
     if (floatOpen == false) {
@@ -77,14 +119,26 @@ export default function FloatBar({ itens }) {
                         <CancelIcon style={{ width: "45px", height: "45px", color: "var(--blue-primary)" }} />
                     </div>
                     <div className="flexc sidebarMenuItens" style={{ height: "70%" }}>
-                        {!!adminSidebarItens && adminSidebarItens.map((e, y) => {
+                        {!!adminSidebarItens && user?.type == 1 ? adminSidebarItens.map((e, y) => {
                             return (
                                 <div key={y} className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
                                     {getIcon(e)}
-                                    <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{e}</p>
+                                    <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{getName(e)}</p>
                                 </div>
                             )
-                        })}
+                        })
+                            :
+                            !!estbSidebarItens && user?.type == 2 ? estbSidebarItens.map((e, y) => {
+                                return (
+                                    <div key={y} className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
+                                        {getIcon(e)}
+                                        <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{getName(e)}</p>
+                                    </div>
+                                )
+                            })
+                                :
+                                <p>No Options</p>
+                        }
                     </div>
                     <div className="flexr sidebarFooter" style={{ height: "30%" }}>
                         <div

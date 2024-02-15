@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useContext } from "react"
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { GlobalContext } from "@/context/global";
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -11,14 +11,24 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import Loader from "@/components/fragments/loader";
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const router = useRouter();
-  const { config, setConfig, theme, setTheme } = useContext(GlobalContext);
+  const path = usePathname();
+
+  const { KONG_URL, user, setUserName, setUserEmail, setUserType, setUserJwt } = useContext(GlobalContext);
   const [passwordVisibble, setPasswordVisible] = useState(true)
   const [saveData, setSaveData] = useState(false)
   const [forgotPassword, setForgotPassword] = useState(false)
   const [emailSended, setEmailSended] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [loginError, setLoginError] = useState("")
+  const [isError, setIsError] = useState(false)
 
   const changeVisible = () => {
     setPasswordVisible(!passwordVisibble)
@@ -29,12 +39,6 @@ export default function Login() {
   const changeSetForgotPassword = () => {
     setForgotPassword(!forgotPassword)
   }
-
-  const handleLogin = async (e) => {
-    e.preventDefault()
-    router.push('/admin/dashboard/');
-  };
-
   const sendEmail = () => {
     setEmailSended(true)
   }
@@ -43,13 +47,101 @@ export default function Login() {
     setForgotPassword(false);
   }
 
+  async function SignUp(e) {
+    e.preventDefault()
+    let x;
+
+    if (!!email && !!password) {
+      setIsError(false)
+      setIsLoading(true);
+
+      try {
+        x = await (await fetch(`${KONG_URL}/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+        })).json()
+
+
+        setLoginError("")
+        setIsError(false)
+        setIsLoading(false);
+
+        toast.success("Login Efetuado com Sucesso!", {
+          position: "top-right"
+        });
+
+        localStorage.setItem("user_jwt", x.jwt);
+        localStorage.setItem("user_name", x.name);
+        localStorage.setItem("user_type", x.usersType.id);
+        localStorage.setItem("user_email", email);
+        setUserJwt(x.jwt);
+        setUserName(x.name);
+        setUserType(x.usersType.id);
+        setUserEmail(email);
+
+        router.push('/admin/dashboard/');
+
+      } catch (error) {
+        setLoginError("* Erro ao fazer Login, tente novamente.")
+        toast.error("Erro ao fazer Login, tente novamente.", {
+          position: "top-right"
+        });
+        setIsLoading(false);
+        setIsError(true)
+        return ""
+      }
+    } else {
+      setLoginError("* Preencha os campos antes de prosseguir.")
+      toast.error("Preencha os campos antes de prosseguir.", {
+        position: "top-right"
+      });
+      setIsLoading(false);
+      setIsError(true)
+      return ""
+    }
+  }
+
+  useEffect(() => {
+
+    if (email?.length < 2) {
+      setLoginError("* Preencha o Email corretamente.")
+    } else if (password?.length < 2) {
+      setLoginError("* Preencha a Senha corretamente.")
+    } else {
+      setLoginError("")
+    }
+
+  }, [email, password])
+
+
+  useEffect(() => {
+    let user = localStorage.getItem("user_jwt")
+
+    if (!!user && path == "/") {
+      setUserJwt(localStorage.getItem("user_jwt"));
+      setUserName(localStorage.getItem("user_name"));
+      setUserType(localStorage.getItem("user_type"));
+      setUserEmail(localStorage.getItem("user_email"));
+      router.push('/admin/dashboard')
+    }
+  }, [])
+
+
   const checkboxLabel = { inputProps: { 'aria-label': 'Checkbox demo' } };
   return (
-    <main>
+    <div>
+      <ToastContainer />
       <div className="loginContent flexr" style={{ backgroundImage: "url(/images/image-kongvite-background.jpg)" }}>
         <div className="loginDiv flexc">
           <div className="flexr logoLoginDiv">
             <img src="/logos/logo-kongvite.png"></img>
+
           </div>
           {forgotPassword == false ?
             <>
@@ -62,12 +154,17 @@ export default function Login() {
               </div>
               <form className="flexc inputsDivLogin">
                 <div className="flexr inputDiv">
-                  <TextField className="inputStyle" label="E-mail" id="outlined-size-normal" placeholder="Digite seu E-mail" type="text" />
+                  <TextField
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="inputStyle" label="E-mail" id="outlined-size-normal" placeholder="Digite seu E-mail" type="text" />
                 </div>
                 <div className="flexr inputDivPassword">
-                  <TextField className="inputStyle" label="Senha" id="outlined-size-normal" placeholder="Digite sua Senha" type={passwordVisibble == true ? "text" : "password"} />
+                  <TextField
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="inputStyle" label="Senha" id="outlined-size-normal" placeholder="Digite sua Senha" type={passwordVisibble == true ? "text" : "password"} />
                   {passwordVisibble == true ? <VisibilityIcon onClick={changeVisible} style={{ color: "#00276E" }} className="passwordIcon" color="#00276E" /> : <VisibilityOffIcon style={{ color: "#00276E" }} onClick={changeVisible} className="passwordIcon" color="#00276E" />}
                 </div>
+                <p className="errorP">{!!isError && loginError}</p>
                 <div className="flexr forgotLoginDiv">
                   <FormControlLabel onClick={changeSetData} control={<Checkbox />} label="Lembrar-me" />
                   <p onClick={changeSetForgotPassword}>Esqueci minha senha</p>
@@ -75,9 +172,9 @@ export default function Login() {
                 <div
                   className="btnLoginDiv flexr">
                   <button
-                    onClick={(e) => handleLogin(e)}
+                    onClick={(e) => SignUp(e)}
                     className="btnBlue"
-                    style={{ width: "60%" }}>Entrar</button></div>
+                    style={{ width: "60%" }}>{isLoading == false ? "Entrar" : <Loader></Loader>}</button></div>
               </form>
             </>
             :
@@ -94,7 +191,7 @@ export default function Login() {
                   <div className="btnLoginDiv flexr">
                     <button
                       onClick={() => sendEmail()}
-                      className="btnBlue btnRecoverPassword" style={{ width: "60%", marginTop: "40px" }}>Recuperar Senha</button>
+                      className="btnBlue btnRecoverPassword" style={{ width: "60%", marginTop: "40px" }}>{isLoading == false ? "Recuperar Senha" : <Loader></Loader>}</button>
                   </div>
                 </form>
               </>
@@ -113,6 +210,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

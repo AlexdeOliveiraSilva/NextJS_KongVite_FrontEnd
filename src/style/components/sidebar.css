@@ -22,6 +22,13 @@
 .sidebarMainClose:hover .sidebarOpacity {
   display: flex;
 }
+.sideIconActive {
+  width: 100%;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  color: var(--blue-primary);
+}
 .sideIcon {
   width: 100%;
   z-index: 2;
@@ -72,6 +79,7 @@
   gap: 20px;
   padding: 40px 5px;
   transition: all 1s ease;
+  white-space: nowrap;
 }
 .sidebarMenuItemActive {
   border-radius: 8px;
@@ -79,6 +87,7 @@
   cursor: pointer;
   padding: 5px 1px;
   border-left: 5px solid transparent;
+  white-space: nowrap;
 }
 
 .sidebarMenuItemActive:hover {
@@ -150,11 +159,11 @@
   transition: all 0.4s ease;
   border-radius: 20px;
   background-color: var(--white-primary);
-  animation: menuGetUp 0.5s ease-in-out;
+  animation: menuGetUp 0.5s ease;
 }
 
 .menuGetDown {
-  animation: menuGetDown 0.5s ease-in-out;
+  animation: menuGetDown 0.5s ease;
 }
 
 .floatmainInside {

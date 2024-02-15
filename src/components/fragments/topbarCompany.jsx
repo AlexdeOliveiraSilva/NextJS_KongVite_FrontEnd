@@ -2,9 +2,9 @@
 
 export default function TopbarCompany() {
     return (
-        <div className="">
-            <h4>Meu saldo: <span>R$ 0,00</span></h4>
-            <div>Comprar Ingressos</div>
+        <div className="topbarMidleContent flexr">
+            <h4>Saldo: <span>345</span></h4>
+            <div className="topbarMidleButton flexr">Comprar Ingressos</div>
         </div>
     )
 }

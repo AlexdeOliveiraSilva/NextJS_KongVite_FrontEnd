@@ -25,7 +25,7 @@
   background-color: var(--background);
   border-radius: 12px;
   box-shadow: var(--shad-3d);
-  animation: slideRightWithOpacity 0.7s ease-in-out;
+  animation: slideRightWithOpacity 0.7s ease;
   padding: 30px;
   justify-content: space-around;
 }

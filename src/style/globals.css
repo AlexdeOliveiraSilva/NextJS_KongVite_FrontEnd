@@ -15,6 +15,9 @@
 
   --red-primary: #ff0000;
 
+  --orange-primary: #ff9100;
+  --orange-secondary: #ffb75a;
+
   --grey-ligth: #777777;
 
   --blue-primary-opacity: rgba(7, 25, 48, 0.269);
@@ -62,12 +65,6 @@ body {
   color: var(--title);
   font-family: "Poppins", sans-serif;
 }
-main {
-  width: 100vw;
-  height: auto;
-  margin: 0;
-  padding: 0;
-}
 
 h1 {
   font-weight: 500;
@@ -113,13 +110,14 @@ form {
   align-items: center;
   flex-direction: column;
 }
+
 .inputStyle {
   width: 100%;
   height: auto;
 }
 
 .page-transition {
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.5s ease;
   opacity: 0;
 }
 
@@ -144,6 +142,69 @@ form {
   color: var(--white-primary);
 }
 
+.btnOrange {
+  width: auto;
+  height: auto;
+  padding: 10px 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  border: 1px solid var(--orange-primary);
+  background-color: var(--orange-primary);
+  color: var(--blue-primary);
+  font-size: 20px;
+}
+.btnOrange:hover {
+  border: 1px solid var(--orange-secondary);
+  background-color: var(--orange-secondary);
+  color: var(--blue-primary);
+}
+
+.btnBlueThird {
+  width: auto;
+  height: auto;
+  padding: 10px 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  border: 1px solid var(--blue-third);
+  background-color: var(--blue-third);
+  color: var(--black-primary);
+  font-size: 20px;
+}
+.btnBlueThird:hover {
+  border: 1px solid var(--blue-fourth);
+  background-color: var(--blue-fourth);
+  color: var(--black-primary);
+}
+
+.btnDisabled {
+  width: auto;
+  height: auto;
+  padding: 10px 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  border: 1px solid var(--grey-ligth);
+  background-color: var(--white-secondary);
+  color: var(--black-primary);
+  font-size: 20px;
+}
+
+.errorP {
+  font-size: 12px;
+  color: var(--red-primary);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+}
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -160,6 +221,7 @@ form {
   background-color: var(--white-secondary) !important;
 }
 
+/* *************** NOT FOUND  */
 .notFoundContent {
   position: fixed;
   top: 50%;
@@ -186,4 +248,56 @@ form {
 .notFoundContent button {
   width: 200px;
   margin: 40px 0;
+}
+
+/* *************** MODAL  */
+
+.mainModal {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: var(--black-opacity-ligth);
+  z-index: 9;
+}
+.contentModal {
+  width: 40vw;
+  height: auto;
+  position: relative;
+  background-color: var(--white-primary);
+  border-radius: 15px;
+  z-index: 10;
+}
+.modalClose {
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+  background-color: var(--white-primary);
+  position: absolute;
+  top: -25px;
+  right: -25px;
+  box-shadow: var(--shad-3d);
+  cursor: pointer;
+}
+
+.deleteModalDiv {
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 40px;
+}
+
+.deleteModalDiv h2 {
+  font-size: 22px;
+  width: 100%;
+  text-align: center;
+}
+
+.deleteModalBtnDiv {
+  width: 100%;
+  height: auto;
+  gap: 20px;
 }

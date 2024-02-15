@@ -10,13 +10,16 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
-  const { adminSidebarItens, setAdminSidebarItens, theme, setTheme } = useContext(GlobalContext);
+  const router = useRouter();
+  const { KONG_URL, user, setUserName, setUserEmail, setUserType, setUserJwt } = useContext(GlobalContext);
+
 
   return (
     <div className="dashboardMain flexr">
-      <h1></h1>
+      <div className="dashboardContent flexc"></div>
     </div>
   );
 }

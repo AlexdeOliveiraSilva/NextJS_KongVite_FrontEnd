@@ -1,0 +1,123 @@
+.adminUsersMain {
+  width: 100%;
+  height: 100%;
+  padding: 10px 30px 20px 30px;
+}
+.adminUsersContent {
+  background-color: var(--white-primary);
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: var(--shad-ligth);
+}
+.adminUsersHeader {
+  width: 100%;
+  height: 80px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  padding: 0 3vw;
+}
+.adminUsersTitle {
+  width: 100%;
+  justify-content: flex-start;
+}
+.adminUsersTitle h1 {
+  font-size: 22px;
+}
+.adminUsersAdd {
+  width: 250px;
+  justify-content: flex-end;
+}
+.adminUsersAdd button {
+  font-size: 16px;
+  font-weight: 600;
+}
+.adminUsersUl {
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.userLineTitle {
+  width: 100%;
+  height: 40px;
+  flex-wrap: nowrap;
+  border-radius: 8px;
+  border: 1px solid var(--grey-ligth);
+  justify-content: flex-start;
+  padding: 5px 10px;
+  position: relative;
+  background-color: var(--blue-secondary);
+}
+.userLineTitle p {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--white-primary);
+}
+.userLine {
+  width: 100%;
+  height: 40px;
+  flex-wrap: nowrap;
+  border-radius: 8px;
+  border: 1px solid var(--grey-ligth);
+  justify-content: flex-start;
+  padding: 5px 10px;
+  position: relative;
+}
+.userLine p {
+  font-size: 15px;
+}
+.userIdLi {
+  width: 5%;
+  text-align: center;
+  font-weight: 500;
+}
+.userNameLi {
+  width: 20%;
+  padding-left: 15px;
+  font-weight: 500;
+}
+.userDocLi {
+  width: 15%;
+  padding-left: 15px;
+  font-weight: 500;
+}
+.userPhoneLi {
+  width: 15%;
+  padding-left: 15px;
+  font-weight: 500;
+}
+.userEmailLi {
+  width: auto;
+  padding-left: 15px;
+  font-weight: 500;
+}
+.userConfigbtns {
+  position: absolute;
+  gap: 10px;
+  top: 50%;
+  right: 20px;
+  width: auto;
+  height: auto;
+  transform: translateY(-50%);
+}
+.userConfigbtn {
+  width: 28px;
+  height: 28px;
+  background-color: var(--orange-primary);
+  border-radius: 8px;
+  z-index: 3;
+  cursor: pointer;
+}
+.userConfigbtn:hover {
+  background-color: var(--orange-secondary);
+}
+.userConfigIcon {
+  width: 20px;
+  height: 20px;
+}
