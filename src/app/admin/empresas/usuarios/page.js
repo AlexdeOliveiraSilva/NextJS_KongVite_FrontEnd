@@ -10,21 +10,22 @@ import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-export default function AdminUsers() {
+export default function CompanyUsers() {
   const router = useRouter();
-  const { KONG_URL, user, setUserName, setUserEmail, setUserType, setUserJwt, userEdit, setUserEdit } = useContext(GlobalContext);
+  const { KONG_URL, user, setUserEdit, companyEdit, companyNameEdit, setCompanyEdit, setCompanyNameEdit } = useContext(GlobalContext);
   const [adminsList, setAdminsList] = useState([])
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
   const [deleteIdSelected, setDeletedidSelected] = useState()
 
-  async function getAdmins() {
+  async function getUsers() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let companyId = !!companyEdit ? companyEdit : localStorage.getItem("company_edit")
 
     let x;
 
-    if (!!jwt) {
+    if (!!jwt && !!companyId) {
       try {
-        x = await (await fetch(`${KONG_URL}/users`, {
+        x = await (await fetch(`${KONG_URL}/companys/user/${companyId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -36,6 +37,50 @@ export default function AdminUsers() {
 
       } catch (error) {
 
+        return ""
+      }
+    }
+  }
+
+  async function deleteUser(id) {
+
+    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+
+    let x;
+
+    if (!!jwt) {
+
+      try {
+        x = await (await fetch(`${KONG_URL}/user/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': jwt
+          },
+          body: JSON.stringify({
+            id: id,
+            situation: 2
+          })
+        })).json()
+
+        if (!x?.message) {
+          toast.success("Usuário deletado com sucesso.", {
+            position: "top-right"
+          });
+
+        } else {
+          toast.error("Erro ao deletar, tente novamente.", {
+            position: "top-right"
+          });
+
+        }
+
+
+      } catch (error) {
+        toast.error("Erro ao Cadastrar, tente novamente.", {
+          position: "top-right"
+        });
+        setisLoading(false)
         return ""
       }
     }
@@ -56,7 +101,7 @@ export default function AdminUsers() {
     setUserEdit("")
     localStorage.setItem("user_edit", "")
 
-    router.push('/admin/admin-users/add')
+    router.push('/admin/administradores/add')
   }
 
   function toEditUser(e, id) {
@@ -64,7 +109,7 @@ export default function AdminUsers() {
     setUserEdit(id)
     localStorage.setItem("user_edit", id)
 
-    router.push('/admin/admin-users/edit')
+    router.push('/admin/administradores/edit')
   }
 
   function deleteFunc() {
@@ -82,17 +127,20 @@ export default function AdminUsers() {
   }
 
   useEffect(() => {
-    getAdmins();
+    getUsers();
   }, [])
 
   return (
     <div className="adminUsersMain flexr">
       <ToastContainer></ToastContainer>
-      {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteFunc()} word="confirmar" ></DeletModal>}
+      {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteUser(deleteIdSelected)} word="confirmar" ></DeletModal>}
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">
-            <h1>Lista de Usuários</h1>
+            {!!companyNameEdit ? <h1>{companyNameEdit} - Usuários</h1> :
+              !!localStorage.getItem("company_edit") ? <h1>{localStorage.getItem("companyName_edit")} - Usuários</h1> :
+                <h1>Lista de Usuários</h1>
+            }
           </div>
           <div className="adminUsersAdd flexr">
             <button
@@ -104,13 +152,17 @@ export default function AdminUsers() {
         <div className="adminUsersUl flexc">
           <div className="userLineTitle flexr">
             <p className="userIdLi">Id</p>
-            <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+            <div className="userLine1150">
+              <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+            </div>
             <p className="userNameLi">Username</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
             <p className="userDocLi">Documento</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
             <p className="userPhoneLi">Telefone</p>
-            <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+            <div className="userLine650">
+              <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+            </div>
             <p className="userEmailLi">Email</p>
           </div>
           <div className="adminUsersUl flexc" style={{ marginTop: "10px" }}>
@@ -118,23 +170,31 @@ export default function AdminUsers() {
               return (
                 <div key={y} className="userLine flexr">
                   <p className="userIdLi">{e.id}</p>
-                  <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                  <div className="userLine1150">
+                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                  </div>
                   <p className="userNameLi">{e.name}</p>
                   <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                   <p className="userDocLi">{e.document}</p>
-                  <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                  <div className="userLine1150">
+                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                  </div>
                   <p className="userPhoneLi">{e.phone}</p>
-                  <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                  <div className="userLine650">
+                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                  </div>
                   <p className="userEmailLi">{e.email}</p>
                   <div className="userConfigbtns flexr">
                     <div
-                      onClick={(event) => toEditUser(event, e.id)}
+                      // onClick={(event) => toEditUser(event, e.id)}
                       className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
-                    <div
-                      onClick={(event) => openDeleteModal(event, e.id)}
-                      className="userConfigbtn flexr">
-                      <DeleteIcon className="userConfigIcon"></DeleteIcon>
-                    </div>
+                    {y != 0 &&
+                      <div
+                        // onClick={(event) => openDeleteModal(event, e.id)}
+                        className="userConfigbtn flexr">
+                        <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                      </div>
+                    }
                   </div>
                 </div>
               )
@@ -142,6 +202,6 @@ export default function AdminUsers() {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 }

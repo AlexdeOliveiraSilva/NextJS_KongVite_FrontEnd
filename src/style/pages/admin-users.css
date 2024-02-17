@@ -32,6 +32,7 @@
 .adminUsersAdd button {
   font-size: 16px;
   font-weight: 600;
+  white-space: nowrap;
 }
 .adminUsersUl {
   width: 100%;
@@ -58,6 +59,7 @@
   font-size: 16px;
   font-weight: 600;
   color: var(--white-primary);
+  white-space: nowrap;
 }
 .userLine {
   width: 100%;
@@ -71,6 +73,7 @@
 }
 .userLine p {
   font-size: 15px;
+  white-space: nowrap;
 }
 .userIdLi {
   width: 5%;
@@ -83,12 +86,12 @@
   font-weight: 500;
 }
 .userDocLi {
-  width: 15%;
+  width: 145px;
   padding-left: 15px;
   font-weight: 500;
 }
 .userPhoneLi {
-  width: 15%;
+  width: 125px;
   padding-left: 15px;
   font-weight: 500;
 }
@@ -120,4 +123,134 @@
 .userConfigIcon {
   width: 20px;
   height: 20px;
+}
+.userLine1150 {
+  display: flex;
+  height: 100%;
+}
+.userLine650 {
+  display: flex;
+  height: 100%;
+}
+.userAdminDoubleInputs {
+  width: 100%;
+  gap: 20px;
+}
+
+.adminUsersUlTitle {
+  overflow: hidden;
+  width: 95%;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+.adminUsersUlTitle h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.companyBtnDiv {
+  width: 100%;
+}
+.companyBtnDiv button {
+  min-width: 180px;
+  height: 100%;
+  font-weight: 500;
+}
+
+@media (max-width: 1300px) {
+  .userIdLi {
+    width: 4%;
+    text-align: center;
+    font-weight: 500;
+  }
+  .userNameLi {
+    width: 15%;
+    min-width: 135px;
+    padding-left: 7px;
+    overflow: hidden;
+  }
+  .userDocLi {
+    width: 135px;
+    padding-left: 7px;
+    overflow: hidden;
+  }
+  .userPhoneLi {
+    width: 110px;
+    padding-left: 7px;
+    overflow: hidden;
+  }
+  .userEmailLi {
+    width: auto;
+    min-width: 300px;
+    padding-left: 7px;
+    font-weight: 500;
+    overflow: hidden;
+  }
+}
+@media (max-width: 1150px) {
+  .userIdLi {
+    display: none;
+  }
+  .userLine1150 {
+    display: none;
+  }
+  .userDocLi {
+    display: none;
+  }
+  .userDocLine {
+    display: none;
+  }
+}
+
+@media (max-width: 650px) {
+  .userLine650 {
+    display: none;
+  }
+  .userPhoneLi {
+    display: none;
+  }
+  .userNameLi {
+    width: 15%;
+    min-width: 135px;
+    padding-left: 0;
+    overflow: hidden;
+  }
+  .userEmailLi {
+    width: auto;
+    min-width: auto;
+    padding-left: 7px;
+    font-weight: 500;
+    overflow: hidden;
+  }
+  .adminUsersMain {
+    padding: 10px;
+    box-shadow: var(--shad-3d);
+  }
+  .userAdminDoubleInputs {
+    width: 100%;
+    gap: 10px;
+    flex-direction: column;
+  }
+}
+@media (max-width: 450px) {
+  .adminUsersHeader {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 0 1vw;
+  }
+  .adminUsersTitle h1 {
+    font-size: 18px;
+  }
+  .userNameLi {
+    width: 100px;
+    min-width: 100px;
+    padding-left: 0;
+    overflow: hidden;
+  }
+}
+@media (max-width: 370px) {
+  .adminUsersTitle h1 {
+    font-size: 16px;
+  }
 }

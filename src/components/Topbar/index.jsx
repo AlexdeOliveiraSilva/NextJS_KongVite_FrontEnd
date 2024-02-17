@@ -2,21 +2,15 @@
 
 import React, { useState, useEffect, useContext } from "react"
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import TopbarAdmin from "../fragments/topbarAdmin";
 import TopbarCompany from "../fragments/topbarCompany";
 import { GlobalContext } from "@/context/global";
 
 export default function Topbar() {
     const path = usePathname();
-    const [pageTitle, setPageTitle] = useState("");
-    const { KONG_URL, estbSidebarItens, adminSidebarItens, user, setUserName, setUserEmail, setUserType, setUserJwt } = useContext(GlobalContext);
-    const [userLogged, setUserLogged] = useState({
-        name: "",
-        email: "",
-        type: 0,
-        jwt: ""
-    });
+    const router = useRouter();
+    const { user } = useContext(GlobalContext);
 
 
     const changeTitle = (x) => {
@@ -24,38 +18,50 @@ export default function Topbar() {
             case "/admin/dashboard":
                 return "Dashboard"
 
-            case "/admin/admin-users":
+            case "/admin/administradores":
                 return "Administradores"
 
-            case '/admin/admin-users/add':
+            case '/admin/administradores/add':
                 return "Administradores"
 
-            case '/admin/admin-users/edit':
+            case '/admin/administradores/edit':
                 return "Administradores"
+
+            case "/admin/empresas":
+                return "Empresas"
+
+            case '/admin/empresas/add':
+                return "Empresas"
+
+            case '/admin/empresas/edit':
+                return "Empresas"
+
+            case '/admin/empresas/usuarios':
+                return "Empresas"
+
+            case '/admin/empresas/usuarios/add':
+                return "Empresas"
+
+            case '/admin/empresas/usuarios/edit':
+                return "Empresas"
 
             default:
                 break;
         }
     }
 
-    useEffect(() => {
-        setPageTitle(changeTitle(path))
-        setUserLogged({
-            name: localStorage.getItem("user_name"),
-            email: localStorage.getItem("user_email"),
-            type: localStorage.getItem("user_type"),
-            jwt: localStorage.getItem("user_jwt")
-
-        })
-    }, [path])
-
-
+    function backTo(event, url) {
+        event.preventDefault();
+        router.push(`/admin/${url}`)
+    }
     return (
         <div className="topbarMain flexr">
             <div className="topbarContent flexr">
-                <div className="topbarPageTitle flexr">
+                <div
+                    onClick={(event) => backTo(event, changeTitle(path).toLocaleLowerCase())}
+                    className="topbarPageTitle flexr">
                     <ChevronRightIcon className="topbarTitleIcon"></ChevronRightIcon>
-                    <h1>{pageTitle}</h1>
+                    <h1>{changeTitle(path)}</h1>
                 </div>
                 <div className="topbarPageMidle flexr">
                     {user?.type == 1
@@ -66,7 +72,7 @@ export default function Topbar() {
                     }
                 </div>
                 <div className="topbarPageHello flexr">
-                    <h2>Olá, <span>{user?.name == "Administrador" ? "Admin" : userLogged?.name}!</span></h2>
+                    {user?.name != undefined ? <h2> Olá, <span>{user?.name == "Administrador" ? "Admin!" : `${user?.name}!`}</span></h2> : ""}
                 </div>
             </div>
         </div>

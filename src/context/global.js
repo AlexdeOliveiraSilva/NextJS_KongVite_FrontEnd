@@ -8,13 +8,13 @@ export const GlobalProvider = ({ children }) => {
     const KONG_URL = "https://dnib66h97fzb3.cloudfront.net";
 
     const [userEdit, setUserEdit] = useState();
+    const [companyEdit, setCompanyEdit] = useState();
+    const [companyNameEdit, setCompanyNameEdit] = useState();
 
     const [adminSidebarItens, setAdminSidebarItens] = useState([
         "dashboard",
-        "admin-users",
-        "Empresas",
-        "Convidados",
-        "Configurações"
+        "administradores",
+        "empresas"
     ]);
 
     const [estbSidebarItens, setEstbSidebarItens] = useState([
@@ -55,7 +55,11 @@ export const GlobalProvider = ({ children }) => {
             setUserType,
             setUserJwt,
             userEdit,
-            setUserEdit
+            setUserEdit,
+            companyEdit,
+            setCompanyEdit,
+            companyNameEdit,
+            setCompanyNameEdit
         }}>
             {children}
         </GlobalContext.Provider>

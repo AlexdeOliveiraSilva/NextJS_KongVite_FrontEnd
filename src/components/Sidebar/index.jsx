@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useContext } from "react"
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { GlobalContext } from "@/context/global";
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -12,15 +13,10 @@ import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-export default function Sidebar({ itens }) {
+export default function Sidebar() {
+    const path = usePathname();
     const [barOpen, setBarOpen] = useState(true);
-    const { KONG_URL, estbSidebarItens, adminSidebarItens, user, setUserName, setUserEmail, setUserType, setUserJwt } = useContext(GlobalContext);
-    const [userLogged, setUserLogged] = useState({
-        name: "",
-        email: "",
-        type: 0,
-        jwt: ""
-    });
+    const { estbSidebarItens, adminSidebarItens, user, setUserName, setUserEmail, setUserType, setUserJwt } = useContext(GlobalContext);
 
     const router = useRouter();
 
@@ -30,9 +26,9 @@ export default function Sidebar({ itens }) {
         switch (x) {
             case "dashboard":
                 return <DashboardIcon className="sidebarMenuIcon" style={commonStyle} />;
-            case "admin-users":
+            case "administradores":
                 return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
-            case "Empresas":
+            case "empresas":
                 return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "Convidados":
                 return <PeopleAltIcon className="sidebarMenuIcon" style={commonStyle} />;
@@ -47,9 +43,9 @@ export default function Sidebar({ itens }) {
         switch (x) {
             case "dashboard":
                 return "Dashboard";
-            case "admin-users":
-                return "Admin Users";
-            case "Empresas":
+            case "administradores":
+                return "Administradores";
+            case "empresas":
                 return "Empresas";
             case "Convidados":
                 return "Convidados";
@@ -75,8 +71,8 @@ export default function Sidebar({ itens }) {
     }
 
     const Redirect = (e, path) => {
-        e.preventDefault()
-        router.push(`${path}`)
+        e.preventDefault();
+        router.push(`${path}`);
     }
 
     useEffect(() => {
@@ -89,14 +85,6 @@ export default function Sidebar({ itens }) {
         }
     }, [barOpen]);
 
-    useEffect(() => {
-        setUserLogged({
-            name: localStorage.getItem("user_name"),
-            email: localStorage.getItem("user_email"),
-            type: localStorage.getItem("user_type"),
-            jwt: localStorage.getItem("user_jwt")
-        })
-    }, [])
 
     return (
         <div id="sidebarMain" className="sidebarMain flexc">
@@ -110,8 +98,8 @@ export default function Sidebar({ itens }) {
                 {!!adminSidebarItens && user?.type == 1 ? adminSidebarItens.map((e, y) => {
                     return (
                         <div
-                            onClick={(event) => Redirect(event, e)}
-                            key={y} className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
+                            onClick={(event) => Redirect(event, `/admin/${e}`)}
+                            key={y} className={path.startsWith(`/admin/${e}`) ? "flexr sidebarMenuItemActiveNow" : "flexr sidebarMenuItemActive"} style={{ gap: "10px" }}>
                             {getIcon(e)}
                             <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{getName(e)}</p>
                         </div>

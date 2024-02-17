@@ -9,7 +9,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import TextField from '@mui/material/TextField';
 
-export default function AdminUsersAdd() {
+export default function AdminUsersEdit() {
   const router = useRouter();
   const { KONG_URL, user, setUserName, setUserEmail, setUserType, setUserJwt, userEdit, setUserEdit } = useContext(GlobalContext);
   const [name, setName] = useState();
@@ -24,7 +24,67 @@ export default function AdminUsersAdd() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [userEditId, setUserEditId] = useState();
+  const [userEditData, setUserEditData] = useState();
+  const [userTitleName, setUserTitleName] = useState();
   const [isLoading, setisLoading] = useState(false);
+
+  async function editUser(e) {
+    e.preventDefault();
+
+    let x;
+    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let userId = !!userEdit?.length > 0 ? userEdit : localStorage.getItem("user_edit");
+
+    if (!!jwt && !!userId && (
+      nameError == false &&
+      documentError == false &&
+      emailError == false &&
+      phoneError == false &&
+      passwordError == false &&
+      confirmPasswordError
+    )) {
+      setisLoading(true)
+      try {
+        x = await (await fetch(`${KONG_URL}/user/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': jwt
+          },
+          body: JSON.stringify({
+            id: userId,
+            name: name,
+            document: document,
+            phone: phone,
+            email: email,
+            password: password
+          })
+        })).json()
+
+        if (!x?.message) {
+          toast.success("Usuário Editado.", {
+            position: "top-right"
+          });
+          setisLoading(false)
+
+          router.push('/admin/administradores/');
+        } else {
+          toast.error("Erro ao Editar, tente novamente.", {
+            position: "top-right"
+          });
+          setisLoading(false)
+        }
+
+      } catch (error) {
+        toast.error("Erro ao Editar, tente novamente.", {
+          position: "top-right"
+        });
+        setisLoading(false)
+        return ""
+      }
+    }
+  }
 
   function nameVerify() {
     if (name?.length > 0 && name?.length < 4) {
@@ -98,7 +158,6 @@ export default function AdminUsersAdd() {
   function documentTransform(x) {
     let number = x?.replace(/\D/g, '');
 
-    console.log(number?.length, x)
 
     switch (number?.length) {
       case 11:
@@ -123,55 +182,55 @@ export default function AdminUsersAdd() {
     }
   }
 
-  async function addNewuser(e) {
-    e.preventDefault();
-
-    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+  async function getUser() {
 
     let x;
+    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let userId = !!userEdit?.length > 0 ? userEdit : localStorage.getItem("user_edit");
 
-    if (!!jwt) {
-      setisLoading(true)
+    if (!!jwt && !!userId && (
+      nameError == false &&
+      documentError == false &&
+      emailError == false &&
+      phoneError == false &&
+      passwordError == false &&
+      confirmPasswordError == false
+    )) {
       try {
-        x = await (await fetch(`${KONG_URL}/user/`, {
-          method: 'POST',
+
+        x = await (await fetch(`${KONG_URL}/users`, {
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': jwt
-          },
-          body: JSON.stringify({
-            name: name,
-            document: document,
-            phone: phone,
-            email: email
-          })
+          }
         })).json()
 
-        if (!x?.message) {
-          toast.success("Usuário cadastrado.", {
-            position: "top-right"
-          });
-          setisLoading(false)
-
-          router.push('/admin/admin-users/');
-        } else {
-          toast.error("Erro ao Editar, tente novamente.", {
-            position: "top-right"
-          });
-          setisLoading(false)
-        }
-
+        setUserEditData(x.filter((e) => e.id == userId))
 
       } catch (error) {
-        toast.error("Erro ao Cadastrar, tente novamente.", {
-          position: "top-right"
-        });
-        setisLoading(false)
+
         return ""
       }
     }
   }
 
+  useEffect(() => {
+    if (userEditData?.length > 0) {
+      setName(userEditData[0] && userEditData[0].name);
+      setEmail(userEditData[0] && userEditData[0].email);
+      setDocument(userEditData[0] && userEditData[0].document);
+      setPhone(userEditData[0] && userEditData[0].phone);
+      setUserTitleName(userEditData[0] && userEditData[0].name);
+    }
+
+  }, [userEditData])
+
+
+  useEffect(() => {
+    getUser();
+
+  }, [])
 
   useEffect(() => {
     nameVerify();
@@ -182,17 +241,18 @@ export default function AdminUsersAdd() {
     confirmPasswordVerify();
   }, [name, email, document, phone, password, confirmPassword])
 
+
   return (
     <div className="adminUsersMain flexr">
       <ToastContainer></ToastContainer>
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">
-            <h1>Novo Usuário</h1>
+            <h1>Editar Usuário {!!userTitleName && `- ${userTitleName}`}</h1>
           </div>
           <div className="adminUsersAdd flexr">
             <button
-              onClick={(event) => addNewuser(event)}
+              onClick={(event) => editUser(event)}
               style={{ minWidth: "150px" }}
               className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
           </div>
@@ -200,34 +260,38 @@ export default function AdminUsersAdd() {
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
         <div className="adminUsersUl flexc">
           <TextField
+            value={name}
             onChange={(e) => setName(e.target.value)}
-            className="inputStyle" label="Nome" id="outlined-size-normal" placeholder={`Digite o Nome:'`} type="text" />
+            className="inputStyle" label={!!name ? '' : "Nome"} id="outlined-size-normal" placeholder={`Digite o Nome:`} type="text" />
           {!!nameError && <p className="errorP">* O Nome deve conter mais que 3 caracteres.</p>}
-          <div className="flexr" style={{ width: "100%", gap: "20px" }}>
+          <div className="userAdminDoubleInputs flexr">
             <TextField
+              value={document}
               onChange={(e) => setDocument(e.target.value)}
               className="inputStyle"
-              label="Documento"
+              label={!!document ? '' : "Documento"}
               id="outlined-size-normal"
               placeholder={`Digite o Documento:'`}
               type="number" />
             <TextField
+              value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="inputStyle" label="Telefone" id="outlined-size-normal" placeholder={`Digite o Telefone:'`} type="number" />
+              className="inputStyle" label={!!phone ? '' : "Telefone"} id="outlined-size-normal" placeholder={`Digite o Telefone:'`} type="number" />
           </div>
           {!!documentError && <p className="errorP">* O Documento deve ser valido.</p>}
           {!!phoneError && <p className="errorP" style={{ textAlign: "right" }}>* O Telefone deve ser valido.</p>}
           <TextField
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="inputStyle" label="E-mail" id="outlined-size-normal" placeholder={`Digite o E-mail:'`} type="text" />
+            className="inputStyle" label={!!email ? '' : "E-mail"} id="outlined-size-normal" placeholder={`Digite o E-mail:'`} type="text" />
           {!!emailError && <p className="errorP">* O E-mail deve ser valido.</p>}
-          <div className="flexr" style={{ width: "100%", gap: "20px" }}>
+          <div className="userAdminDoubleInputs flexr">
             <TextField
               onChange={(e) => setPassword(e.target.value)}
-              className="inputStyle" label="Senha" id="outlined-size-normal" placeholder={`Digite a Senha:'`} type="password" />
+              className="inputStyle" label={!!password ? '' : "Senha"} id="outlined-size-normal" placeholder={`Digite a Senha:'`} type="password" />
             <TextField
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="inputStyle" label="Confirmar Senha" id="outlined-size-normal" placeholder={`Confirme a Senha:'`} type="password" />
+              className="inputStyle" label={!!confirmPassword ? '' : "Confirmar Senha"} id="outlined-size-normal" placeholder={`Confirme a Senha:'`} type="password" />
           </div>
           {!!passwordError && <p className="errorP">* Deve 8 ou mais caracteres, Letras Maiúsculas e Numeros.</p>}
           {!!confirmPasswordError && <p className="errorP" style={{ textAlign: "right" }}>* As senhas devem ser iguais.</p>}

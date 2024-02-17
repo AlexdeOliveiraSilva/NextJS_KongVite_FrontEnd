@@ -35,7 +35,7 @@ export default function FloatBar({ itens }) {
         switch (x) {
             case "dashboard":
                 return <DashboardIcon className="sidebarMenuIcon" style={commonStyle} />;
-            case "admin-users":
+            case "administradores":
                 return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "Empresas":
                 return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
@@ -52,7 +52,7 @@ export default function FloatBar({ itens }) {
         switch (x) {
             case "dashboard":
                 return "Dashboard";
-            case "admin-users":
+            case "administradores":
                 return "Admin Users";
             case "Empresas":
                 return "Empresas";
