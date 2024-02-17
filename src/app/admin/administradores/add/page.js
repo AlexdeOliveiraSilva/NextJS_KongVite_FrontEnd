@@ -98,8 +98,6 @@ export default function AdminUsersAdd() {
   function documentTransform(x) {
     let number = x?.replace(/\D/g, '');
 
-    number?.length, x)
-
     switch (number?.length) {
       case 11:
         return number?.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
