@@ -2,7 +2,7 @@
   width: 300px;
   height: 100vh;
   box-shadow: var(--shad-3d);
-  padding: 20px 20px 50px 20px;
+  padding: 20px 10px 50px 10px;
   transition: all 0.7s ease;
   gap: 20px;
   border-radius: 0 20px 20px 0;
@@ -10,7 +10,7 @@
 }
 .sidebarMainClose {
   transition: all 0.7s ease;
-  width: 80px;
+  width: 70px;
 }
 .sidebarMainClose:hover {
   transition: all 0.7s ease;
@@ -82,17 +82,20 @@
   white-space: nowrap;
 }
 .sidebarMenuItemActiveNow {
-  background-color: var(--blue-fourth-opacity);
   border-radius: 6px;
-  padding: 5px;
   text-align: left;
   transition: all 1s ease;
   width: 100%;
   justify-content: flex-start;
-  border-left: 5px solid rgb(0, 0, 97);
+  border-left: 5px solid transparent;
 }
+.sidebarMain:hover .sidebarMenuItemActiveNow {
+  background-color: var(--white-secondary);
+  padding: 5px 0;
+}
+
 .sidebarMenuItemActiveNow p {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--title);
 }
@@ -117,7 +120,18 @@
   border-left: 5px solid rgb(0, 0, 97);
 }
 .sidebarMenuItemActiveNow .sidebarMenuIcon {
-  color: rgb(0, 0, 97) !important;
+  color: rgb(255, 255, 255) !important;
+  background-color: rgb(0, 0, 97) !important;
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+  padding: 1px;
+}
+.sidebarMenuItemActive .sidebarMenuIcon {
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+  padding: 1px;
 }
 
 .sidebarMenuItemActive:hover .sidebarMenuIcon {
@@ -125,7 +139,7 @@
 }
 
 .sidebarTextMenu {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   color: var(--title);
   transition: all 1s ease;

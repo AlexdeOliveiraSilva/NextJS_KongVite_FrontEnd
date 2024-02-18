@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField';
 
 export default function AdminUsersAdd() {
   const router = useRouter();
-  const { KONG_URL, user, setUserName, setUserEmail, setUserType, setUserJwt, userEdit, setUserEdit } = useContext(GlobalContext);
+  const { KONG_URL, user, companyEdit, companyNameEdit } = useContext(GlobalContext);
   const [name, setName] = useState();
   const [document, setDocument] = useState();
   const [phone, setPhone] = useState();
@@ -25,6 +25,7 @@ export default function AdminUsersAdd() {
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [isLoading, setisLoading] = useState(false);
+  const [pageTitle, setPageTitle] = useState('Novo Usuário')
 
   function nameVerify() {
     if (name?.length > 0 && name?.length < 4) {
@@ -95,40 +96,16 @@ export default function AdminUsersAdd() {
     }
   }
 
-  function documentTransform(x) {
-    let number = x?.replace(/\D/g, '');
-
-    switch (number?.length) {
-      case 11:
-        return number?.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-
-      case 14:
-        return number?.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-
-      default:
-        return x;
-    }
-  }
-
-  function phoneTranform(x) {
-    number = x.replace(/\D/g, '');
-
-    if (number.length >= 10) {
-      // Formatar como (##) ####-####
-      return number.replace(/(\d{2})(\d{4,5})(\d{4})/, '($1) $2-$3');
-    } else {
-      return number;
-    }
-  }
 
   async function addNewuser(e) {
     e.preventDefault();
 
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let cID = !!companyEdit ? companyEdit : localStorage.getItem("company_edit")
 
     let x;
 
-    if (!!jwt && (
+    if (!!jwt && !!cID && (
       nameError == false &&
       documentError == false &&
       emailError == false &&
@@ -138,7 +115,7 @@ export default function AdminUsersAdd() {
     )) {
       setisLoading(true)
       try {
-        x = await (await fetch(`${KONG_URL}/user/`, {
+        x = await (await fetch(`${KONG_URL}/companys/user/${cID}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -159,7 +136,7 @@ export default function AdminUsersAdd() {
           });
           setisLoading(false)
 
-          router.push('/admin/administradores/');
+          router.push(`/admin/empresas/usuarios`);
         } else {
           toast.error("Erro ao Editar, tente novamente.", {
             position: "top-right"
@@ -188,13 +165,19 @@ export default function AdminUsersAdd() {
     confirmPasswordVerify();
   }, [name, email, document, phone, password, confirmPassword])
 
+  useEffect(() => {
+    setPageTitle(!!companyNameEdit ? `${companyNameEdit} - Novo Usuário` :
+      !!localStorage.getItem("companyName_edit") ? `${localStorage.getItem("companyName_edit")} - Novo Usuário` :
+        'Novo Usuário')
+  }, [])
+
   return (
     <div className="adminUsersMain flexr">
       <ToastContainer></ToastContainer>
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">
-            <h1>Novo Usuário</h1>
+            {pageTitle}
           </div>
           <div className="adminUsersAdd flexr">
             <button

@@ -37,13 +37,13 @@ export default function Topbar() {
                 return "Empresas"
 
             case '/admin/empresas/usuarios':
-                return "Empresas"
+                return "Empresas - Usuários"
 
             case '/admin/empresas/usuarios/add':
-                return "Empresas"
+                return "Empresas - Usuários"
 
             case '/admin/empresas/usuarios/edit':
-                return "Empresas"
+                return "Empresas - Usuários"
 
             default:
                 break;
@@ -58,7 +58,13 @@ export default function Topbar() {
         <div className="topbarMain flexr">
             <div className="topbarContent flexr">
                 <div
-                    onClick={(event) => backTo(event, changeTitle(path).toLocaleLowerCase())}
+                    onClick={(event) => backTo(event,
+                        changeTitle(path)
+                            .toLocaleLowerCase()
+                            .replaceAll(" ", "")
+                            .replaceAll("-", "/")
+                            .replaceAll("á", 'a')
+                    )}
                     className="topbarPageTitle flexr">
                     <ChevronRightIcon className="topbarTitleIcon"></ChevronRightIcon>
                     <h1>{changeTitle(path)}</h1>

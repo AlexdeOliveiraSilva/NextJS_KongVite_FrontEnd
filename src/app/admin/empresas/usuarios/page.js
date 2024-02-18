@@ -12,10 +12,11 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function CompanyUsers() {
   const router = useRouter();
-  const { KONG_URL, user, setUserEdit, companyEdit, companyNameEdit, setCompanyEdit, setCompanyNameEdit } = useContext(GlobalContext);
-  const [adminsList, setAdminsList] = useState([])
-  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
-  const [deleteIdSelected, setDeletedidSelected] = useState()
+  const { KONG_URL, user, setUserEdit, companyEdit, companyNameEdit } = useContext(GlobalContext);
+  const [adminsList, setAdminsList] = useState([]);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [deleteIdSelected, setDeletedidSelected] = useState();
+  const [pageTitle, setPageTitle] = useState('Lista de Usuários')
 
   async function getUsers() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
@@ -45,6 +46,7 @@ export default function CompanyUsers() {
   async function deleteUser(id) {
 
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let companyId = !!companyEdit ? companyEdit : localStorage.getItem("company_edit")
 
     let x;
 
@@ -101,7 +103,7 @@ export default function CompanyUsers() {
     setUserEdit("")
     localStorage.setItem("user_edit", "")
 
-    router.push('/admin/administradores/add')
+    router.push('/admin/empresas/usuarios/add')
   }
 
   function toEditUser(e, id) {
@@ -109,7 +111,7 @@ export default function CompanyUsers() {
     setUserEdit(id)
     localStorage.setItem("user_edit", id)
 
-    router.push('/admin/administradores/edit')
+    router.push('/admin/empresas/usuarios/edit')
   }
 
   function deleteFunc() {
@@ -128,6 +130,11 @@ export default function CompanyUsers() {
 
   useEffect(() => {
     getUsers();
+    setPageTitle(!!companyNameEdit ?
+      `${companyNameEdit} - Usuários` :
+      !!localStorage.getItem("companyName_edit") ?
+        `${localStorage.getItem("companyName_edit")} - Usuários` :
+        "Lista de Usuários")
   }, [])
 
   return (
@@ -137,10 +144,7 @@ export default function CompanyUsers() {
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">
-            {!!companyNameEdit ? <h1>{companyNameEdit} - Usuários</h1> :
-              !!localStorage.getItem("company_edit") ? <h1>{localStorage.getItem("companyName_edit")} - Usuários</h1> :
-                <h1>Lista de Usuários</h1>
-            }
+            {pageTitle}
           </div>
           <div className="adminUsersAdd flexr">
             <button
@@ -186,11 +190,11 @@ export default function CompanyUsers() {
                   <p className="userEmailLi">{e.email}</p>
                   <div className="userConfigbtns flexr">
                     <div
-                      // onClick={(event) => toEditUser(event, e.id)}
+                      onClick={(event) => toEditUser(event, e.id)}
                       className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
                     {y != 0 &&
                       <div
-                        // onClick={(event) => openDeleteModal(event, e.id)}
+                        onClick={(event) => openDeleteModal(event, e.id)}
                         className="userConfigbtn flexr">
                         <DeleteIcon className="userConfigIcon"></DeleteIcon>
                       </div>
