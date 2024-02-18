@@ -67,25 +67,34 @@ export default function Login() {
           })
         })).json()
 
+        console.log(!!x.message)
+        if (!!x.message) {
+          setIsLoading(false);
+          setLoginError(`${x.message}`)
+          setIsError(true)
+          toast.error(`${x.message}`, {
+            position: "top-right"
+          });
+        } else {
+          setLoginError("");
+          setIsError(false);
 
-        setLoginError("")
-        setIsError(false)
-        setIsLoading(false);
+          toast.success("Login Efetuado com Sucesso!", {
+            autoClose: 2000,
+            position: "top-right"
+          });
 
-        toast.success("Login Efetuado com Sucesso!", {
-          position: "top-right"
-        });
+          localStorage.setItem("user_jwt", x.jwt);
+          localStorage.setItem("user_name", x.name);
+          localStorage.setItem("user_type", x.usersType.id);
+          localStorage.setItem("user_email", email);
+          setUserJwt(x.jwt);
+          setUserName(x.name);
+          setUserType(x.usersType.id);
+          setUserEmail(email);
 
-        localStorage.setItem("user_jwt", x.jwt);
-        localStorage.setItem("user_name", x.name);
-        localStorage.setItem("user_type", x.usersType.id);
-        localStorage.setItem("user_email", email);
-        setUserJwt(x.jwt);
-        setUserName(x.name);
-        setUserType(x.usersType.id);
-        setUserEmail(email);
-
-        router.push('/admin/dashboard/');
+          router.push('/admin/dashboard/');
+        }
 
       } catch (error) {
         setLoginError("* Erro ao fazer Login, tente novamente.")

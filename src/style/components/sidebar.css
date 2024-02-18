@@ -88,10 +88,10 @@
   width: 100%;
   justify-content: flex-start;
   border-left: 5px solid transparent;
+  padding: 5px 0;
 }
 .sidebarMain:hover .sidebarMenuItemActiveNow {
   background-color: var(--white-secondary);
-  padding: 5px 0;
 }
 
 .sidebarMenuItemActiveNow p {
@@ -144,14 +144,9 @@
   color: var(--title);
   transition: all 1s ease;
 }
-.sidebarTextMenu:hover {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--title);
-}
+
 .sidebarTextmenuActive {
   font-size: 18px;
-  font-weight: 700;
   color: var(--title);
   transition: all 1s ease;
 }
