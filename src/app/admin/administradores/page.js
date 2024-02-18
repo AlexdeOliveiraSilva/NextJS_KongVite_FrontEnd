@@ -13,9 +13,10 @@ import "react-toastify/dist/ReactToastify.css";
 export default function AdminUsers() {
   const router = useRouter();
   const { KONG_URL, user, setUserEdit } = useContext(GlobalContext);
-  const [adminsList, setAdminsList] = useState([])
-  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
-  const [deleteIdSelected, setDeletedidSelected] = useState()
+  const [adminsList, setAdminsList] = useState([]);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [deleteIdSelected, setDeletedidSelected] = useState();
+  const [isLoading, setisLoading] = useState(false);
 
   async function getAdmins() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
@@ -41,13 +42,14 @@ export default function AdminUsers() {
     }
   }
 
-  async function deleteUser(id) {
+  async function deleteUser(e) {
+    e.preventDefault();
 
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
 
     let x;
 
-    if (!!jwt) {
+    if (!!jwt && !!deleteIdSelected) {
 
       try {
         x = await (await fetch(`${KONG_URL}/user/`, {
@@ -57,7 +59,7 @@ export default function AdminUsers() {
             'Authorization': jwt
           },
           body: JSON.stringify({
-            id: id,
+            id: deleteIdSelected,
             situation: 2
           })
         })).json()
@@ -66,15 +68,14 @@ export default function AdminUsers() {
           toast.success("Usuário deletado com sucesso.", {
             position: "top-right"
           });
-
+          setisLoading(false);
+          setDeleteModalIsOpen(false);
+          getAdmins();
         } else {
-          toast.error("Erro ao deletar, tente novamente.", {
+          toast.error(`${x?.message}`, {
             position: "top-right"
           });
-
         }
-
-
       } catch (error) {
         toast.error("Erro ao Cadastrar, tente novamente.", {
           position: "top-right"
@@ -132,7 +133,7 @@ export default function AdminUsers() {
   return (
     <div className="adminUsersMain flexr">
       <ToastContainer></ToastContainer>
-      {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteUser(deleteIdSelected)} word="confirmar" ></DeletModal>}
+      {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={(e) => deleteUser(e)} word="confirmar" ></DeletModal>}
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">

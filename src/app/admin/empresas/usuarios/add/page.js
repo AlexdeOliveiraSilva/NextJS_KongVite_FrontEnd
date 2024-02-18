@@ -138,7 +138,7 @@ export default function AdminUsersAdd() {
 
           router.push(`/admin/empresas/usuarios`);
         } else {
-          toast.error("Erro ao Editar, tente novamente.", {
+          toast.error(`${x?.message}`, {
             position: "top-right"
           });
           setisLoading(false)

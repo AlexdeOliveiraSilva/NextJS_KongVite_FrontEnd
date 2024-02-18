@@ -37,14 +37,14 @@ export default function AdminUsersEdit() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
     let userId = !!userEdit?.length > 0 ? userEdit : localStorage.getItem("user_edit");
     let cID = !!companyEdit ? companyEdit : localStorage.getItem("company_edit")
-
-    if (!!jwt && !!userId && !!cID && (
+    console.log("click", (password ? password == confirmPassword : true))
+    if ((password ? password == confirmPassword : true) && !!jwt && !!userId && !!cID && (
       nameError == false &&
       documentError == false &&
       emailError == false &&
       phoneError == false &&
       passwordError == false &&
-      confirmPasswordError
+      confirmPasswordError == false
     )) {
       setisLoading(true)
       try {
@@ -55,7 +55,7 @@ export default function AdminUsersEdit() {
             'Authorization': jwt
           },
           body: JSON.stringify({
-            id: userId,
+            id: +userId,
             name: name,
             document: document,
             phone: phone,
@@ -70,9 +70,9 @@ export default function AdminUsersEdit() {
           });
           setisLoading(false)
 
-          router.push('/admin/administradores/');
+          router.push('/admin/empresas/usuarios');
         } else {
-          toast.error("Erro ao Editar, tente novamente.", {
+          toast.error(`${x?.message}`, {
             position: "top-right"
           });
           setisLoading(false)
@@ -85,6 +85,12 @@ export default function AdminUsersEdit() {
         setisLoading(false)
         return ""
       }
+    } else {
+      toast.error("Erro ao Editar, tente novamente.", {
+        position: "top-right"
+      });
+      setisLoading(false)
+      return ""
     }
   }
 

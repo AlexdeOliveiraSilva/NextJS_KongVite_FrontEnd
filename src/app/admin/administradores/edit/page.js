@@ -42,7 +42,7 @@ export default function AdminUsersEdit() {
       emailError == false &&
       phoneError == false &&
       passwordError == false &&
-      confirmPasswordError
+      confirmPasswordError == false
     )) {
       setisLoading(true)
       try {
@@ -53,7 +53,7 @@ export default function AdminUsersEdit() {
             'Authorization': jwt
           },
           body: JSON.stringify({
-            id: userId,
+            id: +userId,
             name: name,
             document: document,
             phone: phone,
@@ -70,7 +70,7 @@ export default function AdminUsersEdit() {
 
           router.push('/admin/administradores/');
         } else {
-          toast.error("Erro ao Editar, tente novamente.", {
+          toast.error(`${x?.message}`, {
             position: "top-right"
           });
           setisLoading(false)

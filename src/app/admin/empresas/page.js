@@ -12,9 +12,11 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function AdminUsers() {
   const router = useRouter();
-  const { KONG_URL, user, setCompanyEdit, setCompanyNameEdit } = useContext(GlobalContext);
+  const { KONG_URL, user, setCompanyEdit, setCompanyNameEdit, companyEdit } = useContext(GlobalContext);
   const [estabList, setEstbList] = useState([])
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false)
+  const [deleteIdSelected, setDeleteIdSelected] = useState();
+  const [isLoading, setisLoading] = useState(false)
 
   async function getEstablishments() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
@@ -39,9 +41,10 @@ export default function AdminUsers() {
   }
 
 
-  function openDeleteModal(e) {
+  function openDeleteModal(e, id) {
     e.preventDefault();
-    setDeleteModalIsOpen(true)
+    setDeleteIdSelected(id);
+    setDeleteModalIsOpen(true);
   }
 
   function closeDeleteModal() {
@@ -66,14 +69,56 @@ export default function AdminUsers() {
     router.push('/admin/empresas/edit')
   }
 
-  function deleteFunc() {
+  async function deleteFunc(e) {
+    e.preventDefault();
     if (!!deleteIdSelected) {
-      toast.success("Usuário Deletado com Sucesso.", {
-        position: "top-right"
-      });
-      setDeleteModalIsOpen(false)
+
+      let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+
+      let x;
+
+      if (!!jwt) {
+        setisLoading(true)
+        try {
+          x = await (await fetch(`${KONG_URL}/companys/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': jwt
+            },
+            body: JSON.stringify({
+              id: deleteIdSelected,
+              situation: 2,
+            })
+          })).json()
+
+          if (!x?.message) {
+            toast.success("Empresa Deletada com Sucesso.", {
+              position: "top-right"
+            });
+            setisLoading(false);
+            setDeleteModalIsOpen(false);
+
+            getEstablishments();
+          } else {
+            toast.error(`${x?.message}`, {
+              position: "top-right"
+            });
+            setisLoading(false)
+          }
+
+
+        } catch (error) {
+          toast.error("Erro ao Cadastrar, tente novamente.", {
+            position: "top-right"
+          });
+          setisLoading(false)
+          return ""
+        }
+      }
+
     } else {
-      toast.error("Erro ao deletar item.", {
+      toast.error("Erro ao deletar item...", {
         position: "top-right"
       });
       setDeleteModalIsOpen(false)
@@ -88,7 +133,7 @@ export default function AdminUsers() {
   return (
     <div className="adminUsersMain flexr">
       <ToastContainer></ToastContainer>
-      {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteFunc()} word="confirmar" ></DeletModal>}
+      {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={(e) => deleteFunc(e)} word="confirmar" ></DeletModal>}
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">
@@ -105,9 +150,9 @@ export default function AdminUsers() {
           <div className="userLineTitle flexr">
             <p className="userIdLi">Id</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            <p className="userNameLi">Nome</p>
+            <p className="companyNameLi">Nome</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            <p className="userDocLi">Convites Disponiveis</p>
+            <p className="userIdLi">Convites Disponiveis</p>
           </div>
           <div className="adminUsersUl flexc" style={{ marginTop: "10px" }}>
             {!!estabList && estabList.map((e, y) => {
@@ -117,9 +162,9 @@ export default function AdminUsers() {
                   <div className="userLine1150">
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                   </div>
-                  <p className="userNameLi">{e.name}</p>
+                  <p className="companyNameLi">{e.name}</p>
                   <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  <p className="userDocLi">{e.invitesAvaliable}</p>
+                  <p className="userIdLi">{e.invitesAvaliable}</p>
                   <div className="userConfigbtns flexr">
                     <div
                       onClick={(event) => toEditCompany(event, e.id, e.name)}

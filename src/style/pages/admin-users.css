@@ -85,6 +85,11 @@
   padding-left: 15px;
   font-weight: 500;
 }
+.companyNameLi {
+  width: 20%;
+  padding-left: 15px;
+  font-weight: 500;
+}
 .userDocLi {
   width: 145px;
   padding-left: 15px;
@@ -168,6 +173,12 @@
     padding-left: 7px;
     overflow: hidden;
   }
+  .companyNameLi {
+    width: 15%;
+    min-width: 135px;
+    padding-left: 7px;
+    overflow: hidden;
+  }
   .userDocLi {
     width: 135px;
     padding-left: 7px;
@@ -214,6 +225,12 @@
     padding-left: 0;
     overflow: hidden;
   }
+  .companyNameLi {
+    width: 15%;
+    min-width: 135px;
+    padding-left: 0;
+    overflow: hidden;
+  }
   .userEmailLi {
     width: auto;
     min-width: auto;
@@ -243,6 +260,12 @@
     font-size: 18px;
   }
   .userNameLi {
+    width: 100px;
+    min-width: 100px;
+    padding-left: 0;
+    overflow: hidden;
+  }
+  .companyNameLi {
     width: 100px;
     min-width: 100px;
     padding-left: 0;

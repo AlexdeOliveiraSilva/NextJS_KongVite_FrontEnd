@@ -187,7 +187,7 @@ export default function AdminCompanyAdd() {
     )) {
       setisLoading(true)
       try {
-        x = await (await fetch(`${KONG_URL}/user/`, {
+        x = await (await fetch(`${KONG_URL}/companys/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -215,9 +215,9 @@ export default function AdminCompanyAdd() {
           });
           setisLoading(false)
 
-          router.push('/admin/administradores/');
+          router.push('/admin/empresas/');
         } else {
-          toast.error("Erro ao Editar, tente novamente.", {
+          toast.error(`${x?.message}`, {
             position: "top-right"
           });
           setisLoading(false)

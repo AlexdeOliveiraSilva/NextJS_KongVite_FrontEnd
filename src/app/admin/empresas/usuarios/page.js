@@ -16,7 +16,8 @@ export default function CompanyUsers() {
   const [adminsList, setAdminsList] = useState([]);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [deleteIdSelected, setDeletedidSelected] = useState();
-  const [pageTitle, setPageTitle] = useState('Lista de Usuários')
+  const [pageTitle, setPageTitle] = useState('Lista de Usuários');
+  const [isLoading, setIsLoading] = useState(false);
 
   async function getUsers() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
@@ -43,51 +44,6 @@ export default function CompanyUsers() {
     }
   }
 
-  async function deleteUser(id) {
-
-    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
-    let companyId = !!companyEdit ? companyEdit : localStorage.getItem("company_edit")
-
-    let x;
-
-    if (!!jwt) {
-
-      try {
-        x = await (await fetch(`${KONG_URL}/user/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': jwt
-          },
-          body: JSON.stringify({
-            id: id,
-            situation: 2
-          })
-        })).json()
-
-        if (!x?.message) {
-          toast.success("Usuário deletado com sucesso.", {
-            position: "top-right"
-          });
-
-        } else {
-          toast.error("Erro ao deletar, tente novamente.", {
-            position: "top-right"
-          });
-
-        }
-
-
-      } catch (error) {
-        toast.error("Erro ao Cadastrar, tente novamente.", {
-          position: "top-right"
-        });
-        setisLoading(false)
-        return ""
-      }
-    }
-  }
-
   function openDeleteModal(e, id) {
     e.preventDefault();
     setDeletedidSelected(id)
@@ -100,9 +56,6 @@ export default function CompanyUsers() {
 
   function toNewUser(e) {
     e.preventDefault();
-    setUserEdit("")
-    localStorage.setItem("user_edit", "")
-
     router.push('/admin/empresas/usuarios/add')
   }
 
@@ -114,12 +67,62 @@ export default function CompanyUsers() {
     router.push('/admin/empresas/usuarios/edit')
   }
 
-  function deleteFunc() {
+  async function deleteFunc(e) {
     if (!!deleteIdSelected) {
-      toast.success("Usuário Deletado com Sucesso.", {
-        position: "top-right"
-      });
-      setDeleteModalIsOpen(false)
+      e.preventDefault();
+
+      let x;
+      let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+      let cID = !!companyEdit ? companyEdit : localStorage.getItem("company_edit")
+
+      console.log("click", cID)
+      console.log("click", jwt)
+      console.log("click", deleteIdSelected)
+
+      if (!!jwt && !!cID) {
+        setIsLoading(true)
+        try {
+          x = await (await fetch(`${KONG_URL}/companys/user/${cID}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': jwt
+            },
+            body: JSON.stringify({
+              id: deleteIdSelected,
+              situation: 2
+            })
+          })).json()
+
+          if (!x?.message) {
+            toast.success("Usuário Deletado.", {
+              position: "top-right"
+            });
+            setIsLoading(false);
+            setDeleteModalIsOpen(false);
+
+            getUsers();
+          } else {
+            toast.error(`${x?.message}`, {
+              position: "top-right"
+            });
+            setIsLoading(false)
+          }
+
+        } catch (error) {
+          toast.error("Erro ao Deletado, tente novamente.", {
+            position: "top-right"
+          });
+          setIsLoading(false)
+          return ""
+        }
+      } else {
+        toast.error("Erro ao Deletado, tente novamente.", {
+          position: "top-right"
+        });
+        setisLoading(false)
+        return ""
+      }
     } else {
       toast.error("Erro ao deletar item.", {
         position: "top-right"
@@ -140,7 +143,7 @@ export default function CompanyUsers() {
   return (
     <div className="adminUsersMain flexr">
       <ToastContainer></ToastContainer>
-      {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteUser(deleteIdSelected)} word="confirmar" ></DeletModal>}
+      {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={(e) => deleteFunc(e)} word="confirmar" ></DeletModal>}
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">

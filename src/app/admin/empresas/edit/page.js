@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField';
 
 export default function AdminCompanyAdd() {
   const router = useRouter();
-  const { KONG_URL, user, companyNameEdit } = useContext(GlobalContext);
+  const { KONG_URL, user, companyNameEdit, companyEdit } = useContext(GlobalContext);
   const [step, setStep] = useState(1)
 
   // COMPANY DATA
@@ -75,10 +75,11 @@ export default function AdminCompanyAdd() {
     e.preventDefault();
 
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let cID = !!companyEdit ? companyEdit : localStorage.getItem("company_edit");
 
     let x;
 
-    if (!!jwt && (
+    if (!!jwt && !!cID && (
       nameCompanyError == false &&
       emailCompanyError == false &&
       phoneCompanyError == false &&
@@ -86,14 +87,14 @@ export default function AdminCompanyAdd() {
     )) {
       setisLoading(true)
       try {
-        x = await (await fetch(`${KONG_URL}/user/`, {
+        x = await (await fetch(`${KONG_URL}/companys/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': jwt
           },
           body: JSON.stringify({
-            id: companyEdiData.id,
+            id: +cID,
             name: nameCompany,
             document: documentCompany,
             phone: phoneCompany,
@@ -107,9 +108,9 @@ export default function AdminCompanyAdd() {
           });
           setisLoading(false)
 
-          router.push('/admin/administradores/');
+          router.push('/admin/empresas/');
         } else {
-          toast.error("Erro ao Editar, tente novamente.", {
+          toast.error(`${x?.message}`, {
             position: "top-right"
           });
           setisLoading(false)
@@ -140,7 +141,7 @@ export default function AdminCompanyAdd() {
           'Authorization': jwt
         }
       })).json()
-
+      console.log("aaaa", x)
       setCompanyEditData(x.data.filter((e) => e.name == companyName))
 
     } catch (error) {
