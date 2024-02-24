@@ -1,0 +1,95 @@
+.clienteMain {
+  width: 100%;
+  height: 100%;
+  padding: 10px 30px 20px 30px;
+}
+.clienteContent {
+  background-color: var(--white-primary);
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: var(--shad-ligth);
+}
+.clienteUl {
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 10px;
+  margin-top: 30px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.clienteTitle {
+  width: 100%;
+  height: 40px;
+  flex-wrap: nowrap;
+  border-radius: 8px;
+  border: 1px solid var(--grey-ligth);
+  justify-content: flex-start !important;
+  padding: 5px 10px;
+  position: relative;
+  background-color: var(--blue-secondary);
+}
+.clienteTitle p {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--white-primary);
+  white-space: nowrap;
+}
+
+.clienteLine {
+  width: 100%;
+  height: 40px;
+  flex-wrap: nowrap;
+  border-radius: 8px;
+  border: 1px solid var(--grey-ligth);
+  justify-content: flex-start !important;
+  padding: 5px 10px;
+  position: relative;
+}
+.clienteIdLi {
+  width: 5%;
+  text-align: center;
+  font-weight: 500;
+}
+.eventNameLi {
+  width: 200px;
+  padding-left: 15px;
+  font-weight: 500;
+}
+.eventDateLi {
+  width: 145px;
+  padding-left: 15px;
+  font-weight: 500;
+}
+.userTypeLi {
+  width: auto;
+  padding-left: 15px;
+  font-weight: 500;
+}
+
+.displayNone700 {
+  display: flex;
+  width: auto;
+  height: 100%;
+}
+
+@media (max-width: 700px) {
+  .clienteIdLi {
+    display: none;
+  }
+  .displayNone700 {
+    display: none;
+  }
+  .userTypeLi {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .clienteMain {
+    padding: 10px;
+  }
+}

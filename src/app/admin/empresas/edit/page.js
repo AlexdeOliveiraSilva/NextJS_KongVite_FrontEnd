@@ -141,11 +141,11 @@ export default function AdminCompanyAdd() {
           'Authorization': jwt
         }
       })).json()
-      console.log("aaaa", x)
+
       setCompanyEditData(x.data.filter((e) => e.name == companyName))
 
     } catch (error) {
-      console.log("UF tryno")
+
       return ""
     }
   }

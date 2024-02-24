@@ -10,25 +10,22 @@ export const GlobalProvider = ({ children }) => {
     const [userEdit, setUserEdit] = useState();
     const [companyEdit, setCompanyEdit] = useState();
     const [companyNameEdit, setCompanyNameEdit] = useState();
+    const [eventSelected, setEventSelected] = useState();
 
-    const [adminSidebarItens, setAdminSidebarItens] = useState([
-        "dashboard",
-        "administradores",
-        "empresas"
-    ]);
-
-    const [estbSidebarItens, setEstbSidebarItens] = useState([
-        "Dashboard1",
-        "Usuários1",
-        "Empresas1",
-        "Convidados1",
-        "Configurações1"
-    ]);
+    const eventsType = ["Formatura", "Festa", "Venda de Ingressos", "Corporativo"];
+    const eventsSubType = ["Almoço", "Jantar"];
+    const adminSidebarItens = ["dashboard", "administradores", "empresas"];
+    const estbSidebarItens = ["eventos", "novo-evento"];
+    const estbSidebarEvent = ["evento", "usuarios", "sair"];
 
     const [userName, setUserName] = useState()
     const [userEmail, setUserEmail] = useState()
     const [userType, setUserType] = useState()
     const [userJwt, setUserJwt] = useState()
+
+    const [companyId, setCompanyId] = useState()
+    const [companyName, setCompanyName] = useState()
+    const [companyDoc, setCompanyDoc] = useState()
 
     useEffect(() => {
         setUserName(localStorage.getItem("user_name"))
@@ -40,15 +37,18 @@ export const GlobalProvider = ({ children }) => {
     return (
         <GlobalContext.Provider value={{
             adminSidebarItens,
-            setAdminSidebarItens,
             estbSidebarItens,
-            setEstbSidebarItens,
             KONG_URL,
             user: {
                 name: userName,
                 email: userEmail,
                 type: userType,
                 jwt: userJwt
+            },
+            company: {
+                id: companyId,
+                name: companyName,
+                document: companyDoc
             },
             setUserName,
             setUserEmail,
@@ -59,7 +59,15 @@ export const GlobalProvider = ({ children }) => {
             companyEdit,
             setCompanyEdit,
             companyNameEdit,
-            setCompanyNameEdit
+            setCompanyNameEdit,
+            setCompanyId,
+            setCompanyName,
+            setCompanyDoc,
+            eventSelected,
+            setEventSelected,
+            estbSidebarEvent,
+            eventsType,
+            eventsSubType
         }}>
             {children}
         </GlobalContext.Provider>

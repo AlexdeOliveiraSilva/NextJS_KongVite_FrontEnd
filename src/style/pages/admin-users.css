@@ -142,6 +142,16 @@
   gap: 20px;
 }
 
+.userAdminDoubleInputsTwo {
+  width: 30%;
+  gap: 10px;
+}
+
+.InputsTwoSelect {
+  min-width: 30%;
+  width: auto;
+}
+
 .adminUsersUlTitle {
   overflow: hidden;
   width: 95%;
@@ -246,6 +256,11 @@
     width: 100%;
     gap: 10px;
     flex-direction: column;
+  }
+  .userAdminDoubleInputsTwo {
+    width: 100%;
+    max-width: 100%;
+    gap: 10px;
   }
 }
 @media (max-width: 450px) {

@@ -75,9 +75,6 @@ export default function CompanyUsers() {
       let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
       let cID = !!companyEdit ? companyEdit : localStorage.getItem("company_edit")
 
-      console.log("click", cID)
-      console.log("click", jwt)
-      console.log("click", deleteIdSelected)
 
       if (!!jwt && !!cID) {
         setIsLoading(true)

@@ -236,7 +236,7 @@ export default function AdminCompanyAdd() {
 
   function changeStep(e) {
     e.preventDefault();
-    console.log(nameCompany, documentCompany, emailCompany, phoneCompany)
+
 
     if (nameCompany?.length > 0 && documentCompany?.length > 0 && emailCompany?.length > 0 && phoneCompany?.length > 0) {
       if (nameCompanyError == false && emailCompanyError == false && phoneCompanyError == false && documentCompanyError == false) {
@@ -273,7 +273,6 @@ export default function AdminCompanyAdd() {
     confirmPasswordVerify();
   }, [name, email, document, phone, password, confirmPassword, nameCompany, documentCompany, emailCompany, phoneCompany])
 
-  console.log(name, email, document, phone, password, confirmPassword, nameCompany, documentCompany, emailCompany, phoneCompany)
 
   return (
     <div className="adminUsersMain flexr">

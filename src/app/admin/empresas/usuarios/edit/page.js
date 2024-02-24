@@ -37,7 +37,7 @@ export default function AdminUsersEdit() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
     let userId = !!userEdit?.length > 0 ? userEdit : localStorage.getItem("user_edit");
     let cID = !!companyEdit ? companyEdit : localStorage.getItem("company_edit")
-    console.log("click", (password ? password == confirmPassword : true))
+
     if ((password ? password == confirmPassword : true) && !!jwt && !!userId && !!cID && (
       nameError == false &&
       documentError == false &&

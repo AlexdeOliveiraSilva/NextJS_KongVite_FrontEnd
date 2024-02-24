@@ -19,7 +19,7 @@ export default function Login() {
   const router = useRouter();
   const path = usePathname();
 
-  const { KONG_URL, user, setUserName, setUserEmail, setUserType, setUserJwt } = useContext(GlobalContext);
+  const { KONG_URL, setUserName, setUserEmail, setUserType, setUserJwt, setCompanyId, setCompanyName, setCompanyDoc } = useContext(GlobalContext);
   const [passwordVisibble, setPasswordVisible] = useState(true)
   const [saveData, setSaveData] = useState(false)
   const [forgotPassword, setForgotPassword] = useState(false)
@@ -67,7 +67,6 @@ export default function Login() {
           })
         })).json()
 
-        console.log(!!x.message)
         if (!!x.message) {
           setIsLoading(false);
           setLoginError(`${x.message}`)
@@ -93,7 +92,26 @@ export default function Login() {
           setUserType(x.usersType.id);
           setUserEmail(email);
 
-          router.push('/admin/dashboard/');
+          if (x.usersType?.id == 2) {
+            localStorage.setItem("company_id", x.companys?.id);
+            localStorage.setItem("company_name", x.companys?.name);
+            localStorage.setItem("company_document", x.companys?.document);
+            setCompanyId(x.companys?.id);
+            setCompanyName(x.companys?.name);
+            setCompanyDoc(x.companys?.document);
+          }
+
+          switch (x?.usersType?.id) {
+            case 1:
+              router.push('/admin/dashboard/');
+              break;
+            case 2:
+              router.push('/cliente/eventos/');
+              break;
+            default:
+              break;
+          }
+
         }
 
       } catch (error) {

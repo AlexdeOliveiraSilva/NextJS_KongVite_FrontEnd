@@ -10,7 +10,8 @@ import { GlobalContext } from "@/context/global";
 export default function Topbar() {
     const path = usePathname();
     const router = useRouter();
-    const { user } = useContext(GlobalContext);
+    const { user, company } = useContext(GlobalContext);
+    const [companyData, setcompanyData] = useState();
 
 
     const changeTitle = (x) => {
@@ -45,6 +46,21 @@ export default function Topbar() {
             case '/admin/empresas/usuarios/edit':
                 return "Empresas - Usuários"
 
+            case "/cliente/dashboard":
+                return "Dashboard"
+
+            case "/cliente/usuarios":
+                return "Usuários"
+
+            case "/cliente":
+                return "Evento"
+
+            case "/cliente/novo-evento":
+                return "Evento"
+
+            case "/cliente/edit":
+                return "Evento"
+
             default:
                 break;
         }
@@ -54,6 +70,38 @@ export default function Topbar() {
         event.preventDefault();
         router.push(`/admin/${url}`)
     }
+
+    async function getCompany() {
+        let x;
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+        let companyName = !!company?.name ? company?.name : localStorage.getItem("company_name");
+
+        try {
+
+            x = await (await fetch(`${KONG_URL}/companys/1?name=${companyName}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': jwt
+                }
+            })).json()
+
+            setCompanyEditData(x.data.filter((e) => e.name == companyName))
+
+        } catch (error) {
+
+            return ""
+        }
+    }
+
+    useEffect(() => {
+        setcompanyData({
+            id: !!company?.id ? company.id : localStorage.getItem('company_id'),
+            name: !!company?.name ? company.name : localStorage.getItem('company_name'),
+            document: !!company?.document ? company.document : localStorage.getItem('company_document')
+        })
+    }, [])
+
     return (
         <div className="topbarMain flexr">
             <div className="topbarContent flexr">
@@ -74,7 +122,7 @@ export default function Topbar() {
                         ?
                         <TopbarAdmin></TopbarAdmin>
                         :
-                        <TopbarCompany></TopbarCompany>
+                        <TopbarCompany data={companyData}></TopbarCompany>
                     }
                 </div>
                 <div className="topbarPageHello flexr">

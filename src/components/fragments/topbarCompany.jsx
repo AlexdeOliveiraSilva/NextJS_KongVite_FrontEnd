@@ -1,6 +1,7 @@
 'use client'
 
-export default function TopbarCompany() {
+export default function TopbarCompany({ data }) {
+
     return (
         <div className="topbarMidleContent flexr">
             <h4>Saldo: <span>345</span></h4>
