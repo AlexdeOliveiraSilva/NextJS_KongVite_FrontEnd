@@ -27,12 +27,28 @@
   width: 35%;
   height: 40px;
   white-space: nowrap;
+  position: relative;
+}
+.topbarPageGetOut {
+  background-color: var(--white-primary);
+  border: 1px solid var(--white-secondary);
+  box-shadow: var(--shad-3d);
+  border-radius: 10px 0 30px 10px;
+  min-height: 60px;
+  min-width: 250px;
+  padding: 10px 20px;
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  transition: all 1s ease;
+  display: flex;
+  align-items: flex-start;
 }
 .topbarPageMidle {
   width: 100%;
 }
 .topbarPageHello h2 {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 400;
 }
 .topbarPageHello span {
@@ -83,7 +99,7 @@
     font-size: 18px;
   }
   .topbarPageHello h2 {
-    font-size: 16px;
+    font-size: 14px;
   }
   .topbarPageHello span {
     font-size: 18px;
@@ -112,7 +128,7 @@
     font-size: 14px;
   }
   .topbarPageHello h2 {
-    font-size: 15px;
+    font-size: 13px;
   }
   .topbarMain {
     padding: 0;

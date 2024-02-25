@@ -139,7 +139,7 @@ export default function EventsAdd() {
 
   useEffect(() => {
     dataVerify();
-  }, [name])
+  }, [name, uf, address, neighborhood, zipcode, city])
 
   return (
     <div className="clienteMain flexr">

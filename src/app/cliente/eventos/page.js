@@ -8,12 +8,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Eventos() {
   const router = useRouter();
-  const { KONG_URL, user, company, setUserName, setUserEmail, setUserType, setUserJwt } = useContext(GlobalContext);
+  const { KONG_URL, user, company, setEventEdit } = useContext(GlobalContext);
   const [eventList, setEventList] = useState([]);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState();
 
   async function getEvents() {
     let x;
@@ -58,6 +60,75 @@ export default function Eventos() {
     return brFormat;
   }
 
+  function toNewEvent(e) {
+    e.preventDefault();
+
+    router.push('/cliente/novo-evento')
+  }
+
+  function toEditEvent(e, id) {
+    e.preventDefault();
+    setEventEdit(id)
+    localStorage.setItem("event_edit", id)
+
+    router.push('/cliente/eventos/edit')
+  }
+
+
+  async function deleteEvent() {
+
+    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let x;
+
+    if (!!jwt && !!deleteId) {
+
+      try {
+        x = await (await fetch(`${KONG_URL}/companys/events/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': jwt
+          },
+          body: JSON.stringify({
+            id: deleteId,
+            situation: 2
+          })
+        })).json()
+
+        if (!x?.message) {
+          setDeleteModalIsOpen(false)
+          toast.success("Evento Deletado.", {
+            position: "top-right"
+          });
+
+          getEvents();
+        } else {
+          toast.error("Erro ao Deletar, tente novamente.", {
+            position: "top-right"
+          });
+        }
+
+
+      } catch (error) {
+        toast.error("Erro ao Cadastrar, tente novamente.", {
+          position: "top-right"
+        });
+        setisLoading(false)
+        return ""
+      }
+    }
+  }
+
+  function openDeleteModal(e, id) {
+    e.preventDefault();
+    setDeleteId(id)
+    setDeleteModalIsOpen(true)
+  }
+
+  function closeDeleteModal() {
+    setDeleteModalIsOpen(false)
+  }
+
   useEffect(() => {
 
     getEvents();
@@ -66,7 +137,7 @@ export default function Eventos() {
   return (
     <div className="clienteMain flexr">
       <ToastContainer></ToastContainer>
-      {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={(e) => deleteUser(e)} word="confirmar" ></DeletModal>}
+      {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteEvent()} word="confirmar" ></DeletModal>}
       <div className="clienteContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">
@@ -74,7 +145,7 @@ export default function Eventos() {
           </div>
           <div className="adminUsersAdd flexr">
             <button
-              onClick={(e) => toNewUser(e)}
+              onClick={(e) => toNewEvent(e)}
               className="btnOrange">Novo Evento!</button>
           </div>
         </div>
@@ -87,11 +158,13 @@ export default function Eventos() {
             </div>
             <p className="eventNameLi">Nome do Evento</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            <p className="eventDateLi">Tipo</p>
+            <p className="clienteTypeLi">Tipo</p>
+            <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+            <p className="clienteAvaibleLi">Ingressos</p>
             <div className="displayNone700">
               <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
             </div>
-            <p className="userTypeLi">Data</p>
+            <p className="eventDateLi">Data</p>
           </div>
           <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
             {!!eventList && eventList.map((e, y) => {
@@ -103,17 +176,19 @@ export default function Eventos() {
                   </div>
                   <p className="eventNameLi">{e.name}</p>
                   <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  <p className="eventDateLi">{e.type}</p>
+                  <p className="clienteTypeLi">{e.type}</p>
+                  <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                  <p className="clienteAvaibleLi">0</p>
                   <div className="displayNone700">
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                   </div>
-                  <p className="userTypeLi">{dateConvert(e.date)}</p>
+                  <p className="eventDateLi">{dateConvert(e.date)}</p>
                   <div className="userConfigbtns flexr">
                     <div
-                      // onClick={(event) => toEditUser(event, e.id)}
+                      onClick={(event) => toEditEvent(event, e.id)}
                       className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
                     <div
-                      // onClick={(event) => openDeleteModal(event, e.id)}
+                      onClick={(event) => openDeleteModal(event, e.id)}
                       className="userConfigbtn flexr">
                       <DeleteIcon className="userConfigIcon"></DeleteIcon>
                     </div>

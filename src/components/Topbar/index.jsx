@@ -6,12 +6,44 @@ import { usePathname, useRouter } from "next/navigation";
 import TopbarAdmin from "../fragments/topbarAdmin";
 import TopbarCompany from "../fragments/topbarCompany";
 import { GlobalContext } from "@/context/global";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function Topbar() {
     const path = usePathname();
     const router = useRouter();
-    const { user, company } = useContext(GlobalContext);
+    const { user,
+        setUserName,
+        setUserEmail,
+        setUserType,
+        setUserJwt,
+        company } = useContext(GlobalContext);
     const [companyData, setcompanyData] = useState();
+    const [barOpen, setBarOpen] = useState(false)
+
+    const logout = (e) => {
+        e.preventDefault()
+        localStorage.clear("user_jwt");
+        localStorage.clear("user_name");
+        localStorage.clear("user_type");
+        localStorage.clear("user_email");
+        setUserName('')
+        setUserEmail('')
+        setUserType('')
+        setUserJwt('')
+
+        router.push('/');
+    }
+
+    function barClick() {
+        if (barOpen == true) {
+            setBarOpen(false);
+        } else {
+            setBarOpen(true);
+            setTimeout(() => {
+                setBarOpen(false)
+            }, 5000)
+        }
+    }
 
 
     const changeTitle = (x) => {
@@ -46,19 +78,19 @@ export default function Topbar() {
             case '/admin/empresas/usuarios/edit':
                 return "Empresas - Usuários"
 
-            case "/cliente/dashboard":
+            case "/cliente/empresas":
                 return "Dashboard"
 
             case "/cliente/usuarios":
                 return "Usuários"
 
-            case "/cliente":
-                return "Evento"
+            case "/cliente/eventos":
+                return "Eventos"
 
             case "/cliente/novo-evento":
                 return "Evento"
 
-            case "/cliente/edit":
+            case "/cliente/eventos/edit":
                 return "Evento"
 
             default:
@@ -125,8 +157,24 @@ export default function Topbar() {
                         <TopbarCompany data={companyData}></TopbarCompany>
                     }
                 </div>
-                <div className="topbarPageHello flexr">
+                <div
+                    onClick={(e) => {
+                        e.preventDefault();
+                        barClick();
+                    }}
+                    className="topbarPageHello flexr">
                     {user?.name != undefined ? <h2> Olá, <span>{user?.name == "Administrador" ? "Admin!" : `${user?.name}!`}</span></h2> : ""}
+                    {!!barOpen &&
+                        <div
+                            className="topbarPageGetOut flexc">
+                            <div
+                                onClick={(e) => logout(e)}
+                                className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
+                                <LogoutIcon className="sidebarMenuIcon" style={{ color: "var(--red-primary)" }} />
+                                <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>Sair da Conta</p>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

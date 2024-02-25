@@ -42,8 +42,7 @@ export default function AdminUsers() {
     }
   }
 
-  async function deleteUser(e) {
-    e.preventDefault();
+  async function deleteUser() {
 
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
 
@@ -112,19 +111,6 @@ export default function AdminUsers() {
     router.push('/admin/administradores/edit')
   }
 
-  function deleteFunc() {
-    if (!!deleteIdSelected) {
-      toast.success("Usuário Deletado com Sucesso.", {
-        position: "top-right"
-      });
-      setDeleteModalIsOpen(false)
-    } else {
-      toast.error("Erro ao deletar item.", {
-        position: "top-right"
-      });
-      setDeleteModalIsOpen(false)
-    }
-  }
 
   useEffect(() => {
     getAdmins();

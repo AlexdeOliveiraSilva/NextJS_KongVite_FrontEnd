@@ -145,7 +145,7 @@ export default function FloatBar({ itens }) {
                             onClick={(e) => logout(e)}
                             className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
                             <LogoutIcon className="sidebarMenuIcon" style={{ color: "var(--red-primary)" }} />
-                            <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>Sair</p>
+                            <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>Algo aqui</p>
                         </div>
                     </div>
                 </div>

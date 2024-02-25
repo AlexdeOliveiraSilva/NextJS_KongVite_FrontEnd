@@ -8,6 +8,7 @@ export const GlobalProvider = ({ children }) => {
     const KONG_URL = "https://dnib66h97fzb3.cloudfront.net";
 
     const [userEdit, setUserEdit] = useState();
+    const [eventEdit, setEventEdit] = useState();
     const [companyEdit, setCompanyEdit] = useState();
     const [companyNameEdit, setCompanyNameEdit] = useState();
     const [eventSelected, setEventSelected] = useState();
@@ -67,7 +68,9 @@ export const GlobalProvider = ({ children }) => {
             setEventSelected,
             estbSidebarEvent,
             eventsType,
-            eventsSubType
+            eventsSubType,
+            eventEdit,
+            setEventEdit
         }}>
             {children}
         </GlobalContext.Provider>

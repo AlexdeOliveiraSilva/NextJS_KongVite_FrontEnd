@@ -7,6 +7,15 @@ import TextField from '@mui/material/TextField';
 
 export default function DeletModal({ close, func, word }) {
     const [confirm, setConfirm] = useState();
+    const [isLoading, setIsLoading] = useState(false);
+
+    function Confirm(e) {
+        setIsLoading(true);
+        func(e);
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000)
+    }
 
     return (
         <div
@@ -28,12 +37,14 @@ export default function DeletModal({ close, func, word }) {
                         </div>
                         <div className='deleteModalBtnDiv flexr'>
                             <button
-                                onClick={func}
+                                onClick={(e) => Confirm(e)}
                                 disabled={confirm != word ? true : false}
-                                className={confirm != word ? "btnDisabled" : "btnOrange"} style={{ minWidth: "100px" }}>Sim</button>
-                            <button
-                                onClick={close}
-                                className="btnBlueThird" style={{ minWidth: "100px" }}>Não</button>
+                                className={confirm != word ? "btnDisabled" : "btnOrange"} style={{ minWidth: "100px" }}>{!!isLoading ? <Loader></Loader> : `Sim`}</button>
+                            {!isLoading &&
+                                <button
+                                    onClick={close}
+                                    className="btnBlueThird" style={{ minWidth: "100px" }}>Não</button>
+                            }
                         </div>
                     </div>
                     :
@@ -41,11 +52,13 @@ export default function DeletModal({ close, func, word }) {
                         <h2>Tem certeza que deseja Deletar este item?</h2>
                         <div className='deleteModalBtnDiv flexr'>
                             <button
-                                onClick={func}
-                                className="btnOrange" style={{ minWidth: "100px" }}>Sim</button>
-                            <button
-                                onClick={close}
-                                className="btnBlueThird" style={{ minWidth: "100px" }}>Não</button>
+                                onClick={(e) => Confirm(e)}
+                                className="btnOrange" style={{ minWidth: "100px" }}>{!!isLoading ? <Loader></Loader> : `Sim`}</button>
+                            {!isLoading &&
+                                <button
+                                    onClick={close}
+                                    className="btnBlueThird" style={{ minWidth: "100px" }}>Não</button>
+                            }
                         </div>
                     </div>
                 }
