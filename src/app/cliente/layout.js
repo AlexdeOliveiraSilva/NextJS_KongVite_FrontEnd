@@ -27,7 +27,7 @@ export default async function Layout({ children }) {
       <body className="dashBody" >
         <GlobalProvider>
           <Sidebar />
-          <div className="flexc" style={{ width: "100%", height: "100vh" }}>
+          <div className="layoutSize flexc">
             <Topbar />
             {children}
           </div>

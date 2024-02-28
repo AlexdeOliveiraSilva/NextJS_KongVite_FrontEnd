@@ -93,6 +93,12 @@ export default function Topbar() {
             case "/cliente/eventos/edit":
                 return "Evento"
 
+            case '/cliente/event-view':
+                return "Evento"
+
+            case '/cliente/turmas':
+                return "Turmas"
+
             default:
                 break;
         }

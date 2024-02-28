@@ -10,6 +10,8 @@ import "react-toastify/dist/ReactToastify.css";
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import CloseIcon from '@mui/icons-material/Close';
+import Galery from "@/components/Modal/galery";
 
 export default function EventsAdd() {
   const router = useRouter();
@@ -33,7 +35,13 @@ export default function EventsAdd() {
   const [neighborhoodError, setNeighborhoodError] = useState(false);
   const [cityError, setCityError] = useState(false);
   const [ufError, setUfError] = useState(false);
+  const [passType, setPassType] = useState([]);
+  const [passTypeObject, setPassTypeObject] = useState({
+    name: "",
+    image: ""
+  });
   const [isLoading, setisLoading] = useState(false);
+  const [galeryOpen, setGaleryOpen] = useState(false);
 
   function dataVerify() {
     if (name?.length > 0 && name?.length < 2) {
@@ -115,8 +123,13 @@ export default function EventsAdd() {
           toast.success("Evento cadastrado.", {
             position: "top-right"
           });
-          setisLoading(false)
 
+          for (let index = 0; index < passType.length; index++) {
+            addPassTypes(jwt, x.id, passType[index]);
+          }
+
+
+          setisLoading(false)
           router.push('/cliente/eventos/');
         } else {
           toast.error("Erro ao Cadastrar, tente novamente.", {
@@ -136,6 +149,48 @@ export default function EventsAdd() {
     }
   }
 
+  async function addPassTypes(jwt, event, data) {
+    if (!!jwt && !!event && !!data) {
+      try {
+        x = await (await fetch(`${KONG_URL}/companys/tycketsType/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': jwt
+          },
+          body: JSON.stringify({
+            description: data.name,
+            eventsId: event,
+            image: ""
+          })
+        })).json()
+
+        return x
+      } catch (error) {
+        toast.error(`Erro ao Cadastrar Tipo de Ingresso ${data.name}, tente novamente.`, {
+          position: "top-right"
+        });
+      }
+    }
+  }
+
+  const addPassType = (event) => {
+    event.preventDefault();
+
+    if (passTypeObject.name.length != 0 && passTypeObject.image.length != 0) {
+      setPassType([...passType, passTypeObject]);
+
+      setPassTypeObject({ name: '', image: '' });
+    }
+  };
+
+  const deletePassType = (name, event) => {
+    event.preventDefault();
+
+    const updatedPassType = passType.filter(item => item.name !== name);
+
+    setPassType(updatedPassType);
+  };
 
   useEffect(() => {
     dataVerify();
@@ -268,6 +323,52 @@ export default function EventsAdd() {
           {!!cityError && <p className="errorP">* Preencha uma Cidade.</p>}
           {!!ufError && <p className="errorP">* Preencha um Estado.</p>}
         </div>
+        <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
+        <div className="passTypeHeader flexr">
+          <div className="passTypeTitle flexr">
+            <h1>Tipo de Entrada</h1>
+          </div>
+          <div className="passTypeBlockFirts flexr">
+            <TextField
+              onChange={(e) => setPassTypeObject({ image: passTypeObject.image, name: e.target.value })}
+              className="inputStyle"
+              label={!!passTypeObject.name ? '' : "Tipo do Ingresso"}
+              value={passTypeObject.name}
+              id="outlined-size-normal"
+              placeholder={`Tipo do Ingresso:`}
+              type="text" />
+            <TextField
+              onChange={(e) => setPassTypeObject({ name: passTypeObject.name, image: e.target.files[0] })}
+              className="inputStyle"
+              value={passTypeObject.image[0]}
+              id="outlined-size-normal"
+              type="file" />
+            <button
+              onClick={(event) => addPassType(event)}
+              style={{ minWidth: "110px", fontSize: "16px" }}
+              className="btnBlue">Adicionar</button>
+          </div>
+        </div>
+        <div className="passTypeFull flexc">
+          <div className="passTypeBlock flexr">
+            {passType?.length > 0 &&
+              passType.map((e, y) => {
+                console.log(e.image)
+                return (
+                  <div
+                    key={y}
+                    className="passTypeBlockItem flexr">
+                    <p>{e.name}</p>
+                    <CloseIcon
+                      className="passTypeBlockIcon"
+                      onClick={(event) => deletePassType(e.name, event)}
+                      style={{ color: "#000000" }}></CloseIcon>
+                  </div>
+                )
+              })
+            }
+          </div>
+        </div >
       </div>
     </div >
   );

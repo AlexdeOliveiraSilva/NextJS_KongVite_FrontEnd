@@ -10,6 +10,7 @@ import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
+
 export default function Eventos() {
   const router = useRouter();
   const { KONG_URL, user, company, setEventEdit } = useContext(GlobalContext);
@@ -68,10 +69,19 @@ export default function Eventos() {
 
   function toEditEvent(e, id) {
     e.preventDefault();
+    e.stopPropagation();
     setEventEdit(id)
     localStorage.setItem("event_edit", id)
 
     router.push('/cliente/eventos/edit')
+  }
+
+  function toEvent(e, id) {
+    e.preventDefault();
+    setEventEdit(id)
+    localStorage.setItem("event_edit", id)
+
+    router.push('/cliente/event-view')
   }
 
 
@@ -169,7 +179,9 @@ export default function Eventos() {
           <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
             {!!eventList && eventList.map((e, y) => {
               return (
-                <div key={y} className="clienteLine flexr">
+                <div
+                  onClick={(event) => toEvent(event, e.id)}
+                  key={y} className="clienteLine flexr">
                   <p className="clienteIdLi">{e.id}</p>
                   <div className="displayNone700">
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>

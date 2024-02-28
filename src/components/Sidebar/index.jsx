@@ -12,12 +12,14 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import LogoutIcon from '@mui/icons-material/Logout';
+import WorkspacesIcon from '@mui/icons-material/Workspaces';
 
 export default function Sidebar() {
     const path = usePathname();
     const [barOpen, setBarOpen] = useState(true);
     const [event, setEvent] = useState()
-    const [pathType, setPathType] = useState()
+    const [pathType, setPathType] = useState();
+    const [menu, setMenu] = useState();
 
     const {
         estbSidebarItens,
@@ -49,12 +51,14 @@ export default function Sidebar() {
                 return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "novo-evento":
                 return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
-            case "evento":
+            case "event-view":
                 return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "usuarios":
                 return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
-            case "sair":
+            case "sair-evento":
                 return <LogoutIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "turmas":
+                return <WorkspacesIcon className="sidebarMenuIcon" style={commonStyle} />;
             default:
                 return null;
         }
@@ -72,12 +76,14 @@ export default function Sidebar() {
                 return "Eventos";
             case "novo-evento":
                 return "Novo Evento";
-            case "evento":
+            case "event-view":
                 return "Evento";
             case "usuarios":
                 return "Usuários";
-            case "sair":
+            case "sair-evento":
                 return "Sair do Evento";
+            case "turmas":
+                return "Turmas";
             default:
                 return x;
         }
@@ -102,6 +108,18 @@ export default function Sidebar() {
         router.push(`${path}`);
     }
 
+    function ToSetMenu() {
+        if (user?.type == 1) {
+            setMenu(adminSidebarItens);
+        } else {
+            if (path.startsWith('/cliente/event-view') || path.startsWith('/cliente/turmas')) {
+                setMenu(estbSidebarEvent);
+            } else {
+                setMenu(estbSidebarItens);
+            }
+        }
+    }
+
     useEffect(() => {
         const sidebarMain = document.getElementById('sidebarMain');
 
@@ -116,7 +134,7 @@ export default function Sidebar() {
     useEffect(() => {
         setEvent(!!eventSelected ? eventSelected : localStorage.getItem('event_selected'))
         let userTypeHere = !!user?.type ? user?.type : localStorage.getItem('user_type')
-
+        ToSetMenu();
         switch (userTypeHere) {
             case "1":
                 setPathType('admin')
@@ -130,6 +148,10 @@ export default function Sidebar() {
         }
     }, [])
 
+    useEffect(() => {
+        ToSetMenu();
+    }, [path])
+
 
     return (
         <div id="sidebarMain" className="sidebarMain flexc">
@@ -140,41 +162,16 @@ export default function Sidebar() {
                 <button onClick={() => setBarOpen(!barOpen)}>{!!barOpen == true ? <ArrowCircleLeftIcon className="sideIconActive" /> : <ArrowCircleRightIcon className="sideIcon" />}</button>
             </div>
             <div className="flexc sidebarMenuItens">
-                {!!adminSidebarItens && user?.type == 1 ? adminSidebarItens.map((e, y) => {
+                {!!menu && menu.map((e, y) => {
                     return (
                         <div
-                            onClick={(event) => Redirect(event, `/${pathType}/${e}`)}
+                            onClick={(event) => Redirect(event, `/${pathType}/${e == 'sair-evento' ? 'eventos' : e}`)}
                             key={y} className={path.startsWith(`/${pathType}/${e}`) ? "flexr sidebarMenuItemActiveNow" : "flexr sidebarMenuItemActive"} style={{ gap: "10px" }}>
                             {getIcon(e)}
                             <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{getName(e)}</p>
                         </div>
                     )
-                })
-                    :
-                    user?.type == 2 && !event && !!estbSidebarItens ? estbSidebarItens.map((e, y) => {
-                        return (
-                            <div
-                                onClick={(event) => Redirect(event, `/${pathType}/${e}`)}
-                                key={y} className={path.startsWith(`/${pathType}/${e}`) ? "flexr sidebarMenuItemActiveNow" : "flexr sidebarMenuItemActive"} style={{ gap: "10px" }}>
-                                {getIcon(e)}
-                                <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{getName(e)}</p>
-                            </div>
-                        )
-                    })
-                        : !!estbSidebarEvent ? estbSidebarEvent.map((e, y) => {
-                            return (
-                                <div
-                                    onClick={(event) => Redirect(event, `/${pathType}/${e}`)}
-                                    key={y} className={path.startsWith(`/${pathType}/${e}`) ? "flexr sidebarMenuItemActiveNow" : "flexr sidebarMenuItemActive"} style={{ gap: "10px" }}>
-                                    {getIcon(e)}
-                                    <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{getName(e)}</p>
-                                </div>
-                            )
-                        })
-                            :
-                            <p>No Options</p>
-                }
-
+                })}
             </div>
             <div className="flexr sidebarFooter">
                 <div
