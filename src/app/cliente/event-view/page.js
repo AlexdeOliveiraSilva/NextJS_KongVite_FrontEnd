@@ -26,10 +26,7 @@ export default function EventView() {
     const [type, setType] = useState("");
     const [subType, setSubType] = useState("");
     const [passType, setPassType] = useState([]);
-    const [passTypeObject, setPassTypeObject] = useState({
-        name: "",
-        image: ""
-    });
+    const [deleteModalIsOpen, setDeleteModalIsOpen] = useState();
 
     async function getEvent() {
         let x;
@@ -46,7 +43,7 @@ export default function EventView() {
                         'Authorization': jwt
                     }
                 })).json()
-                console.log("nome:", x)
+
                 if (!!x.name) {
 
                     setName(x.name);
@@ -69,7 +66,7 @@ export default function EventView() {
                 return ""
             }
         } else {
-            console.log("else")
+
         }
     }
 
@@ -107,28 +104,80 @@ export default function EventView() {
         }
     }
 
-    function toEditEvent(e, id) {
+    function toEditEvent(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        let w = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
-        setEventEdit(w)
-        localStorage.setItem("event_edit", w)
+        let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
+
+        setEventEdit(eventId)
+        localStorage.setItem("event_edit", eventId)
 
         router.push('/cliente/eventos/edit')
     }
 
-    useEffect(() => {
+    async function deleteEvent() {
+        let deleteId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+        let x;
 
+        if (!!jwt && !!deleteId) {
+
+            try {
+                x = await (await fetch(`${KONG_URL}/companys/events/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': jwt
+                    },
+                    body: JSON.stringify({
+                        id: deleteId,
+                        situation: 2
+                    })
+                })).json()
+
+                if (!x?.message) {
+                    setDeleteModalIsOpen(false)
+                    toast.success("Evento Deletado.", {
+                        position: "top-right"
+                    });
+                    router.push('/cliente/eventos/')
+                } else {
+                    toast.error("Erro ao Deletar, tente novamente.", {
+                        position: "top-right"
+                    });
+                }
+
+
+            } catch (error) {
+                toast.error("Erro ao Cadastrar, tente novamente.", {
+                    position: "top-right"
+                });
+                setisLoading(false)
+                return ""
+            }
+        }
+    }
+
+    function openDeleteModal(e) {
+        e.preventDefault();
+        setDeleteModalIsOpen(true)
+    }
+
+    function closeDeleteModal() {
+        setDeleteModalIsOpen(false)
+    }
+
+    useEffect(() => {
         getEvent();
 
     }, [])
 
-    console.log("passType", passType)
+
     return (
         <div className="clienteMain flexr">
             <ToastContainer></ToastContainer>
-            {/* {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteEvent()} word="confirmar" ></DeletModal>} */}
+            {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteEvent()} word="confirmar" ></DeletModal>}
             <div className="clienteContent flexc">
                 <div className="adminUsersHeader flexr">
                     <div className="adminUsersTitle flexr">
@@ -136,10 +185,10 @@ export default function EventView() {
                     </div>
                     <div className="adminUsersAdd flexr" style={{ gap: "10px", width: "auto" }}>
                         <button
-                            onClick={(e) => toEditEvent(e)}
+                            onClick={(e) => toEditEvent(e,)}
                             className="btnBlue"><EditIcon></EditIcon></button>
                         <button
-                            // onClick={(e) => toNewEvent(e)}
+                            onClick={(e) => openDeleteModal(e)}
                             className="btnOrange"><DeleteIcon></DeleteIcon></button>
                     </div>
                 </div>

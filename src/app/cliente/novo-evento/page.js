@@ -353,7 +353,7 @@ export default function EventsAdd() {
           <div className="passTypeBlock flexr">
             {passType?.length > 0 &&
               passType.map((e, y) => {
-                console.log(e.image)
+
                 return (
                   <div
                     key={y}

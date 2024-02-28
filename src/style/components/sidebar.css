@@ -89,6 +89,7 @@
   justify-content: flex-start;
   border-left: 5px solid transparent;
   padding: 5px 0;
+  cursor: pointer;
 }
 .sidebarMain:hover .sidebarMenuItemActiveNow {
   background-color: var(--white-secondary);

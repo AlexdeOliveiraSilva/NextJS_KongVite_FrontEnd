@@ -10,6 +10,7 @@ export const GlobalProvider = ({ children }) => {
     const [userEdit, setUserEdit] = useState();
     const [eventEdit, setEventEdit] = useState();
     const [companyEdit, setCompanyEdit] = useState();
+    const [turmaEdit, setTurmaEdit] = useState();
     const [companyNameEdit, setCompanyNameEdit] = useState();
     const [eventSelected, setEventSelected] = useState();
 
@@ -72,7 +73,9 @@ export const GlobalProvider = ({ children }) => {
             eventsType,
             eventsSubType,
             eventEdit,
-            setEventEdit
+            setEventEdit,
+            turmaEdit,
+            setTurmaEdit
         }}>
             {children}
         </GlobalContext.Provider>

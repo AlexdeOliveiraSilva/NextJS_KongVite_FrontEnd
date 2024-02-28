@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import Loader from "../fragments/loader";
@@ -104,6 +104,12 @@ export default function AddTurmas({ close, turmaId, name }) {
         }
     }
 
+    useEffect(() => {
+        if (!!turmaId) {
+            setTurma(name)
+        }
+
+    }, [])
 
     return (
         <div
@@ -121,7 +127,7 @@ export default function AddTurmas({ close, turmaId, name }) {
                         onChange={(e) => setTurma(e.target.value)}
                         className="inputStyle"
                         label={!!turma ? '' : "Nome da Turma"}
-                        value={!!turmaId ? `${name}` : ''}
+                        value={turma}
                         id="outlined-size-normal"
                         placeholder={`Digite o Nome da Turma:'`}
                         type="text" />

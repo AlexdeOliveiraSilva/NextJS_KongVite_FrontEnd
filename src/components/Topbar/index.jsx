@@ -99,6 +99,9 @@ export default function Topbar() {
             case '/cliente/turmas':
                 return "Turmas"
 
+            case '/cliente/turmas/turma-view':
+                return "Turmas"
+
             default:
                 break;
         }
@@ -144,13 +147,6 @@ export default function Topbar() {
         <div className="topbarMain flexr">
             <div className="topbarContent flexr">
                 <div
-                    onClick={(event) => backTo(event,
-                        changeTitle(path)
-                            .toLocaleLowerCase()
-                            .replaceAll(" ", "")
-                            .replaceAll("-", "/")
-                            .replaceAll("á", 'a')
-                    )}
                     className="topbarPageTitle flexr">
                     <ChevronRightIcon className="topbarTitleIcon"></ChevronRightIcon>
                     <h1>{changeTitle(path)}</h1>
