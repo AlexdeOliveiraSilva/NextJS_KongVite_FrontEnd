@@ -28,6 +28,7 @@
   height: 40px;
   white-space: nowrap;
   position: relative;
+  cursor: pointer;
 }
 .topbarPageGetOut {
   background-color: var(--white-primary);

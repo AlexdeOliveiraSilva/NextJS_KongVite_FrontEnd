@@ -108,8 +108,9 @@ export default function Sidebar() {
         router.push(`${path}`);
     }
 
-    function ToSetMenu() {
-        if (user?.type == 1) {
+    function ToSetMenu(x) {
+
+        if (x == 1) {
             setMenu(adminSidebarItens);
         } else {
             if (path.startsWith('/cliente/event-view') || path.startsWith('/cliente/turmas')) {
@@ -134,7 +135,9 @@ export default function Sidebar() {
     useEffect(() => {
         setEvent(!!eventSelected ? eventSelected : localStorage.getItem('event_selected'))
         let userTypeHere = !!user?.type ? user?.type : localStorage.getItem('user_type')
-        ToSetMenu();
+
+        ToSetMenu(userTypeHere);
+
         switch (userTypeHere) {
             case "1":
                 setPathType('admin')
@@ -149,10 +152,12 @@ export default function Sidebar() {
     }, [])
 
     useEffect(() => {
-        ToSetMenu();
+        let userTypeHere = !!user?.type ? user?.type : localStorage.getItem('user_type')
+
+        ToSetMenu(userTypeHere);
     }, [path])
 
-
+    console.log(user)
     return (
         <div id="sidebarMain" className="sidebarMain flexc">
             <div className="flexr sidebarLogo">
@@ -174,12 +179,12 @@ export default function Sidebar() {
                 })}
             </div>
             <div className="flexr sidebarFooter">
-                <div
+                {/* <div
                     onClick={(e) => logout(e)}
                     className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
                     <LogoutIcon className="sidebarMenuIcon" style={{ color: "var(--red-primary)" }} />
                     <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>Algo aqui</p>
-                </div>
+                </div> */}
             </div>
         </div >
     );

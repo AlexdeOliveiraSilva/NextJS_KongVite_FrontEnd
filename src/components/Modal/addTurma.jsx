@@ -38,7 +38,9 @@ export default function AddTurmas({ close, turmaId, name }) {
                 })).json()
 
                 if (!x?.message) {
-                    () => close
+                    console.log("1")
+                    close();
+                    console.log("2")
                     toast.success("Turma cadastrada.", {
                         position: "top-right"
                     });
