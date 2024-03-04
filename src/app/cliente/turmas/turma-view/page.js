@@ -9,26 +9,26 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import AddTurmas from "@/components/Modal/addTurma";
 
 export default function TurmaView() {
     const router = useRouter();
-    const { KONG_URL, user, eventEdit } = useContext(GlobalContext);
+    const { KONG_URL, user, eventEdit, setGuestEditId, setGuestEditName } = useContext(GlobalContext);
     const [addTurmasIsOpen, setAddTurmasIsOpen] = useState(false);
-    const [turma, setTurma] = useState();
     const [event, setEvent] = useState();
     const [isLoading, setIsLoading] = useState();
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
     const [deleteIdSelected, setDeleteIdSelected] = useState();
     const [turmaEdit, setTurmaEdit] = useState();
     const [turmaNameEdit, setTurmaNameEdit] = useState();
+    const [otherGuestIsOpen, setOtherGuestIsOpen] = useState();
 
     const [turmaData, setTurmaData] = useState();
 
 
+
     async function getTurma() {
         let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
-        let turmaId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
+        let turmaId = !!turmaEdit ? turmaEdit : localStorage.getItem("turma_edit");
         let x;
 
         if (!!jwt && !!turmaId) {
@@ -57,16 +57,18 @@ export default function TurmaView() {
         }
     }
 
-    async function deleteTurma() {
+    async function deleteGuest() {
+
         let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
-        let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
+        let event = !!eventEdit ? eventEdit : localStorage.getItem("event_edit")
+        let turma = !!turmaEdit ? turmaEdit : localStorage.getItem("turma_edit")
+
         let x;
 
-        if (!!jwt && !!eventId && !!turma) {
-            setIsLoading(true);
+        if (!!jwt && !!event && !!turma && !!deleteIdSelected) {
+            setIsLoading(true)
             try {
-
-                x = await (await fetch(`${KONG_URL}/companys/turma/${eventId}`, {
+                x = await (await fetch(`${KONG_URL}/companys/turma/student/${event}/${turma}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -79,27 +81,30 @@ export default function TurmaView() {
                 })).json()
 
                 if (!x?.message) {
-                    toast.success("Turma deletada com sucesso.", {
+                    toast.success("Convidado deletado.", {
                         position: "top-right"
                     });
 
-                    setAddTurmasIsOpen(false);
-                    getTurmas();
-                    setIsLoading(false);
+                    getTurma();
+                    setDeleteModalIsOpen(false)
+                    setIsLoading(false)
+
+                    router.push('/cliente/turmas/turma-view/');
+                } else {
+                    toast.error("Erro ao Deletar, tente novamente.", {
+                        position: "top-right"
+                    });
+                    setIsLoading(false)
                 }
+
+
             } catch (error) {
-                toast.error("Erro ao deletar turma.", {
+                toast.error("Erro ao Deletar, tente novamente.", {
                     position: "top-right"
                 });
-                setIsLoading(false);
-                console.log("erro")
+                setisLoading(false)
                 return ""
             }
-        } else {
-            toast.error("Erro ao deletar turma.", {
-                position: "top-right"
-            });
-            console.log("else")
         }
     }
 
@@ -113,11 +118,19 @@ export default function TurmaView() {
         setDeleteModalIsOpen(false);
     }
 
-    function toEditTurma(e, id, name) {
+    function toEditGuest(e, id, name) {
         e.preventDefault();
-        setTurmaEdit(id);
-        setTurmaNameEdit(name)
-        setAddTurmasIsOpen(true)
+
+        setGuestEditId(id);
+        localStorage.setItem("guest_edit_id", id)
+
+        router.push('/cliente/turmas/turma-view/edit/')
+    }
+
+    function toAddGuest(e) {
+        e.preventDefault();
+
+        router.push('/cliente/turmas/turma-view/add/')
     }
 
     useEffect(() => {
@@ -128,23 +141,106 @@ export default function TurmaView() {
     return (
         <div className="clienteMain flexr">
             <ToastContainer></ToastContainer>
-            {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteTurma()} word="confirmar" ></DeletModal>}
+            {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteGuest()} word="confirmar" ></DeletModal>}
             <div className="clienteContent flexc">
                 <div className="adminUsersHeader flexr">
                     <div className="adminUsersTitle flexr">
-                        <h1>{!!turmaData ? `${turmaData?.name} - Usuários` : "Usuários da Turma"}</h1>
+                        <h1>{!!turmaData ? `${turmaData?.name} - Convidados` : "Convidados da Turma"}</h1>
                     </div>
                     <div className="adminUsersAdd flexr" style={{ gap: "10px", width: "auto" }}>
                         <button
-                            onClick={(e) => toOpenTurma(e)}
-                            className="btnOrange">xxxxx</button>
+                            onClick={(e) => toAddGuest(e)}
+                            className="btnOrange">Add Convidado</button>
                     </div>
                 </div>
-                <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-                <div className="clienteUl flexc">
+                <div className="userLineTitle flexr">
+                    <p className="userIdLi">Id</p>
+                    <div className="userLine1150">
+                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    </div>
+                    <p className="userNameLi">Nome</p>
+                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    <p className="userPhoneLi">Telefone</p>
+                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    <p className="guestLi">Ingresso</p>
+                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    <p className="guestLi">Convidados</p>
+                </div>
+                <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
+                    {!!turmaData && turmaData?.guests?.length > 0 ? turmaData?.guests?.map((e, y) => {
 
+                        return (
+                            <>
+                                <div key={y}
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        if (otherGuestIsOpen != e.id) {
+                                            setOtherGuestIsOpen(e.id);
+                                        } else {
+                                            setOtherGuestIsOpen();
+                                        }
+
+                                    }}
+                                    className="clienteLine flexr">
+                                    <p className="userIdLi">{e.id}</p>
+                                    <div className="userLine1150">
+                                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                                    </div>
+                                    <p className="userNameLi">{e.name}</p>
+                                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                                    <p className="userPhoneLi">{e.phone}</p>
+                                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                                    <p className="guestLi">{e.tycketsType.description}</p>
+                                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                                    <p className="guestLi">{e.other_guests.length}</p>
+                                    <div className="userConfigbtns flexr">
+                                        <div
+                                            onClick={(event) => toEditGuest(event, e.id, e.name)}
+                                            className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
+                                        <div
+                                            onClick={(event) => openDeleteModal(event, e.id)}
+                                            className="userConfigbtn flexr">
+                                            <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                                        </div>
+                                    </div>
+                                </div>
+                                {otherGuestIsOpen == e.id &&
+                                    <>
+                                        <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
+                                            <div className="otherGuestLine flexr">
+                                                <p>Convidado <span>01</span></p>
+                                                <p>Nome: <span>Rafael</span></p>
+                                                <p>Ingresso: <span>Meia</span></p>
+                                            </div>
+                                        </div >
+                                        <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
+                                            <div
+                                                className="otherGuestLine flexr"
+                                                style={{
+                                                    backgroundColor: "transparent",
+                                                    borderColor: "transparent",
+                                                    cursor: "pointer",
+                                                    marginBottom: "0px",
+                                                    width: "100%",
+                                                    justifyContent: "center"
+                                                }}>
+                                                {/* <button
+                                                        style={{ fontSize: "14px" }}
+                                                        className="btnOrange">Adicionar</button> */}
+                                            </div>
+                                        </div>
+                                        <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
+                                    </>
+                                }
+                            </>
+                        )
+                    })
+                        :
+                        <p style={{ marginTop: "30px" }}>Nenhum Convidado</p>
+                    }
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

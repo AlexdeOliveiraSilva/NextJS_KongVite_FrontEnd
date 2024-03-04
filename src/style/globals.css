@@ -314,19 +314,69 @@ form {
 
 /* *************** GALERY MODAL  */
 
-.contentGalery {
-  max-width: 80vw;
-  max-height: 80vh;
+.contentGuestEventChoice {
+  min-width: 700px;
+  min-height: 250px;
+  width: auto;
   height: auto;
-  position: relative;
   background-color: var(--white-primary);
   border-radius: 15px;
-  z-index: 10;
+  z-index: 999999;
+  padding: 40px 20px;
+  justify-content: flex-start;
+  gap: 60px;
+}
+.guestEventChoiceLine {
+  width: 100%;
+  gap: 20px;
+}
+.guestEventChoice {
+  border-radius: 10px;
+  background-color: var(--blue-third);
+  color: var(--blue-primary);
+  font-size: 22px;
+  font-weight: 600;
+  padding: 10px 40px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--blue-third);
+}
+.guestEventChoice:hover {
+  background-color: var(--blue-fourth);
+  border: 1px solid var(--blue-primary);
+  color: var(--black-primary);
+  transform: scale(1.1);
+}
+.infoWarningEventChoice {
+  width: 100%;
+  text-align: end;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--red-primary);
 }
 
-@media (max-width: 900px) {
-  .layoutSize {
-    width: 100%;
-    height: auto;
+@media (max-width: 740px) {
+  .contentGuestEventChoice {
+    min-width: auto;
+    width: 95vw;
+    background-color: var(--white-primary);
+    border-radius: 15px;
+    z-index: 10;
+  }
+}
+
+@media (max-width: 390px) {
+  .contentGuestEventChoice {
+    min-width: auto;
+    width: 95vw;
+    background-color: var(--white-primary);
+    border-radius: 15px;
+    z-index: 10;
+  }
+  .contentGuestEventChoice h2 {
+    font-size: 20px;
+  }
+  .guestEventChoice {
+    font-size: 16px;
+    padding: 10px 20px;
   }
 }

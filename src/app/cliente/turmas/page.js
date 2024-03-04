@@ -92,9 +92,9 @@ export default function Turmas() {
                         position: "top-right"
                     });
 
-                    setAddTurmasIsOpen(false);
                     getTurmas();
                     setIsLoading(false);
+                    setDeleteModalIsOpen(false);
                 }
             } catch (error) {
                 toast.error("Erro ao deletar turma.", {

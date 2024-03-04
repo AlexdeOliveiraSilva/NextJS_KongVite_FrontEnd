@@ -131,6 +131,7 @@ export default function Eventos() {
 
   function openDeleteModal(e, id) {
     e.preventDefault();
+    e.stopPropagation();
     setDeleteId(id)
     setDeleteModalIsOpen(true)
   }
@@ -200,7 +201,7 @@ export default function Eventos() {
                       onClick={(event) => toEditEvent(event, e.id)}
                       className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
                     <div
-                      onClick={(event) => openDeleteModal(event, e.id)}
+                      onClick={(event) => { openDeleteModal(event, e.id) }}
                       className="userConfigbtn flexr">
                       <DeleteIcon className="userConfigIcon"></DeleteIcon>
                     </div>

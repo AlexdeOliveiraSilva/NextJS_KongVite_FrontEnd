@@ -207,6 +207,34 @@
   max-height: 200px;
 }
 
+.invitesTypeDiv {
+  width: 100%;
+  max-width: 200px;
+  gap: 10px;
+  border: var(--grey-ligth) 1px solid;
+  border-radius: 12px;
+  padding: 10px;
+  margin-top: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.invitesTypeDiv p {
+  width: 100%;
+  max-width: 200px;
+  margin: 10px 0 0 0;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.invitesTypeDiv span {
+  width: 100%;
+  max-width: 200px;
+  margin: 10px 0 10px 0;
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
 @media (max-width: 1060px) {
   .eventDateLi {
     display: none;

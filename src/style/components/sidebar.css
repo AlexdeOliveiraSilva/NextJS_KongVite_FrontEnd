@@ -6,7 +6,7 @@
   transition: all 0.7s ease;
   gap: 20px;
   border-radius: 0 20px 20px 0;
-  background-color: var(--white-primary);
+  background-color: var(--blue-primary);
 }
 .sidebarMainClose {
   transition: all 0.7s ease;
@@ -27,17 +27,17 @@
   z-index: 2;
   width: 40px;
   height: 40px;
-  color: var(--blue-primary);
+  color: var(--white-primary);
 }
 .sideIcon {
   width: 100%;
   z-index: 2;
   width: 40px;
   height: 40px;
-  color: var(--blue-primary-opacity);
+  color: var(--white-primary);
 }
 .sideIcon:hover {
-  color: var(--blue-primary);
+  color: var(--white-primary);
 }
 .sidebarLogo {
   height: 25%;
@@ -92,13 +92,13 @@
   cursor: pointer;
 }
 .sidebarMain:hover .sidebarMenuItemActiveNow {
-  background-color: var(--white-secondary);
+  background-color: var(--blue-secondary);
 }
 
 .sidebarMenuItemActiveNow p {
   font-size: 16px;
   font-weight: 700;
-  color: var(--title);
+  color: var(--white-primary);
 }
 
 .sidebarMenuItemActive {
@@ -111,18 +111,18 @@
 }
 
 .sidebarMenuItemActive:hover {
-  background-color: var(--white-secondary);
+  background-color: var(--blue-secondary);
   border-radius: 6px;
   padding: 5px;
   text-align: left;
   transition: all 1s ease;
   width: 100%;
   justify-content: flex-start;
-  border-left: 5px solid rgb(0, 0, 97);
+  border-left: 5px solid rgb(255, 255, 255);
 }
 .sidebarMenuItemActiveNow .sidebarMenuIcon {
-  color: rgb(255, 255, 255) !important;
-  background-color: rgb(0, 0, 97) !important;
+  color: rgb(0, 0, 97) !important;
+  background-color: rgb(255, 255, 255) !important;
   width: 25px;
   height: 25px;
   border-radius: 5px;
@@ -133,16 +133,17 @@
   height: 25px;
   border-radius: 5px;
   padding: 1px;
+  color: rgb(255, 255, 255) !important;
 }
 
 .sidebarMenuItemActive:hover .sidebarMenuIcon {
-  color: rgb(0, 0, 97) !important;
+  color: rgb(255, 255, 255) !important;
 }
 
 .sidebarTextMenu {
   font-size: 16px;
   font-weight: 400;
-  color: var(--title);
+  color: var(--white-primary);
   transition: all 1s ease;
 }
 
@@ -168,13 +169,13 @@
   bottom: 20px;
   right: 20px;
   border-radius: 50%;
-  background-color: var(--blue-primary);
+  background-color: var(--white-primary);
 }
 
 .floatMainIcon .floatIcon {
   width: 35px;
   height: 35px;
-  color: var(--white-primary);
+  color: var(--blue-primary);
 }
 
 .floatmain {
@@ -187,7 +188,7 @@
   box-shadow: var(--shad-3d);
   transition: all 0.4s ease;
   border-radius: 20px;
-  background-color: var(--white-primary);
+  background-color: var(--blue-primary);
   animation: menuGetUp 0.5s ease;
 }
 
@@ -217,6 +218,9 @@
   }
   .floatmain {
     display: flex !important;
+  }
+  .clienteTitleDiv {
+    width: 100% !important;
   }
 }
 

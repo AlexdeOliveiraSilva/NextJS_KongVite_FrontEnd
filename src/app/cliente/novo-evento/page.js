@@ -8,8 +8,10 @@ import Loader from "@/components/fragments/loader";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
 import CloseIcon from '@mui/icons-material/Close';
 import Galery from "@/components/Modal/galery";
 
@@ -196,6 +198,7 @@ export default function EventsAdd() {
     dataVerify();
   }, [name, uf, address, neighborhood, zipcode, city])
 
+  console.log(date)
   return (
     <div className="clienteMain flexr">
       <ToastContainer></ToastContainer>
@@ -212,7 +215,7 @@ export default function EventsAdd() {
           </div>
         </div>
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-        <div className="clienteUl flexc">
+        <div className="clienteUl flexc" style={{ margin: "0", padding: "30px 0" }}>
           <div className="userAdminDoubleInputs flexr">
             <TextField
               onChange={(e) => setName(e.target.value)}
@@ -222,42 +225,51 @@ export default function EventsAdd() {
               placeholder={`Digite o Nome:'`}
               type="text" />
             <div className="userAdminDoubleInputsTwo flexr">
-              <Select
-                className="InputsTwoSelect"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-              >
-                {!!eventsType && eventsType.map((e, y) => {
-                  return (
-                    <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
-                  )
-                })}
-              </Select>
-              <Select
-                className="InputsTwoSelect"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={subType}
-                onChange={(e) => setSubType(e.target.value)}
-              >
-                {!!eventsSubType && eventsSubType.map((e, y) => {
-                  return (
-                    <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
-                  )
-                })}
-              </Select>
-              <Select
-                className="InputsTwoSelect"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={notifyUsersAboutDeletingInvitations}
-                onChange={(e) => setNotifyUsersAboutDeletingInvitations(e.target.value)}
-              >
-                <MenuItem value={"SIM"}>Sim</MenuItem>
-                <MenuItem value={"NAO"}>Não</MenuItem>
-              </Select>
+              <FormControl className="InputsTwoSelect">
+                <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
+                <Select
+                  className="InputsTwoSelect"
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  {!!eventsType && eventsType.map((e, y) => {
+                    return (
+                      <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
+                    )
+                  })}
+                </Select>
+              </FormControl>
+              <FormControl className="InputsTwoSelect">
+                <InputLabel id="demo-simple-select-label">Período</InputLabel>
+                <Select
+                  className="InputsTwoSelect"
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={subType}
+                  onChange={(e) => setSubType(e.target.value)}
+                >
+                  {!!eventsSubType && eventsSubType.map((e, y) => {
+                    return (
+                      <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
+                    )
+                  })}
+                </Select>
+              </FormControl>
+              <FormControl className="InputsTwoSelect">
+                <InputLabel id="demo-simple-select-label">Notificações</InputLabel>
+                <Select
+                  className="InputsTwoSelect"
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={notifyUsersAboutDeletingInvitations}
+                  onChange={(e) => setNotifyUsersAboutDeletingInvitations(e.target.value)}
+                >
+                  <MenuItem value={"SIM"}>Sim</MenuItem>
+                  <MenuItem value={"NAO"}>Não</MenuItem>
+                </Select>
+              </FormControl>
             </div>
           </div>
           {!!nameError && <p className="errorP">* O Nome deve conter mais que 3 caracteres.</p>}
@@ -268,7 +280,7 @@ export default function EventsAdd() {
               id="outlined-size-normal"
               value={date}
               placeholder={`Digite a Data:'`}
-              type="datetime-local" />
+              type={"datetime-local"} />
             <TextField
               onChange={(e) => setZipcode(e.target.value)}
               className="inputStyle"

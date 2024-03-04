@@ -25,6 +25,7 @@ export default function EventView() {
     const [notifyUsersAboutDeletingInvitations, setNotifyUsersAboutDeletingInvitations] = useState("NAO");
     const [type, setType] = useState("");
     const [subType, setSubType] = useState("");
+
     const [passType, setPassType] = useState([]);
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState();
 
@@ -86,14 +87,9 @@ export default function EventView() {
                     }
                 })).json()
 
-                if (!x?.message) {
+                if (!x.message) {
 
-                    for (let index = 0; index < x.length; index++) {
-                        setPassType([...passType, {
-                            name: x[index].description,
-                            image: x[index].image
-                        }]);
-                    }
+                    setPassType(x)
                 }
             } catch (error) {
                 console.log("erro")
@@ -170,7 +166,6 @@ export default function EventView() {
 
     useEffect(() => {
         getEvent();
-
     }, [])
 
 
@@ -228,13 +223,13 @@ export default function EventView() {
                     <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
                 }
                 {!!name &&
-                    <div className="clienteEventDiv flexc" style={{ padding: "20px 40px" }}>
+                    <div className="clienteEventDiv flexc" style={{ padding: "20px 40px", height: "100%", justifyContent: "flex-start" }}>
                         <div className="clienteEventLineItem flexr">
                             <h4>Tipos de Ingresso: </h4><h4><span>{!!passType && passType.map((e, y) => {
                                 if (y != 0) {
-                                    return (`, ${e.name}`)
+                                    return (`, ${e.description}`)
                                 } else {
-                                    return e.name
+                                    return e.description
                                 }
                             })}</span></h4>
                         </div>

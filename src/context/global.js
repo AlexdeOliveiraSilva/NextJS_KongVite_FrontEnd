@@ -10,13 +10,17 @@ export const GlobalProvider = ({ children }) => {
     const [userEdit, setUserEdit] = useState();
     const [eventEdit, setEventEdit] = useState();
     const [companyEdit, setCompanyEdit] = useState();
-    const [turmaEdit, setTurmaEdit] = useState();
+    const [turmaEditId, setTurmaEditId] = useState();
+    const [guestEditId, setGuestEditId] = useState();
+    const [guestEditName, setGuestEditName] = useState();
     const [companyNameEdit, setCompanyNameEdit] = useState();
+
     const [eventSelected, setEventSelected] = useState();
 
     const eventsType = ["Formatura", "Festa", "Venda de Ingressos", "Corporativo"];
     const eventsSubType = ["Almoço", "Jantar"];
     const adminSidebarItens = ["dashboard", "administradores", "empresas"];
+    const guestSideBar = ["evento", "transferencias"];
 
     const estbSidebarItens = ["eventos", "novo-evento"];
     const estbSidebarEvent = ["event-view", "turmas", "sair-evento"];
@@ -30,6 +34,8 @@ export const GlobalProvider = ({ children }) => {
     const [companyId, setCompanyId] = useState()
     const [companyName, setCompanyName] = useState()
     const [companyDoc, setCompanyDoc] = useState()
+    const [eventClasses, setEventClasses] = useState()
+    const [eventChoice, setEventChoice] = useState();
 
     useEffect(() => {
         setUserName(localStorage.getItem("user_name"))
@@ -74,8 +80,17 @@ export const GlobalProvider = ({ children }) => {
             eventsSubType,
             eventEdit,
             setEventEdit,
-            turmaEdit,
-            setTurmaEdit
+            turmaEditId,
+            setTurmaEditId,
+            guestEditId,
+            setGuestEditId,
+            guestEditName,
+            setGuestEditName,
+            guestSideBar,
+            eventClasses,
+            setEventClasses,
+            eventChoice,
+            setEventChoice
         }}>
             {children}
         </GlobalContext.Provider>

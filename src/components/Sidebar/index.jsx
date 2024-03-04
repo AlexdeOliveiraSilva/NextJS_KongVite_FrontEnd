@@ -31,7 +31,8 @@ export default function Sidebar() {
         setUserJwt,
         eventSelected,
         setEventSelected,
-        estbSidebarEvent
+        estbSidebarEvent,
+        guestSideBar
 
     } = useContext(GlobalContext);
 
@@ -59,6 +60,12 @@ export default function Sidebar() {
                 return <LogoutIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "turmas":
                 return <WorkspacesIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "convidados":
+                return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "evento":
+                return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "transferencias":
+                return <DashboardIcon className="sidebarMenuIcon" style={commonStyle} />;
             default:
                 return null;
         }
@@ -84,6 +91,12 @@ export default function Sidebar() {
                 return "Sair do Evento";
             case "turmas":
                 return "Turmas";
+            case "convidados":
+                return "Convidados";
+            case "evento":
+                return "Evento";
+            case "transferencias":
+                return "Transferências";
             default:
                 return x;
         }
@@ -110,14 +123,26 @@ export default function Sidebar() {
 
     function ToSetMenu(x) {
 
-        if (x == 1) {
-            setMenu(adminSidebarItens);
-        } else {
-            if (path.startsWith('/cliente/event-view') || path.startsWith('/cliente/turmas')) {
-                setMenu(estbSidebarEvent);
-            } else {
-                setMenu(estbSidebarItens);
-            }
+        switch (x) {
+
+            case "1":
+                setMenu(adminSidebarItens);
+                break;
+
+            case "2":
+                if (path.startsWith('/cliente/event-view') || path.startsWith('/cliente/turmas')) {
+                    setMenu(estbSidebarEvent);
+                } else {
+                    setMenu(estbSidebarItens);
+                }
+                break;
+
+            case "3":
+                setMenu(guestSideBar);
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -145,6 +170,9 @@ export default function Sidebar() {
             case "2":
                 setPathType('cliente')
                 break;
+            case "3":
+                setPathType('convidado')
+                break;
             default:
                 setPathType('admin')
                 break;
@@ -157,7 +185,7 @@ export default function Sidebar() {
         ToSetMenu(userTypeHere);
     }, [path])
 
-    console.log(user)
+
     return (
         <div id="sidebarMain" className="sidebarMain flexc">
             <div className="flexr sidebarLogo">
@@ -179,12 +207,6 @@ export default function Sidebar() {
                 })}
             </div>
             <div className="flexr sidebarFooter">
-                {/* <div
-                    onClick={(e) => logout(e)}
-                    className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
-                    <LogoutIcon className="sidebarMenuIcon" style={{ color: "var(--red-primary)" }} />
-                    <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>Algo aqui</p>
-                </div> */}
             </div>
         </div >
     );

@@ -34,6 +34,8 @@ export default function EventsEdit() {
   const [neighborhoodError, setNeighborhoodError] = useState(false);
   const [cityError, setCityError] = useState(false);
   const [ufError, setUfError] = useState(false);
+
+  const [alreadyPassType, setAlreadyPassType] = useState([]);
   const [passType, setPassType] = useState([]);
   const [passTypeObject, setPassTypeObject] = useState({
     name: "",
@@ -176,6 +178,38 @@ export default function EventsEdit() {
     }
   }
 
+  async function deletePassTypes(passId) {
+    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+
+    if (!!jwt && !!passId) {
+      try {
+        x = await (await fetch(`${KONG_URL}/companys/tycketsType/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': jwt
+          },
+          body: JSON.stringify({
+            id: passId,
+            situation: 2
+          })
+        })).json()
+
+        if (!x.message) {
+          toast.success("Tipo de Convite Deletado.", {
+            position: "top-right"
+          });
+        }
+
+        return x
+      } catch (error) {
+        toast.error("Erro ao deletar Tipo de Convite.", {
+          position: "top-right"
+        });
+      }
+    }
+  }
+
   const addPassType = (event) => {
     event.preventDefault();
 
@@ -186,12 +220,19 @@ export default function EventsEdit() {
     }
   };
 
-  const deletePassType = (name, event) => {
+  const deletePassType = (name, event, id) => {
     event.preventDefault();
 
-    const updatedPassType = passType.filter(item => item.name !== name);
+    if (!!id) {
+      deletePassTypes(id);
+      const updatedPassType = alreadyPassType.filter(item => item.description !== name);
+      setAlreadyPassType(updatedPassType);
 
-    setPassType(updatedPassType);
+    } else {
+
+      const updatedPassType = passType.filter(item => item.name !== name);
+      setPassType(updatedPassType);
+    }
   };
 
   async function getEvent() {
@@ -211,12 +252,13 @@ export default function EventsEdit() {
         })).json()
 
         if (!x?.message) {
+
           setEventData(x);
           setName(x.name);
           setType(x.type);
           setSubType(x.subType);
           setNotifyUsersAboutDeletingInvitations(x.notifyUsersAboutDeletingInvitations);
-          setDate(x.date);
+          setDate(formatDateToInput(x.date));
           setZipcode(x.zipcode);
           setAddress(x.address);
           setNumberAdress(x.number);
@@ -250,14 +292,9 @@ export default function EventsEdit() {
           }
         })).json()
 
-        if (!x?.message) {
+        if (!x.message) {
 
-          for (let index = 0; index < x.length; index++) {
-            setPassType([...passType, {
-              name: x[index].description,
-              image: x[index].image
-            }]);
-          }
+          setAlreadyPassType(x)
         }
       } catch (error) {
         console.log("erro")
@@ -266,6 +303,18 @@ export default function EventsEdit() {
     } else {
       console.log("else")
     }
+  }
+
+  function formatDateToInput(dataString) {
+    const data = new Date(dataString);
+
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    const horas = String(data.getHours()).padStart(2, '0');
+    const minutos = String(data.getMinutes()).padStart(2, '0');
+
+    return `${ano}-${mes}-${dia}T${horas}:${minutos}`;
   }
 
   useEffect(() => {
@@ -281,7 +330,7 @@ export default function EventsEdit() {
     <div className="clienteMain flexr">
       <ToastContainer></ToastContainer>
       <div className="clienteContent flexc">
-        <div className="adminUsersHeader flexr">
+        <div className="adminUsersHeader flexr" style={{ margin: "15px 0" }}>
           <div className="adminUsersTitle flexr">
             <h1>Editar Evento{!!eventData && `- ${eventData.name}`}</h1>
           </div>
@@ -293,7 +342,7 @@ export default function EventsEdit() {
           </div>
         </div>
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-        <div className="clienteUl flexc">
+        <div className="clienteUl flexc" style={{ padding: "20px 0", height: "auto" }}>
           <div className="userAdminDoubleInputs flexr">
             <TextField
               onChange={(e) => setName(e.target.value)}
@@ -439,6 +488,18 @@ export default function EventsEdit() {
         </div>
         <div className="passTypeFull flexc">
           <div className="passTypeBlock flexr">
+            {alreadyPassType?.length > 0 &&
+              alreadyPassType.map((e, y) => {
+                return (
+                  <div key={y} className="passTypeBlockItem flexr">
+                    <p>{e.description}</p>
+                    <CloseIcon
+                      onClick={(event) => deletePassType(e.description, event, e.id)}
+                      style={{ color: "#ffffff" }}></CloseIcon>
+                  </div>
+                )
+              })
+            }
             {passType?.length > 0 &&
               passType.map((e, y) => {
                 return (

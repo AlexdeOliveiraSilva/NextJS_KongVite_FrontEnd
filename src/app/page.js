@@ -19,7 +19,7 @@ export default function Login() {
   const router = useRouter();
   const path = usePathname();
 
-  const { KONG_URL, setUserName, setUserEmail, setUserType, setUserJwt, setCompanyId, setCompanyName, setCompanyDoc } = useContext(GlobalContext);
+  const { KONG_URL, setUserName, setUserEmail, setUserType, setUserJwt, setCompanyId, setCompanyName, setCompanyDoc, setEventClasses } = useContext(GlobalContext);
   const [passwordVisibble, setPasswordVisible] = useState(true)
   const [saveData, setSaveData] = useState(false)
   const [forgotPassword, setForgotPassword] = useState(false)
@@ -92,7 +92,9 @@ export default function Login() {
           setUserType(x.usersType.id);
           setUserEmail(email);
 
+
           if (x.usersType?.id == 2) {
+
             localStorage.setItem("company_id", x.companys?.id);
             localStorage.setItem("company_name", x.companys?.name);
             localStorage.setItem("company_document", x.companys?.document);
@@ -101,13 +103,27 @@ export default function Login() {
             setCompanyDoc(x.companys?.document);
           }
 
+          if (x.usersType?.id === 3) {
+
+            if (!!x.eventsClasses) {
+              const eventsClassesString = JSON.stringify(x.eventsClasses);
+              setEventClasses(eventsClassesString);
+              localStorage.setItem("event_classes", eventsClassesString);
+            }
+          }
+
           switch (x?.usersType?.id) {
+
             case 1:
               router.push('/admin/dashboard/');
               break;
             case 2:
               router.push('/cliente/eventos/');
               break;
+            case 3:
+              router.push('/convidado/evento/');
+              break;
+
             default:
               break;
           }
@@ -183,7 +199,7 @@ export default function Login() {
                 <div className="flexr inputDiv">
                   <TextField
                     onChange={(e) => setEmail(e.target.value)}
-                    className="inputStyle" label="E-mail" id="outlined-size-normal" placeholder="Digite seu E-mail" type="text" />
+                    className="inputStyle" label="Usuário" id="outlined-size-normal" placeholder="Digite seu Usuário" type="text" />
                 </div>
                 <div className="flexr inputDivPassword">
                   <TextField
