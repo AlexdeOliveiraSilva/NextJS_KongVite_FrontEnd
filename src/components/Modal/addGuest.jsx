@@ -13,7 +13,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
 export default function AddGuest({ close, classId, typesData, guestId, guestName }) {
-    const { KONG_URL, user, eventEdit } = useContext(GlobalContext);
+    const { KONG_URL, user, eventEdit, eventChoice } = useContext(GlobalContext);
 
     const [isLoading, setIsLoading] = useState();
     const [guest, setGuest] = useState();
@@ -127,6 +127,7 @@ export default function AddGuest({ close, classId, typesData, guestId, guestName
             console.log("else")
         }
     }
+
 
     useEffect(() => {
 

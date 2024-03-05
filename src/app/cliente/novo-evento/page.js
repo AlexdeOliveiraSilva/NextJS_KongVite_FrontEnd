@@ -198,7 +198,6 @@ export default function EventsAdd() {
     dataVerify();
   }, [name, uf, address, neighborhood, zipcode, city])
 
-  console.log(date)
   return (
     <div className="clienteMain flexr">
       <ToastContainer></ToastContainer>

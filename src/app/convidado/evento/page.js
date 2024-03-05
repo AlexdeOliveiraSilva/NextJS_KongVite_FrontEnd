@@ -157,6 +157,38 @@ export default function EventGuest() {
     setDeleteGuestModalIsOpen(false);
   }
 
+  async function getAvaibles() {
+    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
+    let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
+
+    let theClass = (JSON.parse(y)).classEvent.id
+
+    let x;
+
+    if (!!jwt && !!theClass) {
+      try {
+        x = await (await fetch(`${KONG_URL}/user/guests/${theClass}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': jwt
+          }
+        })).json()
+
+        if (!x?.message) {
+          setTypesData(x.guestsTicketsTypeNumber);
+        } else {
+          console.log("error", x)
+        }
+
+
+      } catch (error) {
+        console.log("catch", error)
+        return ""
+      }
+    }
+  }
+
 
   useEffect(() => {
     let x = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
@@ -174,9 +206,13 @@ export default function EventGuest() {
       setName(y?.user?.name);
       setPhone(y.user?.phone);
       setEmail(y.user?.email);
-      setTypesData(y.user?.guestsTicketsTypeNumber)
     }
   }, [eventChoice, eventClasses, refreshPage])
+
+  useEffect(() => {
+    getAvaibles();
+
+  }, [addGuestModalIsOpen])
 
 
   return (

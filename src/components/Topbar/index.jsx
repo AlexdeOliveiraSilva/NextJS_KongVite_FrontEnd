@@ -15,6 +15,7 @@ export default function Topbar() {
     const path = usePathname();
     const router = useRouter();
     const { user,
+        KONG_URL,
         setUserName,
         setUserEmail,
         setUserType,
@@ -145,16 +146,54 @@ export default function Topbar() {
         setEventChoiceModal(false);
     }
 
+    async function getAvaibles() {
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
+        let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
+
+        let theClass = (JSON.parse(y)).classEvent.id
+
+        let x;
+
+        if (!!jwt && !!theClass) {
+            try {
+                x = await (await fetch(`${KONG_URL}/user/guests/${theClass}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': jwt
+                    }
+                })).json()
+
+                if (!x?.message) {
+                    invitesGuestCount(x.guestsTicketsTypeNumber);
+                } else {
+                    console.log("error", x)
+                }
+
+
+            } catch (error) {
+                console.log("catch", error)
+                return ""
+            }
+        }
+    }
+
 
 
     useEffect(() => {
+
         let x = !!user?.type ? user.type : localStorage.getItem("user_type")
         let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
 
+        if ((x == "3" || x == 3)) {
+            getAvaibles();
 
-        if ((x == "3" || x == 3) && !y) {
-            setEventChoiceModal(true);
+            if (!y) {
+                setEventChoiceModal(true);
+            }
         }
+
+
 
         setcompanyData({
             id: !!company?.id ? company.id : localStorage.getItem('company_id'),
@@ -164,14 +203,17 @@ export default function Topbar() {
     }, [])
 
 
-    useEffect(() => {
-        let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
-        let z = JSON.parse(y);
+    // useEffect(() => {
 
-        setClientDataChoice(z);
-        invitesGuestCount(z?.user.guestsTicketsTypeNumber);
+    //     getAvaibles()
 
-    }, [eventChoiceModal, refreshPage])
+    //     let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
+    //     let z = JSON.parse(y);
+
+    //     setClientDataChoice(z);
+    //     invitesGuestCount(z?.user.guestsTicketsTypeNumber);
+
+    // }, [eventChoiceModal, refreshPage])
 
 
 

@@ -170,7 +170,6 @@ export default function TurmaView() {
                     {!!turmaData && turmaData?.guests?.length > 0 ? turmaData?.guests?.map((e, y) => {
 
                         // *** RECEBER AVAIBLE AQUI
-                        console.log(e)
                         return (
                             <>
                                 <div key={y}
