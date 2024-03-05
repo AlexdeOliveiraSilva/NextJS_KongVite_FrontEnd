@@ -169,6 +169,8 @@ export default function TurmaView() {
                 <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
                     {!!turmaData && turmaData?.guests?.length > 0 ? turmaData?.guests?.map((e, y) => {
 
+                        // *** RECEBER AVAIBLE AQUI
+                        console.log(e)
                         return (
                             <>
                                 <div key={y}
@@ -206,32 +208,24 @@ export default function TurmaView() {
                                     </div>
                                 </div>
                                 {otherGuestIsOpen == e.id &&
-                                    <>
-                                        <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
-                                            <div className="otherGuestLine flexr">
-                                                <p>Convidado <span>01</span></p>
-                                                <p>Nome: <span>Rafael</span></p>
-                                                <p>Ingresso: <span>Meia</span></p>
+                                    e.other_guests?.map((e, y) => {
+                                        return (
+                                            <div key={y} style={{ width: "100%" }}>
+                                                <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
+                                                    <div className="otherGuestLine flexr">
+                                                        <p>Convidado <span>{y + 1 < 10 ? `0${y + 1}` : y + 1}</span></p>
+                                                        <p>Nome: <span>{e.name}</span></p>
+                                                        <p>Ingresso: <span>{e.tycketsType.description}</span></p>
+                                                    </div>
+                                                </div >
+                                                <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
+                                                </div>
+                                                {y == e.other_guests?.length &&
+                                                    <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
+                                                }
                                             </div>
-                                        </div >
-                                        <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
-                                            <div
-                                                className="otherGuestLine flexr"
-                                                style={{
-                                                    backgroundColor: "transparent",
-                                                    borderColor: "transparent",
-                                                    cursor: "pointer",
-                                                    marginBottom: "0px",
-                                                    width: "100%",
-                                                    justifyContent: "center"
-                                                }}>
-                                                {/* <button
-                                                        style={{ fontSize: "14px" }}
-                                                        className="btnOrange">Adicionar</button> */}
-                                            </div>
-                                        </div>
-                                        <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-                                    </>
+                                        )
+                                    })
                                 }
                             </>
                         )

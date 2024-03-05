@@ -7,12 +7,14 @@ import { GlobalContext } from "@/context/global";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../fragments/loader";
+import { useRouter } from "next/navigation";
 
 
 export default function GetEventGuest({ close }) {
     const { KONG_URL, user, eventClasses, setEventChoice, setEventClasses } = useContext(GlobalContext);
     const [eventData, setEventData] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
     function SetingEventData() {
         let x = !!eventClasses ? eventClasses : localStorage.getItem("event_classes")
@@ -64,7 +66,6 @@ export default function GetEventGuest({ close }) {
                     toast.success("Evento Selecionado.", {
                         position: "top-right"
                     });
-                    setIsLoading(false);
                 }
 
             } catch (error) {

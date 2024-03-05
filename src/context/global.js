@@ -14,6 +14,7 @@ export const GlobalProvider = ({ children }) => {
     const [guestEditId, setGuestEditId] = useState();
     const [guestEditName, setGuestEditName] = useState();
     const [companyNameEdit, setCompanyNameEdit] = useState();
+    const [refreshPage, setRefreshPage] = useState(false);
 
     const [eventSelected, setEventSelected] = useState();
 
@@ -90,7 +91,9 @@ export const GlobalProvider = ({ children }) => {
             eventClasses,
             setEventClasses,
             eventChoice,
-            setEventChoice
+            setEventChoice,
+            refreshPage,
+            setRefreshPage
         }}>
             {children}
         </GlobalContext.Provider>

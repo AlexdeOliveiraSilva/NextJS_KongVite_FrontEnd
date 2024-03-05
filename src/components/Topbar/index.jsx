@@ -2,13 +2,14 @@
 import React from "react";
 import { useState, useEffect, useContext } from "react"
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import TopbarAdmin from "../fragments/topbarAdmin";
 import TopbarCompany from "../fragments/topbarCompany";
 import { GlobalContext } from "@/context/global";
 import LogoutIcon from '@mui/icons-material/Logout';
 import GetEventGuest from "../Modal/type3eventSelect";
 import TopbarGuest from "../fragments/topbarGuest";
+import { useRouter } from "next/navigation";
 
 export default function Topbar() {
     const path = usePathname();
@@ -20,11 +21,12 @@ export default function Topbar() {
         setUserJwt,
         eventChoice,
         setEventChoice,
+        eventClasses,
+        refreshPage,
         company } = useContext(GlobalContext);
     const [companyData, setcompanyData] = useState();
     const [barOpen, setBarOpen] = useState(false);
     const [eventChoiceModal, setEventChoiceModal] = useState(false);
-
 
     const [clientDataChoice, setClientDataChoice] = useState();
     const [inviteslaking, setInvitesLaking] = useState(0);
@@ -124,41 +126,26 @@ export default function Topbar() {
         }
     }
 
-
-    // async function getCompany() {
-    //     let x;
-    //     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
-    //     let companyName = !!company?.name ? company?.name : localStorage.getItem("company_name");
-
-    //     try {
-
-    //         x = await (await fetch(`${KONG_URL}/companys/1?name=${companyName}`, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': jwt
-    //             }
-    //         })).json()
-
-    //         setCompanyEditData(x.data.filter((e) => e.name == companyName))
-
-    //     } catch (error) {
-
-    //         return ""
-    //     }
-    // }
-
     function invitesGuestCount(z) {
-        if (!!z) {
-            z.map((e) => {
-                setInvitesLaking(inviteslaking + (+e.available))
-            })
+        if (!!z && z.length > 0) {
+
+            const totalAvailable = z.reduce((accumulator, currentObject) => {
+
+                const availableValue = Number(currentObject.available);
+
+                return accumulator + (isNaN(availableValue) ? 0 : availableValue);
+            }, 0);
+
+
+            setInvitesLaking(totalAvailable);
         }
     }
 
     function closeGuestModalF() {
         setEventChoiceModal(false);
     }
+
+
 
     useEffect(() => {
         let x = !!user?.type ? user.type : localStorage.getItem("user_type")
@@ -176,17 +163,22 @@ export default function Topbar() {
         })
     }, [])
 
+
     useEffect(() => {
         let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
-        let z = JSON.parse(y)
+        let z = JSON.parse(y);
+
         setClientDataChoice(z);
-        invitesGuestCount(z?.guestsTicketsTypeNumber);
-    }, [eventChoiceModal])
+        invitesGuestCount(z?.user.guestsTicketsTypeNumber);
+
+    }, [eventChoiceModal, refreshPage])
+
+
 
 
     return (
         <div className="topbarMain flexr">
-            {eventChoiceModal == true && <GetEventGuest close={() => closeGuestModalF()}></GetEventGuest>}
+            {eventChoiceModal == true && <GetEventGuest close={() => closeGuestModalF()} seteffect={(e) => { e.preventDefault(); doRefresh() }}></GetEventGuest>}
             <div className="topbarContent flexr">
                 <div
                     className="topbarPageTitle flexr">

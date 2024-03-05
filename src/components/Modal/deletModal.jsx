@@ -12,8 +12,10 @@ export default function DeletModal({ close, func, word }) {
     function Confirm(e) {
         setIsLoading(true);
         func(e);
+
         setTimeout(() => {
             setIsLoading(false);
+            close();
         }, 2000)
     }
 

@@ -14,7 +14,7 @@ import AddGuest from "@/components/Modal/addGuest";
 
 export default function EventGuest() {
   const router = useRouter();
-  const { KONG_URL, user, eventEdit, eventChoice, eventClasses } = useContext(GlobalContext);
+  const { KONG_URL, user, eventEdit, eventChoice, eventClasses, setRefreshPage, refreshPage } = useContext(GlobalContext);
   const [addGuestModalIsOpen, setAddGuestModalIsOpen] = useState(false);
   const [deleteGuestModalIsOpen, setDeleteGuestModalIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -138,9 +138,9 @@ export default function EventGuest() {
 
     setGuestEditId("");
     setGuestEditName("");
-    getGuests(y.classEvent.id)
-
-    setAddGuestModalIsOpen(false)
+    getGuests(y.classEvent.id);
+    setRefreshPage(!refreshPage);
+    setAddGuestModalIsOpen(false);
   }
 
   function openDeleteGuest(e, id) {
@@ -152,7 +152,8 @@ export default function EventGuest() {
 
   function closeDeleteGuest() {
 
-    setGuestDeleteId("")
+    setGuestDeleteId("");
+    setRefreshPage(!refreshPage);
     setDeleteGuestModalIsOpen(false);
   }
 
@@ -175,10 +176,9 @@ export default function EventGuest() {
       setEmail(y.user?.email);
       setTypesData(y.user?.guestsTicketsTypeNumber)
     }
-  }, [])
+  }, [eventChoice, eventClasses, refreshPage])
 
 
-  console.log(typesData)
   return (
     <div className="clienteMain flexr">
       <ToastContainer></ToastContainer>
@@ -190,8 +190,6 @@ export default function EventGuest() {
             <h1>{!!eventName && eventName}</h1>
           </div>
           <div className="adminUsersAdd flexr" style={{ gap: "10px", width: "auto" }}>
-            <button
-              className="btnOrange">Editar Dados</button>
             <button
               className="btnBlue">Alterar Senha</button>
           </div>
