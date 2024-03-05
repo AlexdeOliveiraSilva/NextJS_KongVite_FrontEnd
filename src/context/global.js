@@ -94,6 +94,7 @@ export const GlobalProvider = ({ children }) => {
             setEventChoice,
             refreshPage,
             setRefreshPage
+
         }}>
             {children}
         </GlobalContext.Provider>
