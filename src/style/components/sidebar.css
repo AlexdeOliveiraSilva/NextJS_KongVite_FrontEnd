@@ -153,6 +153,23 @@
   transition: all 1s ease;
 }
 
+.floatbarTextMenu {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--blue-primary);
+  transition: all 1s ease;
+}
+
+.floatbarTextmenuActive {
+  font-size: 18px;
+  color: var(--title);
+  transition: all 1s ease;
+}
+
+.floatbarTextmenuActive:hover .sidebarMenuIcon {
+  color: var(--blue-primary);
+}
+
 @media (max-width: 900px) {
   .sidebarMain {
     display: none !important;
@@ -169,26 +186,28 @@
   bottom: 20px;
   right: 20px;
   border-radius: 50%;
-  background-color: var(--white-primary);
+  background-color: var(--blue-primary);
 }
 
 .floatMainIcon .floatIcon {
   width: 35px;
   height: 35px;
-  color: var(--blue-primary);
+  color: var(--white-primary);
 }
 
 .floatmain {
   display: none;
+  flex-direction: row;
+  align-items: flex-start;
   position: fixed;
   bottom: 20px;
   right: 20px;
   min-width: 280px;
-  min-height: 40vh;
+  min-height: 25vh;
   box-shadow: var(--shad-3d);
   transition: all 0.4s ease;
   border-radius: 20px;
-  background-color: var(--blue-primary);
+  background-color: var(--white-secondary);
   animation: menuGetUp 0.5s ease;
 }
 
@@ -200,7 +219,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  padding: 30px 20px;
+  padding: 0px 20px;
   justify-content: flex-start;
 }
 .floatInsideClose {

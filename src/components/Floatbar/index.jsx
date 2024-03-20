@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useContext } from "react"
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { GlobalContext } from "@/context/global";
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -15,11 +16,16 @@ import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import LogoutIcon from '@mui/icons-material/Logout';
 import CancelIcon from '@mui/icons-material/Cancel';
+import WorkspacesIcon from '@mui/icons-material/Workspaces';
 
 export default function FloatBar({ itens }) {
+    const path = usePathname();
     const [barOpen, setBarOpen] = useState(true);
+    const [event, setEvent] = useState()
+    const [pathType, setPathType] = useState();
+    const [menu, setMenu] = useState();
     const [floatOpen, setFloatOpen] = useState(false);
-    const { KONG_URL, estbSidebarItens, adminSidebarItens, user, setUserName, setUserEmail, setUserType, setUserJwt } = useContext(GlobalContext);
+    const { KONG_URL, estbSidebarItens, adminSidebarItens, user, estbSidebarEvent, guestSideBar, eventSelected } = useContext(GlobalContext);
     const [userLogged, setUserLogged] = useState({
         name: "",
         email: "",
@@ -37,51 +43,97 @@ export default function FloatBar({ itens }) {
                 return <DashboardIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "administradores":
                 return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
-            case "Empresas":
+            case "empresas":
                 return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
-            case "Convidados":
-                return <PeopleAltIcon className="sidebarMenuIcon" style={commonStyle} />;
-            case "Configurações":
-                return <PermDataSettingIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "eventos":
+                return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "novo-evento":
+                return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "event-view":
+                return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "usuarios":
+                return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "sair-evento":
+                return <LogoutIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "turmas":
+                return <WorkspacesIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "convidados":
+                return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "evento":
+                return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
+            case "transferencias":
+                return <DashboardIcon className="sidebarMenuIcon" style={commonStyle} />;
             default:
                 return null;
         }
     }
+
+
 
     const getName = (x) => {
         switch (x) {
             case "dashboard":
                 return "Dashboard";
             case "administradores":
-                return "Admin Users";
-            case "Empresas":
+                return "Administradores";
+            case "empresas":
                 return "Empresas";
-            case "Convidados":
+            case "eventos":
+                return "Eventos";
+            case "novo-evento":
+                return "Novo Evento";
+            case "event-view":
+                return "Evento";
+            case "usuarios":
+                return "Usuários";
+            case "sair-evento":
+                return "Sair do Evento";
+            case "turmas":
+                return "Turmas";
+            case "convidados":
                 return "Convidados";
-            case "Configurações":
-                return "Configurações";
+            case "evento":
+                return "Evento";
+            case "transferencias":
+                return "Transferências";
             default:
-                return "";
+                return x;
         }
     }
 
-    const logout = (e) => {
-        e.preventDefault()
-        localStorage.clear("user_jwt");
-        localStorage.clear("user_name");
-        localStorage.clear("user_type");
-        localStorage.clear("user_email");
-        setUserName('')
-        setUserEmail('')
-        setUserType('')
-        setUserJwt('')
-
-        router.push('/');
-    }
 
     const Redirect = (e, path) => {
-        e.preventDefault()
-        router.push(`${path}`)
+        e.preventDefault();
+        router.push(`${path}`);
+        setTimeout(() => {
+            setFloatOpen(false)
+        }, 150)
+
+    }
+
+    function ToSetMenu(x) {
+
+        switch (x) {
+
+            case "1":
+                setMenu(adminSidebarItens);
+                break;
+
+            case "2":
+                if (path.startsWith('/cliente/event-view') || path.startsWith('/cliente/turmas')) {
+                    setMenu(estbSidebarEvent);
+                } else {
+                    setMenu(estbSidebarItens);
+                }
+                break;
+
+            case "3":
+                setMenu(guestSideBar);
+                break;
+
+            default:
+                break;
+        }
     }
 
     useEffect(() => {
@@ -96,13 +148,37 @@ export default function FloatBar({ itens }) {
 
 
     useEffect(() => {
+        setEvent(!!eventSelected ? eventSelected : localStorage.getItem('event_selected'))
+        let userTypeHere = !!user?.type ? user?.type : localStorage.getItem('user_type')
+
         setUserLogged({
             name: localStorage.getItem("user_name"),
             email: localStorage.getItem("user_email"),
             type: localStorage.getItem("user_type"),
             jwt: localStorage.getItem("user_jwt")
         })
+
+
+
+        ToSetMenu(userTypeHere);
+
+        switch (userTypeHere) {
+            case "1":
+                setPathType('admin')
+                break;
+            case "2":
+                setPathType('cliente')
+                break;
+            case "3":
+                setPathType('convidado')
+                break;
+            default:
+                setPathType('admin')
+                break;
+        }
     }, [])
+
+
 
 
     if (floatOpen == false) {
@@ -119,26 +195,16 @@ export default function FloatBar({ itens }) {
                         <CancelIcon style={{ width: "45px", height: "45px", color: "var(--blue-primary)" }} />
                     </div>
                     <div className="flexc sidebarMenuItens" style={{ height: "70%" }}>
-                        {!!adminSidebarItens && user?.type == 1 ? adminSidebarItens.map((e, y) => {
+                        {!!menu && menu.map((e, y) => {
                             return (
-                                <div key={y} className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
+                                <div
+                                    onClick={(event) => Redirect(event, `/${pathType}/${e == 'sair-evento' ? 'eventos' : e}`)}
+                                    key={y} className={path.startsWith(`/${pathType}/${e}`) ? "flexr floatbarTextmenuActive" : "flexr floatbarTextmenuActive"} style={{ gap: "10px" }}>
                                     {getIcon(e)}
-                                    <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{getName(e)}</p>
+                                    <p className={!barOpen ? "floatbarTextMenu" : "floatbarTextMenu"}>{getName(e)}</p>
                                 </div>
                             )
-                        })
-                            :
-                            !!estbSidebarItens && user?.type == 2 ? estbSidebarItens.map((e, y) => {
-                                return (
-                                    <div key={y} className="flexr sidebarMenuItemActive" style={{ gap: "10px" }}>
-                                        {getIcon(e)}
-                                        <p className={!barOpen ? "iconOpacity sidebarTextMenu" : "sidebarTextMenu"}>{getName(e)}</p>
-                                    </div>
-                                )
-                            })
-                                :
-                                <p>No Options</p>
-                        }
+                        })}
                     </div>
                     <div className="flexr sidebarFooter" style={{ height: "30%" }}>
                         {/* <div

@@ -102,19 +102,6 @@ export default function Sidebar() {
         }
     }
 
-    const logout = (e) => {
-        e.preventDefault()
-        localStorage.clear("user_jwt");
-        localStorage.clear("user_name");
-        localStorage.clear("user_type");
-        localStorage.clear("user_email");
-        setUserName('')
-        setUserEmail('')
-        setUserType('')
-        setUserJwt('')
-
-        router.push('/');
-    }
 
     const Redirect = (e, path) => {
         e.preventDefault();
