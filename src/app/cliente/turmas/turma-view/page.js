@@ -206,26 +206,32 @@ export default function TurmaView() {
                                         </div>
                                     </div>
                                 </div>
-                                {otherGuestIsOpen == e.id &&
-                                    e.other_guests?.map((e, y) => {
-                                        return (
-                                            <div key={y} style={{ width: "100%" }}>
-                                                <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
-                                                    <div className="otherGuestLine flexr">
-                                                        <p>Convidado <span>{y + 1 < 10 ? `0${y + 1}` : y + 1}</span></p>
-                                                        <p>Nome: <span>{e.name}</span></p>
-                                                        <p>Ingresso: <span>{e.tycketsType.description}</span></p>
+                                {otherGuestIsOpen == e.id && (
+                                    e.other_guests?.length > 0
+                                        ?
+                                        e.other_guests?.map((e, y) => {
+                                            return (
+                                                <div key={y} style={{ width: "100%" }}>
+                                                    <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
+                                                        <div className="otherGuestLine flexr">
+                                                            <p>Convidado <span>{y + 1 < 10 ? `0${y + 1}` : y + 1}</span></p>
+                                                            <p>Nome: <span>{e.name}</span></p>
+                                                            <p>Ingresso: <span>{e.tycketsType.description}</span></p>
+                                                        </div>
+                                                    </div >
+                                                    <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
                                                     </div>
-                                                </div >
-                                                <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
+                                                    {y == e.other_guests?.length &&
+                                                        <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
+                                                    }
                                                 </div>
-                                                {y == e.other_guests?.length &&
-                                                    <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-                                                }
-                                            </div>
-                                        )
-                                    })
-                                }
+                                            )
+                                        })
+                                        :
+                                        <div style={{ width: "100%", fontSize: " 14px", marginTop: "10px", marginBottom: "10px" }} className="flexr">
+                                            Nenhum convidado adicionado...
+                                        </div>
+                                )}
                             </>
                         )
                     })

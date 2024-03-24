@@ -10,6 +10,7 @@ import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import AddGuest from "@/components/Modal/addGuest";
+import InvitesModal from "@/components/Modal/invitesDownload";
 
 
 export default function EventGuest() {
@@ -18,11 +19,14 @@ export default function EventGuest() {
   const [addGuestModalIsOpen, setAddGuestModalIsOpen] = useState(false);
   const [deleteGuestModalIsOpen, setDeleteGuestModalIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [invitesOpen, setInvitesOpen] = useState(false)
 
   const [eventName, setEventName] = useState();
   const [className, setClassName] = useState();
   const [classGuestId, setClassGuestId] = useState();
 
+  const [myId, setMyId] = useState();
+  const [myData, setMyData] = useState();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -59,8 +63,39 @@ export default function EventGuest() {
         })).json()
 
         if (!x.message) {
-
+          setMyId(x.id)
           setGuests(x.other_guests)
+          return ""
+        }
+
+      } catch (error) {
+
+        return ""
+      }
+    } else {
+
+      return ""
+    }
+  }
+
+  async function getAllData() {
+
+    let x;
+    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+
+    if (!!myId) {
+
+      try {
+        x = await (await fetch(`${KONG_URL}/student/${myId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': jwt
+          }
+        })).json()
+
+        if (!x.message) {
+          setMyData(x)
           return ""
         }
 
@@ -189,6 +224,13 @@ export default function EventGuest() {
     }
   }
 
+  function setInvitesOpenModal() {
+    console.log("clic")
+    setInvitesOpen(true)
+  }
+  function setInvitesCloseModal() {
+    setInvitesOpen(false)
+  }
 
   useEffect(() => {
     let x = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
@@ -214,10 +256,15 @@ export default function EventGuest() {
 
   }, [addGuestModalIsOpen])
 
+  useEffect(() => {
+    getAllData()
+
+  }, [myId])
 
   return (
     <div className="clienteMain flexr">
       <ToastContainer></ToastContainer>
+      {!!invitesOpen && <InvitesModal close={() => setInvitesCloseModal()} data={myData} jwt={!!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")} url={KONG_URL} ></InvitesModal>}
       {!!deleteGuestModalIsOpen && <DeletModal close={() => closeDeleteGuest()} func={() => deleteGuest()} word={"confirmar"}></DeletModal>}
       {!!addGuestModalIsOpen && <AddGuest close={() => closeAddGuest()} classId={classGuestId} typesData={typesData} guestId={guestEditId} guestName={guestEditName}></AddGuest>}
       <div className="clienteContent flexc">
@@ -227,7 +274,14 @@ export default function EventGuest() {
           </div>
           <div className="adminUsersAdd flexr" style={{ gap: "10px", width: "auto" }}>
             <button
-              className="btnBlue">Alterar Senha</button>
+              onClick={() => setInvitesOpenModal()}
+              className="btnBlue">
+              Baixar Ingresso
+            </button>
+            <button
+              className="btnOrange">
+              Alterar Senha
+            </button>
           </div>
         </div>
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
@@ -262,11 +316,11 @@ export default function EventGuest() {
               </div>
             }
           </div>
-          {!!name &&
+          {/* {!!name &&
             <div className="clienteTitleDiv flexr" style={{ justifyContent: "flex-start" }}>
               <img src="/images/logo-gazz-azul-preto.png"></img>
             </div>
-          }
+          } */}
         </div>
         {!!name &&
           <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>

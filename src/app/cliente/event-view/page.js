@@ -210,21 +210,30 @@ export default function EventView() {
                                 <div className="clienteEventLineItem flexr">
                                     <h4>Endereço: </h4><h4><span>{address}, {numberAdress} - {neighborhood}, {city}/{uf}</span></h4>
                                 </div>
+                                <div className="clienteEventLineItem flexr">
+                                    <h4>Tipos de Ingresso: </h4><h4><span>{!!passType && passType.map((e, y) => {
+                                        if (y != 0) {
+                                            return (`, ${e.description}`)
+                                        } else {
+                                            return e.description
+                                        }
+                                    })}</span></h4>
+                                </div>
                             </div>
                         }
                     </div>
-                    {!!name &&
+                    {/* {!!name &&
                         <div className="clienteTitleDiv flexr" style={{ justifyContent: "flex-start" }}>
                             <img src="/images/logo-gazz-azul-preto.png"></img>
                         </div>
-                    }
+                    } */}
                 </div>
                 {!!name &&
                     <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
                 }
                 {!!name &&
                     <div className="clienteEventDiv flexc" style={{ padding: "20px 40px", height: "100%", justifyContent: "flex-start" }}>
-                        <div className="clienteEventLineItem flexr">
+                        {/* <div className="clienteEventLineItem flexr">
                             <h4>Tipos de Ingresso: </h4><h4><span>{!!passType && passType.map((e, y) => {
                                 if (y != 0) {
                                     return (`, ${e.description}`)
@@ -232,8 +241,8 @@ export default function EventView() {
                                     return e.description
                                 }
                             })}</span></h4>
-                        </div>
-                        <div className="clienteEventLineItem flexr" style={{ gap: "50px", flexWrap: "wrap" }}>
+                        </div> */}
+                        {/* <div className="clienteEventLineItem flexr" style={{ gap: "50px", flexWrap: "wrap" }}>
                             {!!passType && passType.map((e, y) => {
                                 let image;
                                 if (y % 2 == 0) {
@@ -245,7 +254,7 @@ export default function EventView() {
                                     <img key={y} src={image}></img>
                                 )
                             })}
-                        </div>
+                        </div> */}
                     </div>
                 }
             </div>

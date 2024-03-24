@@ -81,7 +81,7 @@
 .passTypeBlockFirts {
   width: 100%;
   height: auto;
-  min-height: 80px;
+  min-height: 50px;
   border-radius: 10px;
   gap: 30px;
   margin: 0 30px;

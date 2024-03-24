@@ -5,7 +5,38 @@ import React, { createContext, useEffect, useState } from 'react';
 export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-    const KONG_URL = "https://dnib66h97fzb3.cloudfront.net";
+    const KONG_URL = "https://api.kongvite.com";
+
+    async function sendtos3(key, extension, base64Data) {
+
+        let res;
+
+        const body = JSON.stringify({
+            key: key.toString(),
+            extension: extension.toString(),
+            base64Data: base64Data.toString()
+        });
+
+        console.log(key.toString(), extension.toString(), base64Data.toString())
+
+        try {
+            res = await (await fetch(`${KONG_URL}/upload`, {
+                method: 'POST',
+                body: body,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })).json()
+
+            console.log('Arquivo envxiado com sucesso para o S3', res);
+
+            return res
+
+        } catch (error) {
+            console.log('error', error);
+        }
+
+    }
 
     const [userEdit, setUserEdit] = useState();
     const [eventEdit, setEventEdit] = useState();
@@ -61,6 +92,7 @@ export const GlobalProvider = ({ children }) => {
                 name: companyName,
                 document: companyDoc
             },
+            sendtos3,
             setUserName,
             setUserEmail,
             setUserType,

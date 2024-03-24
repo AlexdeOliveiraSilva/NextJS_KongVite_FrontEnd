@@ -380,3 +380,55 @@ form {
     padding: 10px 20px;
   }
 }
+
+/* ************************* INVITE MODAL */
+
+.inviteList {
+  width: 100%;
+  margin: 20px;
+  padding: 30px 20px;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.inviteList h1 {
+  width: 100%;
+  text-align: center;
+  font-size: 22px;
+  padding-bottom: 20px;
+}
+
+.inviteLine {
+  width: 100%;
+  min-height: 40px;
+  background-color: var(--blue-third);
+  border: 1px solid var(--white-secondary);
+  border-radius: 8px;
+  position: relative;
+  justify-content: flex-start;
+  padding: 0 20px;
+}
+.inviteLineOther {
+  width: 90%;
+  min-height: 40px;
+  background-color: var(--white-secondary);
+  border: 1px solid var(--white-secondary);
+  border-radius: 8px;
+  position: relative;
+  justify-content: flex-start;
+  padding: 0 20px;
+}
+
+.downBtn {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  background-color: var(--blue-secondary);
+  border-radius: 8px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.downBtnDisabled {
+  display: none;
+}

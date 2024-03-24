@@ -14,7 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 export default function EventsEdit() {
   const router = useRouter();
-  const { KONG_URL, user, eventsType, eventsSubType, eventEdit } = useContext(GlobalContext);
+  const { KONG_URL, user, eventsType, eventsSubType, eventEdit, sendtos3 } = useContext(GlobalContext);
   const [name, setName] = useState();
   const [date, setDate] = useState();
   const [address, setAddress] = useState();
@@ -34,6 +34,9 @@ export default function EventsEdit() {
   const [neighborhoodError, setNeighborhoodError] = useState(false);
   const [cityError, setCityError] = useState(false);
   const [ufError, setUfError] = useState(false);
+  const [imageStack, setImageStack] = useState(false);
+  const [typeStack, setTypeStack] = useState("");
+  const [imageURL, setImageURL] = useState("");
 
   const [alreadyPassType, setAlreadyPassType] = useState([]);
   const [passType, setPassType] = useState([]);
@@ -131,6 +134,7 @@ export default function EventsEdit() {
 
 
           for (let index = 0; index < passType.length; index++) {
+
             addPassTypes(jwt, eventId, passType[index]);
           }
 
@@ -168,7 +172,7 @@ export default function EventsEdit() {
           body: JSON.stringify({
             description: data.name,
             eventsId: event,
-            image: ""
+            image: data.image
           })
         })).json()
 
@@ -180,10 +184,12 @@ export default function EventsEdit() {
 
   async function deletePassTypes(passId) {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let x;
 
     if (!!jwt && !!passId) {
+
       try {
-        x = await (await fetch(`${KONG_URL}/companys/tycketsType/`, {
+        x = await fetch(`${KONG_URL}/companys/tycketsType/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -193,16 +199,18 @@ export default function EventsEdit() {
             id: passId,
             situation: 2
           })
-        })).json()
+        })
 
-        if (!x.message) {
+
+        if (x.status == 200) {
+
           toast.success("Tipo de Convite Deletado.", {
             position: "top-right"
           });
+          return x
         }
-
-        return x
       } catch (error) {
+
         toast.error("Erro ao deletar Tipo de Convite.", {
           position: "top-right"
         });
@@ -210,11 +218,22 @@ export default function EventsEdit() {
     }
   }
 
-  const addPassType = (event) => {
+  async function addPassType(event) {
     event.preventDefault();
 
-    if (passTypeObject.name.length != 0 && passTypeObject.image.length != 0) {
-      setPassType([...passType, passTypeObject]);
+    let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
+    let res;
+
+    res = await fileUpload(eventId)
+
+    setImageURL(res?.fileUrl)
+
+    if (!!res?.fileUrl && !!typeStack) {
+
+      setPassType([...passType, {
+        name: typeStack,
+        image: res?.fileUrl
+      }]);
 
       setPassTypeObject({ name: '', image: '' });
     }
@@ -305,6 +324,35 @@ export default function EventsEdit() {
     }
   }
 
+  function fileToBase64(file) {
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result.split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = (error) => {
+        reject('Erro ao converter arquivo para Base64: ' + error);
+      };
+    });
+  }
+
+  async function fileUpload(eventId) {
+    let response;
+    let x = await fileToBase64(imageStack);
+
+    if (!!imageStack && !!eventId && x != undefined) {
+      response = await sendtos3(eventId, 'png', x)
+
+      return response
+    } else {
+      console.log("elsee")
+    }
+
+  }
+
   function formatDateToInput(dataString) {
     const data = new Date(dataString);
 
@@ -326,6 +374,9 @@ export default function EventsEdit() {
     getPassTypes();
   }, [])
 
+  useEffect(() => {
+
+  }, [passType, imageURL])
   return (
     <div className="clienteMain flexr">
       <ToastContainer></ToastContainer>
@@ -461,29 +512,32 @@ export default function EventsEdit() {
           {!!ufError && <p className="errorP">* Preencha um Estado.</p>}
         </div>
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-        <div className="passTypeHeader flexr">
+        <div className="passTypeHeader flexc">
           <div className="passTypeTitle flexr">
             <h1>Tipo de Entrada</h1>
           </div>
           <div className="passTypeBlockFirts flexr">
             <TextField
-              onChange={(e) => setPassTypeObject({ image: passTypeObject.image, name: e.target.value })}
+              onChange={(e) => setTypeStack(e.target.value)}
               className="inputStyle"
               label={!!passTypeObject.name ? '' : "Tipo do Ingresso"}
-              value={passTypeObject.name}
+              value={typeStack}
               id="outlined-size-normal"
               placeholder={`Tipo do Ingresso:`}
               type="text" />
             <TextField
-              onChange={(e) => setPassTypeObject({ name: passTypeObject.name, image: e.target.files[0] })}
+              onChange={(e) => setImageStack(e.target.files[0])}
               className="inputStyle"
-              value={passTypeObject.image[0]}
+              value={imageStack[0]}
               id="outlined-size-normal"
               type="file" />
             <button
               onClick={(event) => addPassType(event)}
               style={{ minWidth: "110px", fontSize: "16px" }}
               className="btnBlue">Adicionar</button>
+          </div>
+          <div className="passTypeBlockFirts flexr" style={{ justifyContent: "flex-end" }}>
+            <p style={{ fontSize: "12px", color: "red" }}>* Preferência de Imagem: 400px X 717px e até 2Mb</p>
           </div>
         </div>
         <div className="passTypeFull flexc">
