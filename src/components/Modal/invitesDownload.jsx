@@ -45,6 +45,7 @@ export default function InvitesModal({ close, data, jwt, url }) {
                     setIsLoading("");
                 }
 
+
             } catch (error) {
                 console.log("error:", error)
                 setIsLoading("");
