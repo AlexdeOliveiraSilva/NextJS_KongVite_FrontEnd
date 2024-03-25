@@ -206,6 +206,7 @@ export default function TurmaView() {
                                         </div>
                                     </div>
                                 </div>
+
                                 {otherGuestIsOpen == e.id && (
                                     e.other_guests?.length > 0
                                         ?
