@@ -192,9 +192,9 @@ export default function TurmaView() {
                                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                                     <p className="userPhoneLi">{e.phone}</p>
                                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                                    <p className="guestLi">{e.tycketsType.description}</p>
+                                    <p className="guestLi">{e.tycketsType?.description}</p>
                                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                                    <p className="guestLi">{e.other_guests.length}</p>
+                                    <p className="guestLi">{e.other_guests?.length}</p>
                                     <div className="userConfigbtns flexr">
                                         <div
                                             onClick={(event) => toEditGuest(event, e.id, e.name)}
