@@ -150,7 +150,7 @@ export default function Topbar() {
         let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
         let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
 
-        let theClass = (JSON.parse(y)).classEvent.id
+        let theClass = (JSON.parse(y)).classEvent?.id
 
         let x;
 

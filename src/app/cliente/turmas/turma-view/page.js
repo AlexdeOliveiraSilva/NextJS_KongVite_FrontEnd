@@ -216,8 +216,8 @@ export default function TurmaView() {
                                                     <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
                                                         <div className="otherGuestLine flexr">
                                                             <p>Convidado <span>{y + 1 < 10 ? `0${y + 1}` : y + 1}</span></p>
-                                                            <p>Nome: <span>{e.name}</span></p>
-                                                            <p>Ingresso: <span>{e.tycketsType.description}</span></p>
+                                                            <p>Nome: <span>{!!e.name ? e.name : "Não preencheu"}</span></p>
+                                                            <p>Ingresso: <span>{!!e.tycketsType?.description ? e.tycketsType?.description : "Não preencheu"}</span></p>
                                                         </div>
                                                     </div >
                                                     <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>

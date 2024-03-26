@@ -353,7 +353,7 @@ export default function EventGuest() {
               height: "200px",
               overflowY: "auto"
             }}>
-            {guests.length > 0 ? guests.map((e, y) => {
+            {guests?.length > 0 ? guests.map((e, y) => {
               return (
                 <div
                   // onClick={(event) => toEvent(event, e.id)}
@@ -362,7 +362,7 @@ export default function EventGuest() {
                   <div className="displayNone700">
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                   </div>
-                  <p className="clienteAvaibleLi" style={{ minWidth: "60px" }}>{e.tycketsType.description}</p>
+                  <p className="clienteAvaibleLi" style={{ minWidth: "60px" }}>{e.tycketsType?.description}</p>
                   <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                   <p className="eventNameLi" style={{ whiteSpace: "nowrap" }}>{e.name}</p>
                   <div className="userConfigbtns flexr">
