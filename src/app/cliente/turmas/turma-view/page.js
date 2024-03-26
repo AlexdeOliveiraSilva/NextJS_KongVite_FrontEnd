@@ -229,6 +229,7 @@ export default function TurmaView() {
                                             )
                                         })
                                         :
+
                                         <div style={{ width: "100%", fontSize: " 14px", marginTop: "10px", marginBottom: "10px" }} className="flexr">
                                             Nenhum convidado adicionado...
                                         </div>
