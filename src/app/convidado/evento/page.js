@@ -42,6 +42,7 @@ export default function EventGuest() {
   const [guests, setGuests] = useState([]);
 
   const [guestEditId, setGuestEditId] = useState();
+  const [guestData, setGuestData] = useState();
   const [guestDeleteId, setGuestDeleteId] = useState();
   const [guestEditName, setGuestEditName] = useState();
   const [typesData, setTypesData] = useState([]);
@@ -159,11 +160,10 @@ export default function EventGuest() {
     setAddGuestModalIsOpen(true)
   }
 
-  function openEditGuest(e, id, name) {
+  function openEditGuest(e, data) {
     e.preventDefault();
 
-    setGuestEditId(id);
-    setGuestEditName(name);
+    setGuestData(data)
     setAddGuestModalIsOpen(true)
   }
 
@@ -194,9 +194,9 @@ export default function EventGuest() {
 
   async function getAvaibles() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
-    let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
+    let y = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
 
-    let theClass = (JSON.parse(y)).classEvent.id
+    let theClass = y?.classEvent.id
 
     let x;
 
@@ -240,6 +240,8 @@ export default function EventGuest() {
     let z = JSON.parse(w)
 
     if (!!y && !!z) {
+
+      console.log(z)
       getGuests(y.classEvent.id);
 
       setClassGuestId(y.classEvent.id);
@@ -248,6 +250,7 @@ export default function EventGuest() {
       setName(y?.user?.name);
       setPhone(y.user?.phone);
       setEmail(y.user?.email);
+      setDate(y?.classEvent?.date);
     }
   }, [eventChoice, eventClasses, refreshPage])
 
@@ -266,7 +269,7 @@ export default function EventGuest() {
       <ToastContainer></ToastContainer>
       {!!invitesOpen && <InvitesModal close={() => setInvitesCloseModal()} data={myData} jwt={!!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")} url={KONG_URL} ></InvitesModal>}
       {!!deleteGuestModalIsOpen && <DeletModal close={() => closeDeleteGuest()} func={() => deleteGuest()} word={"confirmar"}></DeletModal>}
-      {!!addGuestModalIsOpen && <AddGuest close={() => closeAddGuest()} classId={classGuestId} typesData={typesData} guestId={guestEditId} guestName={guestEditName}></AddGuest>}
+      {!!addGuestModalIsOpen && <AddGuest close={() => closeAddGuest()} classId={classGuestId} typesData={typesData} guestData={guestData}></AddGuest>}
       <div className="clienteContent flexc">
         <div className="adminUsersHeader flexr" style={{ margin: "10px 0" }}>
           <div className="adminUsersTitle flexr" style={{ justifyContent: "flex-start" }}>
@@ -339,10 +342,7 @@ export default function EventGuest() {
           }}
           className="clienteUl flexc">
           <div className="clienteTitle flexr">
-            <p className="clienteIdLi">Id</p>
-            <div className="displayNone700">
-              <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            </div>
+
             <p className="clienteAvaibleLi" style={{ minWidth: "60px" }}>Ingresso</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
             <p className="eventNameLi">Nome</p>
@@ -353,21 +353,17 @@ export default function EventGuest() {
               height: "200px",
               overflowY: "auto"
             }}>
-            {guests?.length > 0 ? guests.map((e, y) => {
+            {guests?.length > 0 ? guests.sort((a, b) => a.name.localeCompare(b.name)).sort((a, b) => a.tycketsType?.description.localeCompare(b.tycketsType?.description)).map((e, y) => {
               return (
                 <div
-                  // onClick={(event) => toEvent(event, e.id)}
+                  onClick={(event) => openEditGuest(event, e)}
                   key={y} className="clienteLine flexr">
-                  <p className="clienteIdLi">{e.id}</p>
-                  <div className="displayNone700">
-                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  </div>
                   <p className="clienteAvaibleLi" style={{ minWidth: "60px" }}>{e.tycketsType?.description}</p>
                   <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                   <p className="eventNameLi" style={{ whiteSpace: "nowrap" }}>{e.name}</p>
                   <div className="userConfigbtns flexr">
                     <div
-                      onClick={(event) => openEditGuest(event, e.id, e.name)}
+                      onClick={(event) => openEditGuest(event, e)}
                       className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
                     <div
                       onClick={(event) => { openDeleteGuest(event, e.id) }}

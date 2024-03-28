@@ -12,7 +12,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-export default function AddGuest({ close, classId, typesData, guestId, guestName }) {
+export default function AddGuest({ close, classId, typesData, guestData }) {
     const { KONG_URL, user, eventEdit, eventChoice } = useContext(GlobalContext);
 
     const [isLoading, setIsLoading] = useState();
@@ -32,7 +32,7 @@ export default function AddGuest({ close, classId, typesData, guestId, guestName
         let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
         let x;
 
-        if (!!jwt && !!classId) {
+        if (!!jwt && !!classId && !!name && !!document && !!phone && !!email && !!selfPass) {
             setIsLoading(true);
             try {
 
@@ -70,7 +70,7 @@ export default function AddGuest({ close, classId, typesData, guestId, guestName
                 return ""
             }
         } else {
-            toast.error("Erro ao cadastrar Convidado.", {
+            toast.error("Preencha todos os campos.", {
                 position: "top-right"
             });
             console.log("else")
@@ -84,7 +84,7 @@ export default function AddGuest({ close, classId, typesData, guestId, guestName
 
         let x;
 
-        if (!!jwt && !!classId && !!guestId) {
+        if (!!jwt && !!classId && !!guestData?.id && !!name && !!document && !!phone && !!email && !!selfPass) {
             setIsLoading(true);
             try {
                 x = await (await fetch(`${KONG_URL}/student/acompanhante/add/${classId}`, {
@@ -94,7 +94,7 @@ export default function AddGuest({ close, classId, typesData, guestId, guestName
                         'Authorization': jwt
                     },
                     body: JSON.stringify({
-                        id: guestId,
+                        id: guestData?.id,
                         name: name,
                         document: document,
                         phone: phone,
@@ -131,6 +131,13 @@ export default function AddGuest({ close, classId, typesData, guestId, guestName
 
     useEffect(() => {
 
+        console.log(guestData?.tycketsType?.id)
+
+        setName(!!guestData?.name ? guestData?.name : "")
+        setDocument(!!guestData?.document ? guestData?.document : "")
+        setPhone(!!guestData?.phone ? guestData?.phone : "")
+        setEmail(!!guestData?.email ? guestData?.email : "")
+        setSelfPass(!!guestData?.tycketsType?.id ? guestData?.tycketsType?.id : "");
     }, [])
 
     return (
@@ -146,7 +153,7 @@ export default function AddGuest({ close, classId, typesData, guestId, guestName
                 <div className="userAdminDoubleInputs flexc" style={{ gap: "10px" }}>
                     <h2
                         style={{ marginBottom: "30px" }}
-                    >{!!guestId ? `Convidado: ${guestName}` : 'Adicionar Convidado'}</h2>
+                    >{!!guestData?.id ? `Convidado: ${guestData.name}` : 'Adicionar Convidado'}</h2>
                     <TextField
                         onChange={(e) => setName(e.target.value)}
                         className="inputStyle"
@@ -175,6 +182,7 @@ export default function AddGuest({ close, classId, typesData, guestId, guestName
                         <FormControl className="InputsTwoSelect">
                             <InputLabel id="demo-simple-select-label">Tipo do Ingresso</InputLabel>
                             <Select
+                                style={{ minWidth: "165px" }}
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 value={selfPass}
@@ -207,9 +215,9 @@ export default function AddGuest({ close, classId, typesData, guestId, guestName
 
 
                     <button
-                        onClick={!!guestId ? (e) => editGuest(e) : (e) => addGuest(e)}
+                        onClick={!!guestData?.id ? (e) => editGuest(e) : (e) => addGuest(e)}
                         style={{ minWith: "120px", marginTop: "30px" }}
-                        className="btnBlue">{!!isLoading ? <Loader></Loader> : !!guestId ? 'Salvar Alterações' : 'Salvar'}</button>
+                        className="btnBlue">{!!isLoading ? <Loader></Loader> : !!guestData?.id ? 'Salvar Alterações' : 'Salvar'}</button>
                 </div>
             </div>
         </div>

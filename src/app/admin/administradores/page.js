@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "@/components/fragments/loader";
 
 export default function AdminUsers() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function AdminUsers() {
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [deleteIdSelected, setDeletedidSelected] = useState();
   const [isLoading, setisLoading] = useState(false);
+  const [isFetching, setisFetching] = useState(false);
 
   async function getAdmins() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
@@ -24,6 +26,7 @@ export default function AdminUsers() {
     let x;
 
     if (!!jwt) {
+      setisFetching(true);
       try {
         x = await (await fetch(`${KONG_URL}/users`, {
           method: 'GET',
@@ -34,9 +37,9 @@ export default function AdminUsers() {
         })).json()
 
         setAdminsList(x)
-
+        setisFetching(false);
       } catch (error) {
-
+        setisFetching(false);
         return ""
       }
     }
@@ -134,10 +137,6 @@ export default function AdminUsers() {
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
         <div className="adminUsersUl flexc">
           <div className="userLineTitle flexr">
-            <p className="userIdLi">Id</p>
-            <div className="userLine1150">
-              <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            </div>
             <p className="userNameLi">Username</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
             <p className="userDocLi">Documento</p>
@@ -149,39 +148,45 @@ export default function AdminUsers() {
             <p className="userEmailLi">Email</p>
           </div>
           <div className="adminUsersUl flexc" style={{ marginTop: "10px" }}>
-            {!!adminsList && adminsList.map((e, y) => {
-              return (
-                <div key={y} className="userLine flexr">
-                  <p className="userIdLi">{e.id}</p>
-                  <div className="userLine1150">
-                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  </div>
-                  <p className="userNameLi">{e.name}</p>
-                  <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  <p className="userDocLi">{e.document}</p>
-                  <div className="userLine1150">
-                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  </div>
-                  <p className="userPhoneLi">{e.phone}</p>
-                  <div className="userLine650">
-                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  </div>
-                  <p className="userEmailLi">{e.email}</p>
-                  <div className="userConfigbtns flexr">
-                    <div
-                      onClick={(event) => toEditUser(event, e.id)}
-                      className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
-                    {y != 0 &&
-                      <div
-                        onClick={(event) => openDeleteModal(event, e.id)}
-                        className="userConfigbtn flexr">
-                        <DeleteIcon className="userConfigIcon"></DeleteIcon>
+            {isFetching == true
+              ?
+              <Loader></Loader>
+              :
+              !!adminsList
+                ?
+                adminsList.sort((a, b) => a.name.localeCompare(b.name)).map((e, y) => {
+                  return (
+                    <div key={y} className="userLine flexr">
+                      <p className="userNameLi">{e.name}</p>
+                      <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                      <p className="userDocLi">{e.document}</p>
+                      <div className="userLine1150">
+                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                       </div>
-                    }
-                  </div>
-                </div>
-              )
-            })}
+                      <p className="userPhoneLi">{e.phone}</p>
+                      <div className="userLine650">
+                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                      </div>
+                      <p className="userEmailLi">{e.email}</p>
+                      <div className="userConfigbtns flexr">
+                        <div
+                          onClick={(event) => toEditUser(event, e.id)}
+                          className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
+                        {y != 0 &&
+                          <div
+                            onClick={(event) => openDeleteModal(event, e.id)}
+                            className="userConfigbtn flexr">
+                            <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  )
+                }
+
+                )
+                : ""
+            }
           </div>
         </div>
       </div>

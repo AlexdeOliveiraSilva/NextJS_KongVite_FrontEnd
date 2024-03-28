@@ -252,6 +252,7 @@ export default function AdminUsersEdit() {
           </div>
           <div className="adminUsersAdd flexr">
             <button
+              disabled={isLoading}
               onClick={(event) => editUser(event)}
               style={{ minWidth: "150px" }}
               className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>

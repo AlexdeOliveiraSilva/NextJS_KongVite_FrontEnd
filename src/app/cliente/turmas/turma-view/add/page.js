@@ -107,6 +107,11 @@ export default function GuestAdd() {
   async function addNewGuest(e) {
     e.preventDefault();
 
+    if (!checkInputs()) {
+      toast.error("Preencha todos os campos")
+      return ""
+    }
+
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
     let event = !!eventEdit ? eventEdit : localStorage.getItem("event_edit")
     let turma = !!turmaEdit ? turmaEdit : localStorage.getItem("turma_edit")
@@ -225,6 +230,13 @@ export default function GuestAdd() {
     getPassTypes();
   }, [])
 
+  function checkInputs() {
+    if (!!name && !!selfPass && !!document && !!email && !!phone) {
+      return true
+    } else {
+      return false
+    }
+  }
 
 
   return (
@@ -233,7 +245,7 @@ export default function GuestAdd() {
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">
-            <h1>Novo Convidado</h1>
+            <h1>Novo Formando</h1>
           </div>
           <div className="adminUsersAdd flexr">
             <button
@@ -245,20 +257,23 @@ export default function GuestAdd() {
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
         <div className="adminUsersUl flexc" style={{ alignItems: "flex-start", padding: '0 20px' }}>
           <TextField
+            focused={!!name ? true : false}
             onChange={(e) => setName(e.target.value)}
-            className="inputStyle" label={!!name ? '' : "Nome"} id="outlined-size-normal" placeholder={`Digite o Nome:'`} type="text" />
+            className="inputStyle" label={"Nome"} id="outlined-size-normal" placeholder={`Digite o Nome:'`} type="text" />
           {!!nameError && <p className="errorP">* O Nome deve conter mais que 3 caracteres.</p>}
           <div className="userAdminDoubleInputs flexr">
             <TextField
+              focused={!!document ? true : false}
               onChange={(e) => setDocument(e.target.value)}
               className="inputStyle"
-              label={!!document ? '' : "Documento"}
+              label={"Documento"}
               id="outlined-size-normal"
               placeholder={`Digite o Documento:'`}
               type="number" />
             <TextField
+              focused={!!phone ? true : false}
               onChange={(e) => setPhone(e.target.value)}
-              className="inputStyle" label={!!phone ? '' : "Telefone"} id="outlined-size-normal" placeholder={`Digite o Telefone:'`} type="number" />
+              className="inputStyle" label={"Telefone"} id="outlined-size-normal" placeholder={`Digite o Telefone:'`} type="number" />
           </div>
           {!!documentError && <p className="errorP">* O Documento deve ser valido.</p>}
           {!!phoneError && <p className="errorP" style={{ textAlign: "right" }}>* O Telefone deve ser valido.</p>}
@@ -266,12 +281,16 @@ export default function GuestAdd() {
 
           <div className="userAdminDoubleInputs flexr">
             <TextField
+              focused={!!email ? true : false}
               onChange={(e) => setEmail(e.target.value)}
-              className="inputStyle" label={!!email ? '' : "E-mail"} id="outlined-size-normal" placeholder={`Digite o E-mail:'`} type="text" />
+              className="inputStyle" label={"E-mail"} id="outlined-size-normal" placeholder={`Digite o E-mail:'`} type="text" />
 
             <FormControl className="InputsTwoSelect">
               <InputLabel id="demo-simple-select-label">Tipo do Ingresso</InputLabel>
               <Select
+                style={{
+                  minWidth: "180px"
+                }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={selfPass}

@@ -164,6 +164,18 @@ export default function EventView() {
         setDeleteModalIsOpen(false)
     }
 
+    function formatDateToInput(dataString) {
+        const data = new Date(dataString);
+
+        const ano = data.getFullYear();
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const dia = String(data.getDate()).padStart(2, '0');
+        const horas = String(data.getHours()).padStart(2, '0');
+        const minutos = String(data.getMinutes()).padStart(2, '0');
+
+        return `${dia}/${mes}/${ano} às ${horas}:${minutos} horas`;
+    }
+
     useEffect(() => {
         getEvent();
     }, [])
@@ -202,7 +214,7 @@ export default function EventView() {
                                     <h4>Subtipo: </h4><h4><span>{subType || "-"}</span></h4>
                                 </div>
                                 <div className="clienteEventLineItem flexr">
-                                    <h4>Data: </h4><h4><span>{date || "-"}</span></h4>
+                                    <h4>Data: </h4><h4><span>{formatDateToInput(date) || "-"}</span></h4>
                                 </div>
                                 <div className="clienteEventLineItem flexr">
                                     <h4>CEP: </h4><h4><span>{zipcode || "-"}</span></h4>

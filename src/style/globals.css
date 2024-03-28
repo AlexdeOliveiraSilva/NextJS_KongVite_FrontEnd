@@ -124,6 +124,12 @@ form {
   height: auto;
 }
 
+.inputStyleSearch {
+  width: auto;
+  max-width: 200px;
+  height: auto;
+}
+
 .page-transition {
   transition: opacity 0.5s ease;
   opacity: 0;
@@ -431,4 +437,38 @@ form {
 
 .downBtnDisabled {
   display: none;
+}
+
+/* ************************* IMAGE MODAL */
+
+.imageModalFull {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  right: 0;
+  position: fixed;
+  z-index: 999;
+  background-color: #00000051;
+}
+
+.imageModalContent {
+  position: relative;
+  width: auto;
+  height: auto;
+  max-height: 90vh;
+  background-color: var(--white-primary);
+}
+
+.imageModalContent img {
+  width: 100%;
+  height: 100%;
+}
+
+.imageModalContentClose {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  top: -25px;
+  right: -25px;
+  background-color: var(--white-primary);
 }

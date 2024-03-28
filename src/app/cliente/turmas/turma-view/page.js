@@ -9,6 +9,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import Paper from '@mui/material/Paper';
+import InputBase from '@mui/material/InputBase';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import Loader from "@/components/fragments/loader";
 
 export default function TurmaView() {
     const router = useRouter();
@@ -21,9 +28,11 @@ export default function TurmaView() {
     const [turmaEdit, setTurmaEdit] = useState();
     const [turmaNameEdit, setTurmaNameEdit] = useState();
     const [otherGuestIsOpen, setOtherGuestIsOpen] = useState();
-
+    const [search, setSearch] = useState("")
     const [turmaData, setTurmaData] = useState();
-
+    const [turmaGuest, setTurmaGuest] = useState();
+    const [turmaGuestCopy, setTurmaGuestCopy] = useState();
+    const [isFetching, setisFetching] = useState(false);
 
 
     async function getTurma() {
@@ -33,6 +42,7 @@ export default function TurmaView() {
 
         if (!!jwt && !!turmaId) {
             setIsLoading(true);
+            setisFetching(true);
             try {
                 x = await (await fetch(`${KONG_URL}/companys/turma/get/${turmaId}`, {
                     method: 'GET',
@@ -44,16 +54,20 @@ export default function TurmaView() {
                 if (!x?.message) {
 
                     setTurmaData(x);
-
+                    setTurmaGuest(x.guests);
+                    setTurmaGuestCopy(x.guests);
                     setIsLoading(false);
+                    setisFetching(false);
                     return ""
                 }
             } catch (error) {
                 setIsLoading(false);
+                setisFetching(false);
                 return ""
             }
         } else {
             console.log("else")
+            setisFetching(false);
         }
     }
 
@@ -102,7 +116,7 @@ export default function TurmaView() {
                 toast.error("Erro ao Deletar, tente novamente.", {
                     position: "top-right"
                 });
-                setisLoading(false)
+                setIsLoading(false)
                 return ""
             }
         }
@@ -137,6 +151,18 @@ export default function TurmaView() {
         getTurma()
     }, [])
 
+    function onSearch() {
+
+        let y = turmaGuestCopy?.filter((e) => e.name.toLowerCase().includes(search.toLowerCase()))
+
+        setTurmaGuest(y)
+    }
+
+
+    useEffect(() => {
+        onSearch();
+    }, [search])
+
 
     return (
         <div className="clienteMain flexr">
@@ -144,20 +170,36 @@ export default function TurmaView() {
             {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteGuest()} word="confirmar" ></DeletModal>}
             <div className="clienteContent flexc">
                 <div className="adminUsersHeader flexr">
-                    <div className="adminUsersTitle flexr">
-                        <h1>{!!turmaData ? `${turmaData?.name} - Convidados` : "Convidados da Turma"}</h1>
+                    <div className="adminUsersTitle flexr" style={{ gap: "30px" }}>
+                        <h1>{!!turmaData ? `${turmaData?.name} - Formandos` : "Formandos da Turma"}</h1>
+                        <div className=" flexr" style={{ gap: "30px" }}>
+                            <Paper
+                                className=" paperSize"
+                                component="form"
+                                sx={{ p: '2px 4px', display: 'flex', alignItems: 'center' }}
+                            >
+                                <InputBase
+                                    sx={{ ml: 1, flex: 1 }}
+                                    placeholder="Buscar Empresa..."
+                                    inputProps={{ 'aria-label': 'buscar empresa...' }}
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                                <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                                    <SearchIcon />
+                                </IconButton>
+
+                            </Paper>
+                        </div>
                     </div>
                     <div className="adminUsersAdd flexr" style={{ gap: "10px", width: "auto" }}>
                         <button
                             onClick={(e) => toAddGuest(e)}
-                            className="btnOrange">Add Convidado</button>
+                            className="btnOrange">Add Formando</button>
                     </div>
                 </div>
                 <div className="userLineTitle flexr">
-                    <p className="userIdLi">Id</p>
-                    <div className="userLine1150">
-                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                    </div>
                     <p className="userNameLi">Nome</p>
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                     <p className="userPhoneLi">Telefone</p>
@@ -167,78 +209,79 @@ export default function TurmaView() {
                     <p className="guestLi">Convidados</p>
                 </div>
                 <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
-                    {!!turmaData && turmaData?.guests?.length > 0 ? turmaData?.guests?.map((e, y) => {
-
-                        // *** RECEBER AVAIBLE AQUI
-                        return (
-                            <>
-                                <div key={y}
-                                    style={{ cursor: "pointer" }}
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        if (otherGuestIsOpen != e.id) {
-                                            setOtherGuestIsOpen(e.id);
-                                        } else {
-                                            setOtherGuestIsOpen();
-                                        }
-
-                                    }}
-                                    className="clienteLine flexr">
-                                    <p className="userIdLi">{e.id}</p>
-                                    <div className="userLine1150">
-                                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                                    </div>
-                                    <p className="userNameLi">{e.name}</p>
-                                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                                    <p className="userPhoneLi">{e.phone}</p>
-                                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                                    <p className="guestLi">{e.tycketsType?.description}</p>
-                                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                                    <p className="guestLi">{e.other_guests?.length}</p>
-                                    <div className="userConfigbtns flexr">
-                                        <div
-                                            onClick={(event) => toEditGuest(event, e.id, e.name)}
-                                            className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
-                                        <div
-                                            onClick={(event) => openDeleteModal(event, e.id)}
-                                            className="userConfigbtn flexr">
-                                            <DeleteIcon className="userConfigIcon"></DeleteIcon>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {otherGuestIsOpen == e.id && (
-                                    e.other_guests?.length > 0
-                                        ?
-                                        e.other_guests?.map((e, y) => {
-                                            return (
-                                                <div key={y} style={{ width: "100%" }}>
-                                                    <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
-                                                        <div className="otherGuestLine flexr">
-                                                            <p>Convidado <span>{y + 1 < 10 ? `0${y + 1}` : y + 1}</span></p>
-                                                            <p>Nome: <span>{!!e.name ? e.name : "Não preencheu"}</span></p>
-                                                            <p>Ingresso: <span>{!!e.tycketsType?.description ? e.tycketsType?.description : "Não preencheu"}</span></p>
-                                                        </div>
-                                                    </div >
-                                                    <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
-                                                    </div>
-                                                    {y == e.other_guests?.length &&
-                                                        <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-                                                    }
-                                                </div>
-                                            )
-                                        })
-                                        :
-
-                                        <div style={{ width: "100%", fontSize: " 14px", marginTop: "10px", marginBottom: "10px" }} className="flexr">
-                                            Nenhum convidado adicionado...
-                                        </div>
-                                )}
-                            </>
-                        )
-                    })
+                    {isFetching == true
+                        ?
+                        <Loader></Loader>
                         :
-                        <p style={{ marginTop: "30px" }}>Nenhum Convidado</p>
+
+                        !!turmaGuest && turmaGuest?.length > 0 ? turmaGuest.map((e, y) => {
+
+                            // *** RECEBER AVAIBLE AQUI
+                            return (
+                                <>
+                                    <div key={y}
+                                        style={{ cursor: "pointer" }}
+                                        onClick={(event) => {
+                                            event.preventDefault();
+                                            if (otherGuestIsOpen != e.id) {
+                                                setOtherGuestIsOpen(e.id);
+                                            } else {
+                                                setOtherGuestIsOpen();
+                                            }
+
+                                        }}
+                                        className="clienteLine flexr">
+                                        <p className="userNameLi">{e.name}</p>
+                                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                                        <p className="userPhoneLi">{e.phone}</p>
+                                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                                        <p className="guestLi">{e.tycketsType?.description}</p>
+                                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                                        <p className="guestLi">{e.other_guests?.length}</p>
+                                        <div className="userConfigbtns flexr">
+                                            <div
+                                                onClick={(event) => toEditGuest(event, e.id, e.name)}
+                                                className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
+                                            <div
+                                                onClick={(event) => openDeleteModal(event, e.id)}
+                                                className="userConfigbtn flexr">
+                                                <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {otherGuestIsOpen == e.id && (
+                                        e.other_guests?.length > 0
+                                            ?
+                                            e.other_guests?.map((e, y) => {
+                                                return (
+                                                    <div key={y} style={{ width: "100%" }}>
+                                                        <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
+                                                            <div className="otherGuestLine flexr">
+                                                                <p>Convidado <span>{y + 1 < 10 ? `0${y + 1}` : y + 1}</span></p>
+                                                                <p>Nome: <span>{!!e.name ? e.name : "Não preencheu"}</span></p>
+                                                                <p>Ingresso: <span>{!!e.tycketsType?.description ? e.tycketsType?.description : "Não preencheu"}</span></p>
+                                                            </div>
+                                                        </div >
+                                                        <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
+                                                        </div>
+                                                        {y == e.other_guests?.length &&
+                                                            <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
+                                                        }
+                                                    </div>
+                                                )
+                                            })
+                                            :
+
+                                            <div style={{ width: "100%", fontSize: " 14px", marginTop: "10px", marginBottom: "10px" }} className="flexr">
+                                                Nenhum convidado adicionado...
+                                            </div>
+                                    )}
+                                </>
+                            )
+                        })
+                            :
+                            <p style={{ marginTop: "30px" }}>Nenhum Convidado</p>
                     }
                 </div>
             </div>

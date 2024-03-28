@@ -284,6 +284,7 @@ export default function AdminCompanyAdd() {
           </div>
           <div className="adminUsersAdd flexr">
             <button
+              disabled={isLoading}
               onClick={step == 1 ? (event) => changeStep(event) : (event) => addNewCompany(event)}
               style={{ minWidth: "150px" }}
               className="btnOrange">{!!isLoading ? <Loader></Loader> : step == 1 ? "Avançar" : "Salvar"}</button>

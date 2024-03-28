@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-
+import Loader from "@/components/fragments/loader";
 
 export default function Eventos() {
   const router = useRouter();
@@ -17,6 +17,7 @@ export default function Eventos() {
   const [eventList, setEventList] = useState([]);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [deleteId, setDeleteId] = useState();
+  const [isFetching, setisFetching] = useState(false);
 
   async function getEvents() {
     let x;
@@ -25,7 +26,7 @@ export default function Eventos() {
 
 
     if (!!theJwt && !!theCompany) {
-
+      setisFetching(true);
       try {
         x = await (await fetch(`${KONG_URL}/companys/events/1`, {
           method: 'GET',
@@ -40,8 +41,9 @@ export default function Eventos() {
         } else {
           setEventList([])
         }
+        setisFetching(false);
       } catch (error) {
-
+        setisFetching(false);
         return error
       }
     }
@@ -163,10 +165,6 @@ export default function Eventos() {
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
         <div className="clienteUl flexc">
           <div className="clienteTitle flexr">
-            <p className="clienteIdLi">Id</p>
-            <div className="displayNone700">
-              <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            </div>
             <p className="eventNameLi">Nome do Evento</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
             <p className="clienteTypeLi">Tipo</p>
@@ -178,37 +176,38 @@ export default function Eventos() {
             <p className="eventDateLi">Data</p>
           </div>
           <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
-            {!!eventList && eventList.map((e, y) => {
-              return (
-                <div
-                  onClick={(event) => toEvent(event, e.id)}
-                  key={y} className="clienteLine flexr">
-                  <p className="clienteIdLi">{e.id}</p>
-                  <div className="displayNone700">
+            {isFetching == true
+              ?
+              <Loader></Loader>
+              :
+
+              !!eventList && eventList.map((e, y) => {
+                return (
+                  <div
+                    onClick={(event) => toEvent(event, e.id)}
+                    key={y} className="clienteLine flexr">
+                    <p className="eventNameLi">{e.name}</p>
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  </div>
-                  <p className="eventNameLi">{e.name}</p>
-                  <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  <p className="clienteTypeLi">{e.type}</p>
-                  <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  <p className="clienteAvaibleLi">0</p>
-                  <div className="displayNone700">
+                    <p className="clienteTypeLi">{e.type}</p>
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  </div>
-                  <p className="eventDateLi">{dateConvert(e.date)}</p>
-                  <div className="userConfigbtns flexr">
-                    <div
-                      onClick={(event) => toEditEvent(event, e.id)}
-                      className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
-                    <div
-                      onClick={(event) => { openDeleteModal(event, e.id) }}
-                      className="userConfigbtn flexr">
-                      <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                    <p className="clienteAvaibleLi">0</p>
+                    <div className="displayNone700">
+                      <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    </div>
+                    <p className="eventDateLi">{dateConvert(e.date)}</p>
+                    <div className="userConfigbtns flexr">
+                      <div
+                        onClick={(event) => toEditEvent(event, e.id)}
+                        className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
+                      <div
+                        onClick={(event) => { openDeleteModal(event, e.id) }}
+                        className="userConfigbtn flexr">
+                        <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
           </div>
         </div>
       </div>

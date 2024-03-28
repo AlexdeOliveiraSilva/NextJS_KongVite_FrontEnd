@@ -11,6 +11,9 @@ import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import CloseIcon from '@mui/icons-material/Close';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import ImageModal from "@/components/Modal/imageModal";
 
 export default function EventsEdit() {
   const router = useRouter();
@@ -37,6 +40,7 @@ export default function EventsEdit() {
   const [imageStack, setImageStack] = useState(false);
   const [typeStack, setTypeStack] = useState("");
   const [imageURL, setImageURL] = useState("");
+  const [imageToShow, setImageToShow] = useState("");
 
   const [alreadyPassType, setAlreadyPassType] = useState([]);
   const [passType, setPassType] = useState([]);
@@ -380,8 +384,9 @@ export default function EventsEdit() {
   return (
     <div className="clienteMain flexr">
       <ToastContainer></ToastContainer>
+      {!!imageToShow && <ImageModal close={() => setImageToShow('')} image={imageToShow}></ImageModal>}
       <div className="clienteContent flexc">
-        <div className="adminUsersHeader flexr" style={{ margin: "15px 0" }}>
+        {/* <div className="adminUsersHeader flexr" style={{ margin: "15px 0" }}>
           <div className="adminUsersTitle flexr">
             <h1>Editar Evento{!!eventData && `- ${eventData.name}`}</h1>
           </div>
@@ -391,61 +396,78 @@ export default function EventsEdit() {
               style={{ minWidth: "150px" }}
               className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
           </div>
-        </div>
+        </div> */}
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
         <div className="clienteUl flexc" style={{ padding: "20px 0", height: "auto" }}>
           <div className="userAdminDoubleInputs flexr">
             <TextField
               onChange={(e) => setName(e.target.value)}
               value={name}
+              focused={!!name ? true : false}
               className="inputStyle"
-              label={!!name ? '' : "Nome do Evento"}
+              label={"Nome do Evento"}
               id="outlined-size-normal"
               placeholder={`Digite o Nome:'`}
               type="text" />
             <div className="userAdminDoubleInputsTwo flexr">
-              <Select
-                className="InputsTwoSelect"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-              >
-                {!!eventsType && eventsType.map((e, y) => {
-                  return (
-                    <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
-                  )
-                })}
-              </Select>
-              <Select
-                className="InputsTwoSelect"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={subType}
-                onChange={(e) => setSubType(e.target.value)}
-              >
-                {!!eventsSubType && eventsSubType.map((e, y) => {
-                  return (
-                    <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
-                  )
-                })}
-              </Select>
-              <Select
-                className="InputsTwoSelect"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={notifyUsersAboutDeletingInvitations}
-                onChange={(e) => setNotifyUsersAboutDeletingInvitations(e.target.value)}
-              >
-                <MenuItem value={"SIM"}>Sim</MenuItem>
-                <MenuItem value={"NAO"}>Não</MenuItem>
-              </Select>
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Tipo</InputLabel>
+                <Select
+                  className="InputsTwoSelect"
+                  label="Tipo"
+                  labelId="demo-simple-select-label"
+                  focused={!!type ? true : false}
+                  id="demo-simple-select"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  {!!eventsType && eventsType.map((e, y) => {
+                    return (
+                      <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
+                    )
+                  })}
+                </Select>
+              </FormControl>
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Subtipo</InputLabel>
+                <Select
+                  className="InputsTwoSelect"
+                  label="Subtipo"
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  focused={!!subType ? true : false}
+                  value={subType}
+                  onChange={(e) => setSubType(e.target.value)}
+                >
+                  {!!eventsSubType && eventsSubType.map((e, y) => {
+                    return (
+                      <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
+                    )
+                  })}
+                </Select>
+              </FormControl>
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Notificar</InputLabel>
+                <Select
+                  className="InputsTwoSelect"
+                  label="Notificar"
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={notifyUsersAboutDeletingInvitations}
+                  onChange={(e) => setNotifyUsersAboutDeletingInvitations(e.target.value)}
+                >
+                  <MenuItem value={"SIM"}>Sim</MenuItem>
+                  <MenuItem value={"NAO"}>Não</MenuItem>
+                </Select>
+              </FormControl>
             </div>
           </div>
           {!!nameError && <p className="errorP">* O Nome deve conter mais que 3 caracteres.</p>}
           <div className="userAdminDoubleInputs flexr">
             <TextField
               onChange={(e) => setDate(e.target.value)}
+              focused={!!date ? true : false}
+              label={"Data do Evento"}
               className="inputStyle"
               id="outlined-size-normal"
               value={date}
@@ -455,7 +477,8 @@ export default function EventsEdit() {
               onChange={(e) => setZipcode(e.target.value)}
               className="inputStyle"
               value={zipcode}
-              label={!!zipcode ? '' : "CEP"}
+              focused={!!zipcode ? true : false}
+              label={"CEP"}
               id="outlined-size-normal"
               placeholder={`Digite o CEP:'`}
               type="number" />
@@ -466,7 +489,8 @@ export default function EventsEdit() {
             onChange={(e) => setAddress(e.target.value)}
             className="inputStyle"
             value={address}
-            label={!!address ? '' : "Rua"}
+            focused={!!address ? true : false}
+            label={"Rua"}
             id="outlined-size-normal"
             placeholder={`Nome da Rua:'`}
             type="text" />
@@ -475,7 +499,8 @@ export default function EventsEdit() {
               onChange={(e) => setNumberAdress(e.target.value)}
               className="inputStyle"
               value={numberAdress}
-              label={!!numberAdress ? '' : "Numero"}
+              focused={!!numberAdress ? true : false}
+              label={"Numero"}
               id="outlined-size-normal"
               placeholder={`Digite o Numero:'`}
               type="number" />
@@ -483,7 +508,8 @@ export default function EventsEdit() {
               onChange={(e) => setNeighborhood(e.target.value)}
               className="inputStyle"
               value={neighborhood}
-              label={!!neighborhood ? '' : "Bairro"}
+              focused={!!neighborhood ? true : false}
+              label={"Bairro"}
               id="outlined-size-normal"
               placeholder={`Digite o Bairro:'`}
               type="text" />
@@ -491,7 +517,8 @@ export default function EventsEdit() {
               onChange={(e) => setCity(e.target.value)}
               className="inputStyle"
               value={city}
-              label={!!city ? '' : "Cidade"}
+              focused={!!city ? true : false}
+              label={"Cidade"}
               id="outlined-size-normal"
               placeholder={`Digite a Cidade:'`}
               type="text" />
@@ -499,7 +526,8 @@ export default function EventsEdit() {
               onChange={(e) => setUf(e.target.value)}
               className="inputStyle"
               value={uf}
-              label={!!uf ? '' : "Estado"}
+              focused={!!uf ? true : false}
+              label={"Estado"}
               id="outlined-size-normal"
               placeholder={`Digite o Estado:'`}
               type="text" />
@@ -544,11 +572,14 @@ export default function EventsEdit() {
           <div className="passTypeBlock flexr">
             {alreadyPassType?.length > 0 &&
               alreadyPassType.map((e, y) => {
+                console.log("eeeeeeee", e.image)
                 return (
-                  <div key={y} className="passTypeBlockItem flexr">
+                  <div
+                    onClick={(event) => setImageToShow(e.image)}
+                    key={y} className="passTypeBlockItem flexr">
                     <p>{e.description}</p>
                     <CloseIcon
-                      onClick={(event) => deletePassType(e.description, event, e.id)}
+                      onClick={(event) => { event.stopPropagation(), deletePassType(e.description, event, e.id) }}
                       style={{ color: "#ffffff" }}></CloseIcon>
                   </div>
                 )
@@ -556,8 +587,11 @@ export default function EventsEdit() {
             }
             {passType?.length > 0 &&
               passType.map((e, y) => {
+                console.log("eeeeeeee", e)
                 return (
-                  <div key={y} className="passTypeBlockItem flexr">
+                  <div
+                    onClick={(event) => setImageToShow(e.image)}
+                    key={y} className="passTypeBlockItem flexr">
                     <p>{e.name}</p>
                     <CloseIcon
                       onClick={(event) => deletePassType(e.name, event)}
@@ -568,6 +602,17 @@ export default function EventsEdit() {
             }
           </div>
         </div >
+        <div className="adminUsersHeader flexr" style={{ margin: "15px 0" }}>
+          {/* <div className="adminUsersTitle flexr">
+            <h1>Editar Evento{!!eventData && `- ${eventData.name}`}</h1>
+          </div> */}
+          <div className="adminUsersAdd flexr">
+            <button
+              onClick={(event) => editTheEvent(event)}
+              style={{ minWidth: "150px" }}
+              className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
+          </div>
+        </div>
       </div>
     </div >
   );

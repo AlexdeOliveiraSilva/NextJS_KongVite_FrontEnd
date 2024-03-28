@@ -22,8 +22,6 @@ export default function Topbar() {
         setUserJwt,
         eventChoice,
         setEventChoice,
-        eventClasses,
-        refreshPage,
         company } = useContext(GlobalContext);
     const [companyData, setcompanyData] = useState();
     const [barOpen, setBarOpen] = useState(false);
@@ -148,9 +146,9 @@ export default function Topbar() {
 
     async function getAvaibles() {
         let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
-        let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
+        let y = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
 
-        let theClass = (JSON.parse(y)).classEvent?.id
+        let theClass = y?.classEvent?.id
 
         let x;
 
@@ -201,21 +199,6 @@ export default function Topbar() {
             document: !!company?.document ? company.document : localStorage.getItem('company_document')
         })
     }, [])
-
-
-    // useEffect(() => {
-
-    //     getAvaibles()
-
-    //     let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
-    //     let z = JSON.parse(y);
-
-    //     setClientDataChoice(z);
-    //     invitesGuestCount(z?.user.guestsTicketsTypeNumber);
-
-    // }, [eventChoiceModal, refreshPage])
-
-
 
 
     return (

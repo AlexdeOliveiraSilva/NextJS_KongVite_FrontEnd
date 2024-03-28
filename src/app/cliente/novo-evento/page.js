@@ -207,10 +207,6 @@ export default function EventsAdd() {
             <h1>Novo Evento</h1>
           </div>
           <div className="adminUsersAdd flexr">
-            <button
-              onClick={(event) => addNewEvent(event)}
-              style={{ minWidth: "150px" }}
-              className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
           </div>
         </div>
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
@@ -380,6 +376,14 @@ export default function EventsAdd() {
             }
           </div>
         </div >
+        <div className="adminUsersHeader flexr">
+          <div className="adminUsersAdd flexr">
+            <button
+              onClick={(event) => addNewEvent(event)}
+              style={{ minWidth: "150px" }}
+              className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
+          </div>
+        </div>
       </div>
     </div >
   );

@@ -198,6 +198,7 @@ export default function AdminUsersAdd() {
           </div>
           <div className="adminUsersAdd flexr">
             <button
+              disabled={isLoading}
               onClick={(event) => addNewuser(event)}
               style={{ minWidth: "150px" }}
               className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>

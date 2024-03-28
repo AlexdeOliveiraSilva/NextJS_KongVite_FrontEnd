@@ -9,15 +9,27 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "@/components/fragments/loader";
+import Paper from '@mui/material/Paper';
+import InputBase from '@mui/material/InputBase';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import DirectionsIcon from '@mui/icons-material/Directions';
+
 
 export default function CompanyUsers() {
   const router = useRouter();
   const { KONG_URL, user, setUserEdit, companyEdit, companyNameEdit } = useContext(GlobalContext);
   const [adminsList, setAdminsList] = useState([]);
+  const [adminsListCopy, setAdminsListCopy] = useState([]);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [deleteIdSelected, setDeletedidSelected] = useState();
   const [pageTitle, setPageTitle] = useState('Lista de Usuários');
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setisFetching] = useState(false);
+  const [search, setSearch] = useState("")
 
   async function getUsers() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
@@ -26,6 +38,7 @@ export default function CompanyUsers() {
     let x;
 
     if (!!jwt && !!companyId) {
+      setisFetching(true);
       try {
         x = await (await fetch(`${KONG_URL}/companys/user/${companyId}`, {
           method: 'GET',
@@ -35,10 +48,11 @@ export default function CompanyUsers() {
           }
         })).json()
 
+        setisFetching(false);
         setAdminsList(x)
-
+        setAdminsListCopy(x)
       } catch (error) {
-
+        setisFetching(false);
         return ""
       }
     }
@@ -137,14 +151,45 @@ export default function CompanyUsers() {
         "Lista de Usuários")
   }, [])
 
+  function onSearch() {
+    let y = adminsListCopy.filter((e) => e.name.toLowerCase().includes(search.toLowerCase()))
+
+    setAdminsList(y)
+  }
+
+
+  useEffect(() => {
+    onSearch();
+  }, [search])
+
   return (
     <div className="adminUsersMain flexr">
       <ToastContainer></ToastContainer>
       {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={(e) => deleteFunc(e)} word="confirmar" ></DeletModal>}
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
-          <div className="adminUsersTitle flexr">
+          <div className="adminUsersTitle flexr" style={{ gap: "30px" }}>
             {pageTitle}
+            <div className=" flexr" style={{ gap: "30px" }}>
+              <Paper
+                className=" paperSize"
+                component="form"
+                sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+              >
+                <InputBase
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder="Buscar Empresa..."
+                  inputProps={{ 'aria-label': 'buscar empresa...' }}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                  <SearchIcon />
+                </IconButton>
+
+              </Paper>
+            </div>
           </div>
           <div className="adminUsersAdd flexr">
             <button
@@ -170,39 +215,43 @@ export default function CompanyUsers() {
             <p className="userEmailLi">Email</p>
           </div>
           <div className="adminUsersUl flexc" style={{ marginTop: "10px" }}>
-            {!!adminsList && adminsList.map((e, y) => {
-              return (
-                <div key={y} className="userLine flexr">
-                  <p className="userIdLi">{e.id}</p>
-                  <div className="userLine1150">
+            {isFetching == true
+              ?
+              <Loader></Loader>
+              :
+              !!adminsList && adminsList.map((e, y) => {
+                return (
+                  <div key={y} className="userLine flexr">
+                    <p className="userIdLi">{e.id}</p>
+                    <div className="userLine1150">
+                      <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    </div>
+                    <p className="userNameLi">{e.name}</p>
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  </div>
-                  <p className="userNameLi">{e.name}</p>
-                  <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  <p className="userDocLi">{e.document}</p>
-                  <div className="userLine1150">
-                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  </div>
-                  <p className="userPhoneLi">{e.phone}</p>
-                  <div className="userLine650">
-                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  </div>
-                  <p className="userEmailLi">{e.email}</p>
-                  <div className="userConfigbtns flexr">
-                    <div
-                      onClick={(event) => toEditUser(event, e.id)}
-                      className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
-                    {y != 0 &&
+                    <p className="userDocLi">{e.document}</p>
+                    <div className="userLine1150">
+                      <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    </div>
+                    <p className="userPhoneLi">{e.phone}</p>
+                    <div className="userLine650">
+                      <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    </div>
+                    <p className="userEmailLi">{e.email}</p>
+                    <div className="userConfigbtns flexr">
                       <div
-                        onClick={(event) => openDeleteModal(event, e.id)}
-                        className="userConfigbtn flexr">
-                        <DeleteIcon className="userConfigIcon"></DeleteIcon>
-                      </div>
-                    }
+                        onClick={(event) => toEditUser(event, e.id)}
+                        className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
+                      {y != 0 &&
+                        <div
+                          onClick={(event) => openDeleteModal(event, e.id)}
+                          className="userConfigbtn flexr">
+                          <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                        </div>
+                      }
+                    </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
           </div>
         </div>
       </div>
