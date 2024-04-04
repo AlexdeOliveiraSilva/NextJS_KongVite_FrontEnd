@@ -11,15 +11,104 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { useRouter } from "next/navigation";
+import Separator from "@/components/fragments/separatorLine";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Loader from "@/components/fragments/loader";
 
 export default function Dashboard() {
   const router = useRouter();
-  const { KONG_URL, user, setUserName, setUserEmail, setUserType, setUserJwt } = useContext(GlobalContext);
+  const { KONG_URL, user, eventEdit, eventChoice, eventClasses, setRefreshPage, refreshPage } = useContext(GlobalContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [myData, setMyData] = useState();
+  const [loadData, setLoadData] = useState(false);
 
+
+  async function getGuests() {
+
+    let x;
+    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let classId = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"))
+
+    if (!!jwt && !!classId) {
+
+      setLoadData(true)
+      try {
+        x = await (await fetch(`${KONG_URL}/student/transferInvites/${classId?.classEvent?.id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': jwt
+          }
+        })).json()
+
+        console.log("aaa", x)
+        if (!x.message) {
+          setMyData(x)
+          setLoadData(false)
+          return ""
+        }
+
+      } catch (error) {
+        setLoadData(false)
+        return ""
+      }
+    } else {
+      setLoadData(false)
+      return ""
+    }
+  }
+
+  function formatDateToInput(dataString) {
+    const data = new Date(dataString);
+
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    const horas = String(data.getHours()).padStart(2, '0');
+    const minutos = String(data.getMinutes()).padStart(2, '0');
+
+    return `${dia}-${mes}-${ano}`;
+  }
+
+  useEffect(() => {
+    getGuests();
+  }, [])
 
   return (
     <div className="dashboardMain flexr">
-      <div className="dashboardContent flexc"></div>
+      <div className="dashboardContent flexc">
+        <div className="clienteUl flexc">
+          <div className="clienteTitle flexr">
+            <p className="clienteTypeLi">Ingresso</p>
+            <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+            <p className="eventNameLi">Nome</p>
+            <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+            <p className="eventNameLi">Data</p>
+          </div>
+          <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
+            {loadData == true ?
+              <Loader></Loader>
+              :
+              myData?.length > 0 ? myData.map((e, y) => {
+                return (
+                  <div
+                    onClick={(event) => goView(event, e.id)}
+                    key={y} className="clienteLine flexr">
+                    <p className="clienteTypeLi">{e.amount} - {e.tycketsType?.description}</p>
+                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    <p className="eventNameLi">{e.guests_guestsTransfers_guestIdDestinyToguests?.name}</p>
+                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    <p className="eventNameLi">{formatDateToInput(e.createdAt)}</p>
+                  </div>
+                )
+              })
+                :
+                <p style={{ marginTop: "30px" }}>Nenhuma Tranferência</p>
+            }
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

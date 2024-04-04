@@ -10,6 +10,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import GetEventGuest from "../Modal/type3eventSelect";
 import TopbarGuest from "../fragments/topbarGuest";
 import { useRouter } from "next/navigation";
+import TransferModal from "@/components/Modal/transferModal";
+import Loader from "@/components/fragments/loader";
 
 export default function Topbar() {
     const path = usePathname();
@@ -26,9 +28,10 @@ export default function Topbar() {
     const [companyData, setcompanyData] = useState();
     const [barOpen, setBarOpen] = useState(false);
     const [eventChoiceModal, setEventChoiceModal] = useState(false);
-
-    const [clientDataChoice, setClientDataChoice] = useState();
+    const [transferModalIsOpen, setTransferModalIsOpen] = useState(false);
     const [inviteslaking, setInvitesLaking] = useState(0);
+    const [myData, setMyData] = useState();
+    const [loadData, setLoadData] = useState(false);
 
     const logout = (e) => {
         e.preventDefault()
@@ -55,6 +58,16 @@ export default function Topbar() {
                 setBarOpen(false)
             }, 5000)
         }
+    }
+
+    function openTransferPassword() {
+
+        setTransferModalIsOpen(true)
+    }
+
+    function deleteTransferPassword() {
+        window.location.reload()
+        setTransferModalIsOpen(false)
     }
 
 
@@ -153,6 +166,7 @@ export default function Topbar() {
         let x;
 
         if (!!jwt && !!theClass) {
+            setLoadData(true)
             try {
                 x = await (await fetch(`${KONG_URL}/user/guests/${theClass}`, {
                     method: 'GET',
@@ -164,21 +178,56 @@ export default function Topbar() {
 
                 if (!x?.message) {
                     invitesGuestCount(x.guestsTicketsTypeNumber);
+                    setLoadData(false)
                 } else {
                     console.log("error", x)
+                    setLoadData(false)
                 }
 
 
             } catch (error) {
+                setLoadData(false)
                 console.log("catch", error)
                 return ""
             }
         }
     }
 
+    async function getAllData(myId) {
+
+        let x;
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+
+        if (!!myId) {
+
+            try {
+                x = await (await fetch(`${KONG_URL}/student/${myId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': jwt
+                    }
+                })).json()
+
+                if (!x.message) {
+                    setMyData(x)
+                    return ""
+                }
+
+            } catch (error) {
+
+                return ""
+            }
+        } else {
+
+            return ""
+        }
+    }
+
 
 
     useEffect(() => {
+
 
         let x = !!user?.type ? user.type : localStorage.getItem("user_type")
         let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
@@ -191,7 +240,7 @@ export default function Topbar() {
             }
         }
 
-
+        getAllData(!!user?.id ? user?.id : localStorage.getItem("user_id"));
 
         setcompanyData({
             id: !!company?.id ? company.id : localStorage.getItem('company_id'),
@@ -203,6 +252,7 @@ export default function Topbar() {
 
     return (
         <div className="topbarMain flexr">
+            {!!transferModalIsOpen && <TransferModal close={() => deleteTransferPassword()} myData={myData}></TransferModal>}
             {eventChoiceModal == true && <GetEventGuest close={() => closeGuestModalF()} seteffect={(e) => { e.preventDefault(); doRefresh() }}></GetEventGuest>}
             <div className="topbarContent flexr">
                 <div
@@ -217,7 +267,7 @@ export default function Topbar() {
                         : user?.type == 2 ?
                             <TopbarCompany data={companyData}></TopbarCompany>
                             :
-                            <TopbarGuest invites={inviteslaking}></TopbarGuest>
+                            <TopbarGuest invites={inviteslaking} open={() => openTransferPassword()} load={loadData}></TopbarGuest>
                     }
                 </div>
                 <div

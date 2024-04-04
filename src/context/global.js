@@ -17,8 +17,6 @@ export const GlobalProvider = ({ children }) => {
             base64Data: base64Data.toString()
         });
 
-        console.log(key.toString(), extension.toString(), base64Data.toString())
-
         try {
             res = await (await fetch(`${KONG_URL}/upload`, {
                 method: 'POST',
@@ -28,7 +26,6 @@ export const GlobalProvider = ({ children }) => {
                 }
             })).json()
 
-            console.log('Arquivo envxiado com sucesso para o S3', res);
 
             return res
 
@@ -62,6 +59,7 @@ export const GlobalProvider = ({ children }) => {
     const [userEmail, setUserEmail] = useState()
     const [userType, setUserType] = useState()
     const [userJwt, setUserJwt] = useState()
+    const [userId, setUserId] = useState()
 
     const [companyId, setCompanyId] = useState()
     const [companyName, setCompanyName] = useState()
@@ -74,6 +72,7 @@ export const GlobalProvider = ({ children }) => {
         setUserEmail(localStorage.getItem("user_email"))
         setUserType(localStorage.getItem("user_type"))
         setUserJwt(localStorage.getItem("user_jwt"))
+        setUserId(localStorage.getItem("user_id"))
     }, [])
 
     return (
@@ -85,7 +84,8 @@ export const GlobalProvider = ({ children }) => {
                 name: userName,
                 email: userEmail,
                 type: userType,
-                jwt: userJwt
+                jwt: userJwt,
+                id: userId
             },
             company: {
                 id: companyId,
@@ -97,6 +97,7 @@ export const GlobalProvider = ({ children }) => {
             setUserEmail,
             setUserType,
             setUserJwt,
+            setUserId,
             userEdit,
             setUserEdit,
             companyEdit,

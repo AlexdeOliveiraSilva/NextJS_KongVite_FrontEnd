@@ -53,7 +53,6 @@ export default function InvitesModal({ close, data, jwt, url }) {
         }
     }
 
-    console.log(isDownloaded)
 
     return (
         <div

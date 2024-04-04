@@ -1,11 +1,15 @@
 'use client'
 
-export default function TopbarGuest({ invites }) {
+import Loader from "./loader"
+
+export default function TopbarGuest({ invites, open, load }) {
 
     return (
         <div className="topbarMidleContent flexr">
-            <h4>Convites: <span>{invites || 0}</span></h4>
-            <div className="topbarMidleButton flexr">Transferir</div>
+            {load ? <Loader></Loader> : <h4>Convites: <span>{invites || 0}</span></h4>}
+            <div
+                onClick={open}
+                className="topbarMidleButton flexr">Transferir</div>
         </div>
     )
 }

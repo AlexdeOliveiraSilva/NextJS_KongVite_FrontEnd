@@ -572,7 +572,6 @@ export default function EventsEdit() {
           <div className="passTypeBlock flexr">
             {alreadyPassType?.length > 0 &&
               alreadyPassType.map((e, y) => {
-                console.log("eeeeeeee", e.image)
                 return (
                   <div
                     onClick={(event) => setImageToShow(e.image)}
@@ -587,7 +586,7 @@ export default function EventsEdit() {
             }
             {passType?.length > 0 &&
               passType.map((e, y) => {
-                console.log("eeeeeeee", e)
+
                 return (
                   <div
                     onClick={(event) => setImageToShow(e.image)}

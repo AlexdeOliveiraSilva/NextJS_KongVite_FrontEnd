@@ -131,7 +131,6 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
 
     useEffect(() => {
 
-        console.log(guestData?.tycketsType?.id)
 
         setName(!!guestData?.name ? guestData?.name : "")
         setDocument(!!guestData?.document ? guestData?.document : "")

@@ -39,6 +39,24 @@
 .logoLoginDiv img {
   width: 300px;
 }
+
+.circleInputs {
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  color: var(--white-primary);
+  background-color: var(--blue-primary);
+}
+
+.invitesDivContent {
+  border-radius: 8px;
+  border: 1px solid #999999;
+  padding: 10px;
+  width: 140px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
 .titleLogin {
   width: 500px;
   align-items: flex-start !important;
@@ -67,6 +85,24 @@
 .inputDiv {
   width: 100%;
 }
+
+.inputDivListContent {
+  padding: 10px;
+  width: 95%;
+  max-height: 150px;
+  overflow-y: scroll;
+  justify-content: flex-start;
+}
+
+.inputDivList {
+  border-radius: 8px;
+  border: 1px solid #999999;
+  padding: 5px 20px;
+  width: 100%;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
 .inputDivPassword {
   width: 100%;
   position: relative;
@@ -76,6 +112,13 @@
   right: 15px;
   z-index: 1;
 }
+
+.inputDivError {
+  width: 100%;
+  font-size: 13px;
+  color: var(--red-primary);
+}
+
 .btnLoginDiv {
   width: 100%;
 }

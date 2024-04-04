@@ -19,7 +19,7 @@ export default function Login() {
   const router = useRouter();
   const path = usePathname();
 
-  const { KONG_URL, setUserName, setUserEmail, setUserType, setUserJwt, setCompanyId, setCompanyName, setCompanyDoc, setEventClasses } = useContext(GlobalContext);
+  const { KONG_URL, setUserName, setUserEmail, setUserType, setUserJwt, setUserId, setCompanyId, setCompanyName, setCompanyDoc, setEventClasses } = useContext(GlobalContext);
   const [passwordVisibble, setPasswordVisible] = useState(true)
   const [saveData, setSaveData] = useState(false)
   const [forgotPassword, setForgotPassword] = useState(false)
@@ -83,10 +83,13 @@ export default function Login() {
             position: "top-right"
           });
 
+
           localStorage.setItem("user_jwt", x.jwt);
           localStorage.setItem("user_name", x.name);
           localStorage.setItem("user_type", x.usersType.id);
           localStorage.setItem("user_email", email);
+          localStorage.setItem("user_id", x.id);
+          setUserId(x.id);
           setUserJwt(x.jwt);
           setUserName(x.name);
           setUserType(x.usersType.id);

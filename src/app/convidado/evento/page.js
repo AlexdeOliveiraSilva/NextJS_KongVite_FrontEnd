@@ -11,6 +11,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import AddGuest from "@/components/Modal/addGuest";
 import InvitesModal from "@/components/Modal/invitesDownload";
+import ChangeModal from "@/components/Modal/chancgePassword";
 
 
 export default function EventGuest() {
@@ -32,12 +33,6 @@ export default function EventGuest() {
   const [email, setEmail] = useState("");
 
   const [date, setDate] = useState("");
-  const [address, setAddress] = useState("");
-  const [zipcode, setZipcode] = useState("");
-  const [numberAdress, setNumberAdress] = useState("");
-  const [neighborhood, setNeighborhood] = useState("");
-  const [city, setCity] = useState("");
-  const [uf, setUf] = useState("");
 
   const [guests, setGuests] = useState([]);
 
@@ -46,6 +41,8 @@ export default function EventGuest() {
   const [guestDeleteId, setGuestDeleteId] = useState();
   const [guestEditName, setGuestEditName] = useState();
   const [typesData, setTypesData] = useState([]);
+
+  const [newPasswordModal, setNewpasswordModal] = useState(false);
 
   async function getGuests(eventId) {
 
@@ -192,6 +189,18 @@ export default function EventGuest() {
     setDeleteGuestModalIsOpen(false);
   }
 
+  function openChangePassword() {
+
+    setNewpasswordModal(true)
+  }
+
+  function deleteChangePassword() {
+
+    setNewpasswordModal(false)
+  }
+
+
+
   async function getAvaibles() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
     let y = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
@@ -225,7 +234,7 @@ export default function EventGuest() {
   }
 
   function setInvitesOpenModal() {
-    console.log("clic")
+
     setInvitesOpen(true)
   }
   function setInvitesCloseModal() {
@@ -239,18 +248,19 @@ export default function EventGuest() {
     let w = !!eventClasses ? eventClasses : localStorage.getItem("event_classes");
     let z = JSON.parse(w)
 
+
+
     if (!!y && !!z) {
 
-      console.log(z)
       getGuests(y.classEvent.id);
 
       setClassGuestId(y.classEvent.id);
-      setEventName(z?.name);
+      setEventName(z.name);
       setClassName(y?.classEvent?.name);
       setName(y?.user?.name);
       setPhone(y.user?.phone);
       setEmail(y.user?.email);
-      setDate(y?.classEvent?.date);
+      setDate(formatDateToInput(z.date));
     }
   }, [eventChoice, eventClasses, refreshPage])
 
@@ -264,9 +274,22 @@ export default function EventGuest() {
 
   }, [myId])
 
+  function formatDateToInput(dataString) {
+    const data = new Date(dataString);
+
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    const horas = String(data.getHours()).padStart(2, '0');
+    const minutos = String(data.getMinutes()).padStart(2, '0');
+
+    return `${dia}/${mes}/${ano} às ${horas}:${minutos} horas`;
+  }
+
   return (
     <div className="clienteMain flexr">
       <ToastContainer></ToastContainer>
+      {!!newPasswordModal && <ChangeModal close={(event) => deleteChangePassword(event)}></ChangeModal>}
       {!!invitesOpen && <InvitesModal close={() => setInvitesCloseModal()} data={myData} jwt={!!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")} url={KONG_URL} ></InvitesModal>}
       {!!deleteGuestModalIsOpen && <DeletModal close={() => closeDeleteGuest()} func={() => deleteGuest()} word={"confirmar"}></DeletModal>}
       {!!addGuestModalIsOpen && <AddGuest close={() => closeAddGuest()} classId={classGuestId} typesData={typesData} guestData={guestData}></AddGuest>}
@@ -282,6 +305,7 @@ export default function EventGuest() {
               Baixar Ingresso
             </button>
             <button
+              onClick={(event) => openChangePassword(event)}
               className="btnOrange">
               Alterar Senha
             </button>
@@ -311,11 +335,6 @@ export default function EventGuest() {
                 <div className="clienteEventLineItem flexr">
                   <h4>Data: </h4><h4><span>{date || "Não definido"}</span></h4>
                 </div>
-                {!!address &&
-                  <div className="clienteEventLineItem flexr">
-                    <h4>Endereço: </h4><h4><span>{address}, {numberAdress} - {neighborhood}, {city}/{uf}</span></h4>
-                  </div>
-                }
               </div>
             }
           </div>
