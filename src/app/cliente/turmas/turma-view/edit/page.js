@@ -12,6 +12,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import ChangeGuestModal from "@/components/Modal/changeGuestPassword";
 
 export default function GuestEdit() {
   const router = useRouter();
@@ -30,6 +31,9 @@ export default function GuestEdit() {
   const [documentError, setDocumentError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
   const [emailError, setEmailError] = useState(false);
+
+  const [changeIsOpen, setChangeIsOpen] = useState(false);
+  const [changeId, setChangeId] = useState();
 
   const [guestData, setGuestData] = useState({});
 
@@ -63,12 +67,13 @@ export default function GuestEdit() {
             number: item.number
           }));
 
+          console.log(x, "xxxx")
           setName(x.name);
           setDocument(x.document);
           setPhone(x.phone);
           setEmail(x.email);
           setInvitesAvaible(transformedData)
-
+          // setSelfPass(x.)
           setGuestData(x);
         }
 
@@ -287,9 +292,20 @@ export default function GuestEdit() {
     }
   }
 
+  function openChange() {
+    setChangeId(!!guestEditId ? guestEditId : localStorage.getItem("guest_edit_id"))
+    setChangeIsOpen(true)
+  }
+
+  function closeChange() {
+    setChangeId()
+    setChangeIsOpen(false)
+  }
+
   return (
     <div className="adminUsersMain flexr">
       <ToastContainer></ToastContainer>
+      {changeIsOpen == true && <ChangeGuestModal close={() => closeChange()} guestId={changeId}></ChangeGuestModal>}
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">
@@ -300,6 +316,12 @@ export default function GuestEdit() {
               onClick={(event) => addNewGuest(event)}
               style={{ minWidth: "150px" }}
               className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
+          </div>
+          <div className="adminUsersAdd flexr">
+            <button
+              onClick={() => openChange()}
+              style={{ minWidth: "150px" }}
+              className="btnBlue">{!!isLoading ? <Loader></Loader> : "Alterar Senha"}</button>
           </div>
         </div>
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
