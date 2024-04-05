@@ -86,6 +86,8 @@ export default function Dashboard() {
                                 </div>
                                 {e.types?.length != z + 1 && <Separator color={"#BEBEBE"} width="100%" height="1px"></Separator>}
                             </div>
+
+
                         )
                     }))}
                 </div>
