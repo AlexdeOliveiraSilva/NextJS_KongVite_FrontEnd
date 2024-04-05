@@ -27,6 +27,34 @@
   flex-direction: row;
 }
 
+.clienteDashMain {
+  width: 100%;
+  align-items: flex-start;
+}
+
+.clienteDashGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 20px 0;
+}
+
+.clienteDashCard {
+  min-height: 100px;
+  border-radius: 10px;
+  border: 1px var(--white-secondary);
+  margin: 0 10px;
+  gap: 15px;
+  box-shadow: var(--shad-ligth);
+}
+
+.clienteCardContent {
+  width: 70%;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 5px;
+}
+
 .passTypeTitle {
   width: auto;
   justify-content: flex-start;

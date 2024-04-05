@@ -117,7 +117,7 @@ export default function Sidebar() {
                 break;
 
             case "2":
-                if (path.startsWith('/cliente/event-view') || path.startsWith('/cliente/turmas')) {
+                if (path.startsWith('/cliente/event-view') || path.startsWith('/cliente/turmas') || path.startsWith('/cliente/dashboard')) {
                     setMenu(estbSidebarEvent);
                 } else {
                     setMenu(estbSidebarItens);

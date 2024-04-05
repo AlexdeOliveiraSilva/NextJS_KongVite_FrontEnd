@@ -121,6 +121,9 @@ export default function Topbar() {
             case '/cliente/event-view/':
                 return "Evento"
 
+            case '/cliente/dashboard/':
+                return "Dashboard"
+
             case '/cliente/turmas/':
                 return "Turmas"
 
