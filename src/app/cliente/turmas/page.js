@@ -10,8 +10,9 @@ import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import AddTurmas from "@/components/Modal/addTurma";
+import Loader from "@/components/fragments/loader";
 
-// GET { { URL_KONGVITE } } companys / turma / get / 1
+
 
 export default function Turmas() {
     const router = useRouter();
@@ -24,6 +25,7 @@ export default function Turmas() {
     const [deleteIdSelected, setDeleteIdSelected] = useState();
     const [turmaEdit, setTurmaEdit] = useState();
     const [turmaNameEdit, setTurmaNameEdit] = useState();
+    const [isFetching, setisFetching] = useState(false);
 
     function toOpenTurma(e) {
         e.preventDefault();
@@ -43,6 +45,7 @@ export default function Turmas() {
 
         if (!!jwt && !!eventId) {
             setIsLoading(true);
+            setisFetching(true);
             try {
                 x = await (await fetch(`${KONG_URL}/companys/events/get/${eventId}`, {
                     method: 'GET',
@@ -55,14 +58,17 @@ export default function Turmas() {
                     setEvent(x)
                     setTurma(x.eventsClasses);
                     setIsLoading(false);
+                    setisFetching(false);
                     return ""
                 }
             } catch (error) {
                 setIsLoading(false);
+                setisFetching(false);
                 return ""
             }
         } else {
             console.log("else")
+            setisFetching(false);
         }
     }
 
@@ -168,29 +174,35 @@ export default function Turmas() {
                         <p className="eventNameLi">Nome da Turma</p>
                     </div>
                     <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
-                        {turma?.length > 0 ? turma.map((e, y) => {
-                            return (
-                                <div
-                                    onClick={(event) => goView(event, e.id)}
-                                    key={y} className="clienteLine flexr">
-                                    <p className="clienteIdLi">{e.id}</p>
-                                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                                    <p className="eventNameLi">{e.name}</p>
-                                    <div className="userConfigbtns flexr">
-                                        <div
-                                            onClick={(event) => toEditTurma(event, e.id, e.name)}
-                                            className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
-                                        <div
-                                            onClick={(event) => openDeleteModal(event, e.id)}
-                                            className="userConfigbtn flexr">
-                                            <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                        {isFetching == true
+                            ?
+                            <Loader></Loader>
+                            :
+
+
+                            turma?.length > 0 ? turma.map((e, y) => {
+                                return (
+                                    <div
+                                        onClick={(event) => goView(event, e.id)}
+                                        key={y} className="clienteLine flexr">
+                                        <p className="clienteIdLi">{e.id}</p>
+                                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                                        <p className="eventNameLi">{e.name}</p>
+                                        <div className="userConfigbtns flexr">
+                                            <div
+                                                onClick={(event) => toEditTurma(event, e.id, e.name)}
+                                                className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
+                                            <div
+                                                onClick={(event) => openDeleteModal(event, e.id)}
+                                                className="userConfigbtn flexr">
+                                                <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            )
-                        })
-                            :
-                            <p style={{ marginTop: "30px" }}>Nenhuma Turma Encontrada</p>
+                                )
+                            })
+                                :
+                                <p style={{ marginTop: "30px" }}>Nenhuma Turma Encontrada</p>
                         }
                     </div>
                 </div>

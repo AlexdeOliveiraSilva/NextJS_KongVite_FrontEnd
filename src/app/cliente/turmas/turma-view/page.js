@@ -16,6 +16,8 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import Loader from "@/components/fragments/loader";
+import ReplyIcon from '@mui/icons-material/Reply';
+import SendInviteModal from "@/components/Modal/sendInvites";
 
 export default function TurmaView() {
     const router = useRouter();
@@ -24,6 +26,7 @@ export default function TurmaView() {
     const [event, setEvent] = useState();
     const [isLoading, setIsLoading] = useState();
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+    const [sendModalIsOpen, setSendModalIsOpen] = useState(false);
     const [deleteIdSelected, setDeleteIdSelected] = useState();
     const [turmaEdit, setTurmaEdit] = useState();
     const [turmaNameEdit, setTurmaNameEdit] = useState();
@@ -132,6 +135,15 @@ export default function TurmaView() {
         setDeleteModalIsOpen(false);
     }
 
+    function openSendModal(e) {
+        e.preventDefault();
+        setSendModalIsOpen(true);
+    }
+
+    function closeSendModal() {
+        setSendModalIsOpen(false);
+    }
+
     function toEditGuest(e, id, name) {
         e.preventDefault();
 
@@ -167,6 +179,7 @@ export default function TurmaView() {
     return (
         <div className="clienteMain flexr">
             <ToastContainer></ToastContainer>
+            {sendModalIsOpen == true && <SendInviteModal close={() => closeSendModal()} isAdd={false}></SendInviteModal>}
             {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteGuest()} word="confirmar" ></DeletModal>}
             <div className="clienteContent flexc">
                 <div className="adminUsersHeader flexr">
@@ -239,6 +252,9 @@ export default function TurmaView() {
                                         <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                                         <p className="guestLi">{e.other_guests?.length}</p>
                                         <div className="userConfigbtns flexr">
+                                            <div
+                                                onClick={(event) => openSendModal(event)}
+                                                className="userConfigbtn flexr"><ReplyIcon className="userConfigIcon"></ReplyIcon></div>
                                             <div
                                                 onClick={(event) => toEditGuest(event, e.id, e.name)}
                                                 className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>

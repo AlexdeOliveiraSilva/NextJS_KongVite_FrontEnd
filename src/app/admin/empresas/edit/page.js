@@ -58,7 +58,7 @@ export default function AdminCompanyAdd() {
   }
 
   function emailVerify() {
-    var regexEmail = /^[a-zA-Z]{4}[_a-zA-Z0-9]*@[a-zA-Z0-9]+([.]+[a-zA-Z]{2,})+$/;
+    var regexEmail = /^[a-zA-Z][a-zA-Z0-9_\-.]*@[a-zA-Z0-9]+([.-][a-zA-Z0-9]+)*([.][a-zA-Z]{2,})+$/;
 
     if (emailCompany?.length > 0) {
       if (regexEmail.test(emailCompany)) {

@@ -201,7 +201,7 @@ export default function EventView() {
                 </div>
                 <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
                 <div className="clienteUl clienteUlChange flexr" style={{ margin: "0px" }}>
-                    <div className="clienteTitleDiv flexr">
+                    <div className="clienteTitleDiv flexr" style={{ width: "100%" }}>
                         {!!name &&
                             <div className="clienteEventDiv flexc">
                                 <div className="clienteEventLineItem flexr">

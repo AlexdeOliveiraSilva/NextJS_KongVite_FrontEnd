@@ -194,7 +194,7 @@ export default function AdminUsers() {
           <div className="userLineTitle flexr">
             <p className="companyNameLi">Nome</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            <p className="userIdLi">Convites Disponiveis</p>
+            <p className="adminInvitesLi">Convites Disponiveis</p>
           </div>
           <div className="adminUsersUl flexc" style={{ marginTop: "10px" }}>
             {isFetching == true
@@ -208,7 +208,7 @@ export default function AdminUsers() {
                     key={y} className="userLine flexr" style={{ cursor: "pointer" }}>
                     <p className="companyNameLi">{e.name}</p>
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                    <p className="userIdLi">{e.invitesAvaliable}</p>
+                    <p className="adminInvitesLi">{e.invitesAvaliable}</p>
                     <div className="userConfigbtns flexr">
                       <div
                         onClick={(event) => toEditCompany(event, e.id, e.name)}

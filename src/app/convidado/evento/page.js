@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import AddGuest from "@/components/Modal/addGuest";
 import InvitesModal from "@/components/Modal/invitesDownload";
 import ChangeModal from "@/components/Modal/chancgePassword";
+import Loader from "@/components/fragments/loader";
 
 
 export default function EventGuest() {
@@ -20,6 +21,7 @@ export default function EventGuest() {
   const [addGuestModalIsOpen, setAddGuestModalIsOpen] = useState(false);
   const [deleteGuestModalIsOpen, setDeleteGuestModalIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [getingGuests, setGetingGuests] = useState(false);
   const [invitesOpen, setInvitesOpen] = useState(false)
 
   const [eventName, setEventName] = useState();
@@ -51,6 +53,7 @@ export default function EventGuest() {
 
     if (!!jwt && !!eventId) {
 
+      setGetingGuests(true);
       try {
         x = await (await fetch(`${KONG_URL}/user/guests/${eventId}`, {
           method: 'GET',
@@ -61,17 +64,18 @@ export default function EventGuest() {
         })).json()
 
         if (!x.message) {
+          setGetingGuests(false);
           setMyId(x.id)
           setGuests(x.other_guests)
           return ""
         }
 
       } catch (error) {
-
+        setGetingGuests(false);
         return ""
       }
     } else {
-
+      setGetingGuests(false);
       return ""
     }
   }
@@ -372,29 +376,35 @@ export default function EventGuest() {
               height: "200px",
               overflowY: "auto"
             }}>
-            {guests?.length > 0 ? guests.sort((a, b) => a.name.localeCompare(b.name)).sort((a, b) => a.tycketsType?.description.localeCompare(b.tycketsType?.description)).map((e, y) => {
-              return (
-                <div
-                  onClick={(event) => openEditGuest(event, e)}
-                  key={y} className="clienteLine flexr">
-                  <p className="clienteAvaibleLi" style={{ minWidth: "60px" }}>{e.tycketsType?.description}</p>
-                  <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                  <p className="eventNameLi" style={{ whiteSpace: "nowrap" }}>{e.name}</p>
-                  <div className="userConfigbtns flexr">
-                    <div
-                      onClick={(event) => openEditGuest(event, e)}
-                      className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
-                    <div
-                      onClick={(event) => { openDeleteGuest(event, e.id) }}
-                      className="userConfigbtn flexr">
-                      <DeleteIcon className="userConfigIcon"></DeleteIcon>
+            {getingGuests == true ?
+
+              <Loader></Loader>
+
+              :
+
+              guests?.length > 0 ? guests.sort((a, b) => a.name.localeCompare(b.name)).sort((a, b) => a.tycketsType?.description.localeCompare(b.tycketsType?.description)).map((e, y) => {
+                return (
+                  <div
+                    onClick={(event) => openEditGuest(event, e)}
+                    key={y} className="clienteLine flexr">
+                    <p className="clienteAvaibleLi" style={{ minWidth: "60px" }}>{e.tycketsType?.description}</p>
+                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    <p className="eventNameLi" style={{ whiteSpace: "nowrap" }}>{e.name}</p>
+                    <div className="userConfigbtns flexr">
+                      <div
+                        onClick={(event) => openEditGuest(event, e)}
+                        className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
+                      <div
+                        onClick={(event) => { openDeleteGuest(event, e.id) }}
+                        className="userConfigbtn flexr">
+                        <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })
-              :
-              <p style={{ marginTop: "50px" }}>Nenhum convidado</p>
+                )
+              })
+                :
+                <p style={{ marginTop: "50px" }}>Nenhum convidado</p>
             }
           </div>
         </div>

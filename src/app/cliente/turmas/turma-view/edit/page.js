@@ -73,7 +73,7 @@ export default function GuestEdit() {
           setPhone(x.phone);
           setEmail(x.email);
           setInvitesAvaible(transformedData)
-          // setSelfPass(x.)
+          setSelfPass(x.tycketsType.id)
           setGuestData(x);
         }
 
@@ -115,7 +115,7 @@ export default function GuestEdit() {
   }
 
   function emailVerify() {
-    var regexEmail = /^[a-zA-Z]{4}[_a-zA-Z0-9]*@[a-zA-Z0-9]+([.]+[a-zA-Z]{2,})+$/;
+    var regexEmail = /^[a-zA-Z][a-zA-Z0-9_\-.]*@[a-zA-Z0-9]+([.-][a-zA-Z0-9]+)*([.][a-zA-Z]{2,})+$/;
 
     if (email?.length > 0) {
       if (regexEmail.test(email)) {
@@ -302,6 +302,8 @@ export default function GuestEdit() {
     setChangeIsOpen(false)
   }
 
+  console.log("SELFPASS", selfPass)
+
   return (
     <div className="adminUsersMain flexr">
       <ToastContainer></ToastContainer>
@@ -325,7 +327,7 @@ export default function GuestEdit() {
           </div>
         </div>
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-        <div className="adminUsersUl flexc" style={{ alignItems: "flex-start", padding: '0 20px' }}>
+        <div className="adminUsersUl flexc" style={{ alignItems: "flex-start", padding: '10px 20px 0 20px' }}>
           <TextField
             style={{ marginTop: "5px" }}
             focused={!!name ? true : false}
@@ -368,7 +370,7 @@ export default function GuestEdit() {
                 }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={selfPass}
+                value={selfPass !== null ? String(selfPass) : ""}
                 onChange={(e) => setSelfPass(e.target.value)}
               >
                 {!!passType ?

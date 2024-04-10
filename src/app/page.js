@@ -202,7 +202,7 @@ export default function Login() {
                 <div className="flexr inputDiv">
                   <TextField
                     onChange={(e) => setEmail(e.target.value)}
-                    className="inputStyle" label="Usuário" id="outlined-size-normal" placeholder="Digite seu Usuário" type="text" />
+                    className="inputStyle" label="E-mail/CPF" id="outlined-size-normal" placeholder="Digite seu E-mail/CPF" type="text" />
                 </div>
                 <div className="flexr inputDivPassword">
                   <TextField

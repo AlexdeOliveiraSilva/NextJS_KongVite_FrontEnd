@@ -12,13 +12,14 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import SendInviteModal from "@/components/Modal/sendInvites";
 
 export default function GuestAdd() {
   const router = useRouter();
   const { KONG_URL, user, eventEdit, turmaEdit, setGuestEditId } = useContext(GlobalContext);
 
   const [passType, setPassType] = useState([])
-
+  const [sendModalIsOpen, setSendModalIsOpen] = useState(false);
   const [name, setName] = useState();
   const [document, setDocument] = useState();
   const [phone, setPhone] = useState();
@@ -64,7 +65,7 @@ export default function GuestAdd() {
   }
 
   function emailVerify() {
-    var regexEmail = /^[a-zA-Z]{4}[_a-zA-Z0-9]*@[a-zA-Z0-9]+([.]+[a-zA-Z]{2,})+$/;
+    var regexEmail = /^[a-zA-Z][a-zA-Z0-9_\-.]*@[a-zA-Z0-9]+([.-][a-zA-Z0-9]+)*([.][a-zA-Z]{2,})+$/;
 
     if (email?.length > 0) {
       if (regexEmail.test(email)) {
@@ -148,7 +149,8 @@ export default function GuestAdd() {
           });
           setisLoading(false)
 
-          router.push('/cliente/turmas/turma-view/');
+          openSendModal();
+
         } else {
           toast.error("Erro ao Cadastrar, tente novamente.", {
             position: "top-right"
@@ -238,10 +240,19 @@ export default function GuestAdd() {
     }
   }
 
+  function openSendModal() {
+    setSendModalIsOpen(true);
+  }
+
+  function closeSendModal() {
+    setSendModalIsOpen(false);
+  }
+
 
   return (
     <div className="adminUsersMain flexr">
       <ToastContainer></ToastContainer>
+      {sendModalIsOpen == true && <SendInviteModal close={() => closeSendModal()} isAdd={true}></SendInviteModal>}
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
           <div className="adminUsersTitle flexr">
@@ -255,7 +266,7 @@ export default function GuestAdd() {
           </div>
         </div>
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-        <div className="adminUsersUl flexc" style={{ alignItems: "flex-start", padding: '0 20px' }}>
+        <div className="adminUsersUl flexc" style={{ alignItems: "flex-start", padding: '10px 20px 0 20px' }}>
           <TextField
             focused={!!name ? true : false}
             onChange={(e) => setName(e.target.value)}
