@@ -66,6 +66,7 @@ export default function Turmas() {
                 setisFetching(false);
                 return ""
             }
+
         } else {
             console.log("else")
             setisFetching(false);
