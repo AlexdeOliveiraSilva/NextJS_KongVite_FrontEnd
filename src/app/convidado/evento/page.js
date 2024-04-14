@@ -158,6 +158,7 @@ export default function EventGuest() {
   }
 
   function openAddGuest() {
+    setGuestData('')
     setAddGuestModalIsOpen(true)
   }
 
@@ -277,6 +278,10 @@ export default function EventGuest() {
     getAllData()
 
   }, [myId])
+
+  useEffect(() => {
+    setGuestData('')
+  }, [])
 
   function formatDateToInput(dataString) {
     const data = new Date(dataString);

@@ -296,11 +296,11 @@ export default function GuestAdd() {
               onChange={(e) => setEmail(e.target.value)}
               className="inputStyle" label={"E-mail"} id="outlined-size-normal" placeholder={`Digite o E-mail:'`} type="text" />
 
-            <FormControl className="InputsTwoSelect">
+            <FormControl className="InputsTwoSelect" style={{ minWidth: "200px" }}>
               <InputLabel id="demo-simple-select-label">Tipo do Ingresso</InputLabel>
               <Select
                 style={{
-                  minWidth: "180px"
+                  minWidth: "200px"
                 }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"

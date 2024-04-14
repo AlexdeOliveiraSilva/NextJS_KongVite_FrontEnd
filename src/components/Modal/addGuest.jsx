@@ -32,7 +32,7 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
         let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
         let x;
 
-        if (!!jwt && !!classId && !!name && !!document && !!phone && !!email && !!selfPass) {
+        if (!!jwt && !!classId && !!name && !!selfPass) {
             setIsLoading(true);
             try {
 
@@ -84,7 +84,7 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
 
         let x;
 
-        if (!!jwt && !!classId && !!guestData?.id && !!name && !!document && !!phone && !!email && !!selfPass) {
+        if (!!jwt && !!classId && !!guestData?.id && !!name && !!selfPass) {
             setIsLoading(true);
             try {
                 x = await (await fetch(`${KONG_URL}/student/acompanhante/add/${classId}`, {
@@ -126,6 +126,19 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
             });
             console.log("else")
         }
+    }
+
+    function formatPhoneNumber(phoneNumber) {
+
+        const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+
+        const match = cleaned.match(/^(\d{2})(\d{5})(\d{4})$/);
+
+        if (match) {
+            return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+        }
+
+        return null;
     }
 
 
@@ -172,19 +185,19 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
                     <div className="userAdminDoubleInputs flexr">
                         <TextField
                             onChange={(e) => setPhone(e.target.value)}
-                            className="inputStyle"
+                            className="inputStyleDouble"
                             label={!!phone ? '' : "Telefone"}
-                            value={phone}
+                            value={formatPhoneNumber(phone)}
                             id="outlined-size-normal"
                             placeholder={`Digite o Telefone:'`}
                             type="text" />
-                        <FormControl className="InputsTwoSelect">
+                        <FormControl className="InputsTwoSelect" style={{ minWidth: "200px" }}>
                             <InputLabel id="demo-simple-select-label">Tipo do Ingresso</InputLabel>
                             <Select
-                                style={{ minWidth: "165px" }}
+                                style={{ minWidth: "200px" }}
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={selfPass}
+                                value={selfPass || ''}
                                 onChange={(e) => setSelfPass(e.target.value)}
                             >
                                 {!!typesData ?

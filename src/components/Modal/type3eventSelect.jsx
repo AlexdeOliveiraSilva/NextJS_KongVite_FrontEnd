@@ -31,8 +31,7 @@ export default function GetEventGuest({ close }) {
 
     }
 
-    async function SelectEvent(e, classId, classEvent, event) {
-        e.preventDefault();
+    async function SelectEvent(classId, classEvent, event) {
         let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
         let x;
 
@@ -101,16 +100,22 @@ export default function GetEventGuest({ close }) {
                     :
                     <div className="guestEventChoiceLine flexc">
 
-                        {!!eventData && eventData.map((e, y) => {
-                            return (
-                                <>
-                                    <button
-                                        onClick={(event) => SelectEvent(event, e.eventsClasses.id, e.eventsClasses, e.events)}
-                                        key={y} className="guestEventChoice" style={{ whiteSpace: "nowrap" }}>{e.events.name} | {e.eventsClasses.name}</button>
-                                </>
-
+                        {!!eventData && eventData.length > 1 ? (
+                            eventData.map((e, y) => (
+                                <button
+                                    onClick={() => SelectEvent(e.eventsClasses.id, e.eventsClasses, e.events)}
+                                    key={y}
+                                    className="guestEventChoice"
+                                    style={{ whiteSpace: "nowrap" }}
+                                >
+                                    {e.events.name} | {e.eventsClasses.name}
+                                </button>
+                            ))
+                        ) : (
+                            !!eventData && eventData.length === 1 && (
+                                SelectEvent(eventData[0].eventsClasses.id, eventData[0].eventsClasses, eventData[0].events)
                             )
-                        })}
+                        )}
                     </div>
                 }
                 <div className="guestEventChoiceLine flexc" style={{ margin: "0", padding: "0" }}>

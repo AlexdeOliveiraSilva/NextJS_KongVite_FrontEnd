@@ -124,6 +124,11 @@ form {
   width: 100%;
   height: auto;
 }
+.inputStyleDouble {
+  width: 100%;
+  max-width: 50%;
+  height: auto;
+}
 
 .inputStyleSearch {
   width: auto;
@@ -472,4 +477,10 @@ form {
   top: -25px;
   right: -25px;
   background-color: var(--white-primary);
+}
+
+@media (max-width: 650px) {
+  .inputStyleDouble {
+    max-width: 100%;
+  }
 }

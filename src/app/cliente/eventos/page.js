@@ -10,14 +10,20 @@ import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "@/components/fragments/loader";
+import TextField from '@mui/material/TextField';
 
 export default function Eventos() {
   const router = useRouter();
   const { KONG_URL, user, company, setEventEdit } = useContext(GlobalContext);
   const [eventList, setEventList] = useState([]);
+  const [eventListCopy, setEventListCopy] = useState([]);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [deleteId, setDeleteId] = useState();
   const [isFetching, setisFetching] = useState(false);
+
+  const [nameFilter, setNameFilter] = useState();
+  const [dateStartFilter, setDateStartFilter] = useState();
+  const [dateEndFilter, setDateEndFilter] = useState();
 
   async function getEvents() {
     let x;
@@ -38,8 +44,10 @@ export default function Eventos() {
 
         if (!x?.message) {
           setEventList(x.data)
+          setEventListCopy(x.data)
         } else {
           setEventList([])
+          setEventListCopy([])
         }
         setisFetching(false);
       } catch (error) {
@@ -142,10 +150,60 @@ export default function Eventos() {
     setDeleteModalIsOpen(false)
   }
 
+
+
+  function filtrarEventos() {
+    let x = eventList;
+    setEventList(eventListCopy);
+
+    let go = filterErrors()
+
+    if (go == false) return ""
+
+    if (!!nameFilter || (!!dateStartFilter && !!dateEndFilter)) {
+      if (!!nameFilter) {
+        setEventList(eventListCopy.filter(e => e.name.toLowerCase().includes(nameFilter.toLowerCase())))
+      }
+
+      if (!!dateStartFilter && !!dateEndFilter) {
+        setEventList(eventListCopy.filter(e => {
+          const eventDate = new Date(e.date);
+          const startDate = new Date(dateStartFilter);
+          const endDate = new Date(dateEndFilter);
+          return eventDate >= startDate && eventDate <= endDate;
+        }));
+      }
+    }
+  }
+
+  function filterErrors() {
+
+
+    if ((!dateStartFilter && !!dateEndFilter) || (!!dateStartFilter && !dateEndFilter)) {
+      toast.error("Para buscar por Data, o inicio e fim.")
+      return false
+    } else {
+
+      if (!!dateStartFilter && !!dateEndFilter) {
+        const startDate = new Date(dateStartFilter);
+        const endDate = new Date(dateEndFilter);
+
+        if (startDate > endDate) {
+          toast.error("A Data de inicio tem que ser anterior a data de fim")
+          return false
+        } else return true
+      } else return true
+    }
+
+
+  }
+
   useEffect(() => {
 
     getEvents();
   }, [])
+
+  console.log(eventList)
 
   return (
     <div className="clienteMain flexr">
@@ -162,7 +220,45 @@ export default function Eventos() {
               className="btnOrange">Novo Evento!</button>
           </div>
         </div>
+
+
+        <div className="searchEventsContainer flexr">
+          <div className="flexr" style={{ padding: "0 20px", width: "100%" }}>
+            <TextField
+              onChange={(e) => setNameFilter(e.target.value)}
+              style={{ width: "100%" }}
+              type="text" id="nomeEvento"
+              className="inputStyle" label="Buscar por Nome..." value={nameFilter}
+            />
+          </div>
+          <Separator color={"#dadada"} width="1px" height="100%"></Separator>
+
+          <div className="searchDateContainer flexr">
+            <div className="flexr" style={{ padding: "0 20px", gap: "10px" }}>
+              <label htmlFor="dataInicio">Entre:</label>
+              <TextField
+                onChange={(e) => setDateStartFilter(e.target.value)}
+                type="datetime-local" id="nomeEvento"
+                className="inputStyle" value={dateStartFilter}
+              />
+            </div>
+            <div className="flexr" style={{ padding: "0 20px", gap: "10px" }}>
+              <label htmlFor="dataFim">e:</label>
+              <TextField
+                onChange={(e) => setDateEndFilter(e.target.value)}
+                type="datetime-local" id="nomeEvento"
+                className="inputStyle" value={dateEndFilter}
+              />
+            </div>
+          </div>
+
+          <button className="btnBlue" onClick={filtrarEventos}>Buscar</button>
+        </div>
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
+
+
+
+
         <div className="clienteUl flexc">
           <div className="clienteTitle flexr">
             <p className="eventNameLi">Nome do Evento</p>

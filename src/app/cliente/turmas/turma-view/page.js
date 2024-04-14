@@ -18,6 +18,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import Loader from "@/components/fragments/loader";
 import ReplyIcon from '@mui/icons-material/Reply';
 import SendInviteModal from "@/components/Modal/sendInvites";
+import TransformIcon from '@mui/icons-material/Transform';
+import AddIcon from '@mui/icons-material/Add';
+import Tooltip from '@mui/material/Tooltip';
+import TransferHistoric from "@/components/Modal/transferHistoric";
+import InvitesAddModal from "@/components/Modal/invitesAddForClient";
 
 export default function TurmaView() {
     const router = useRouter();
@@ -26,6 +31,8 @@ export default function TurmaView() {
     const [event, setEvent] = useState();
     const [isLoading, setIsLoading] = useState();
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+    const [transferModalIsOpen, setTransferModalIsOpen] = useState(false);
+    const [addInvitesModalIsOpen, setAddInvitesModalIsOpen] = useState(false);
     const [sendModalIsOpen, setSendModalIsOpen] = useState(false);
     const [deleteIdSelected, setDeleteIdSelected] = useState();
     const [turmaEdit, setTurmaEdit] = useState();
@@ -144,6 +151,24 @@ export default function TurmaView() {
         setSendModalIsOpen(false);
     }
 
+    function openTransferModal(e) {
+        e.preventDefault();
+        setTransferModalIsOpen(true);
+    }
+
+    function closeTransferModal() {
+        setTransferModalIsOpen(false);
+    }
+
+    function openInvitesAdddModal(e) {
+        e.preventDefault();
+        setAddInvitesModalIsOpen(true);
+    }
+
+    function closeInvitesAdddModal() {
+        setAddInvitesModalIsOpen(false);
+    }
+
     function toEditGuest(e, id, name) {
         e.preventDefault();
 
@@ -179,6 +204,8 @@ export default function TurmaView() {
     return (
         <div className="clienteMain flexr">
             <ToastContainer></ToastContainer>
+            {addInvitesModalIsOpen == true && <InvitesAddModal close={() => setAddInvitesModalIsOpen()} id={1}></InvitesAddModal>}
+            {transferModalIsOpen == true && <TransferHistoric close={() => closeTransferModal()} id={1}></TransferHistoric>}
             {sendModalIsOpen == true && <SendInviteModal close={() => closeSendModal()} isAdd={false}></SendInviteModal>}
             {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteGuest()} word="confirmar" ></DeletModal>}
             <div className="clienteContent flexc">
@@ -252,47 +279,58 @@ export default function TurmaView() {
                                         <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                                         <p className="guestLi">{e.other_guests?.length}</p>
                                         <div className="userConfigbtns flexr">
-                                            <div
-                                                onClick={(event) => openSendModal(event)}
-                                                className="userConfigbtn flexr"><ReplyIcon className="userConfigIcon"></ReplyIcon></div>
-                                            <div
-                                                onClick={(event) => toEditGuest(event, e.id, e.name)}
-                                                className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
-                                            <div
-                                                onClick={(event) => openDeleteModal(event, e.id)}
-                                                className="userConfigbtn flexr">
-                                                <DeleteIcon className="userConfigIcon"></DeleteIcon>
-                                            </div>
+                                            <Tooltip title="Encaminhar Ingresso por E-mail">
+                                                <div
+                                                    onClick={(event) => openSendModal(event)}
+                                                    className="userConfigbtn flexr"><ReplyIcon className="userConfigIcon"></ReplyIcon></div>
+                                            </Tooltip>
+                                            <Tooltip title="Adicionar mais Convites">
+                                                <div
+                                                    onClick={(event) => openInvitesAdddModal(event)}
+                                                    className="userConfigbtn flexr"><AddIcon className="userConfigIcon"></AddIcon></div>
+                                            </Tooltip>
+                                            <Tooltip title="Histórico de Tranferências">
+                                                <div
+                                                    onClick={(event) => openTransferModal(event)}
+                                                    className="userConfigbtn flexr"><TransformIcon className="userConfigIcon"></TransformIcon></div>
+                                            </Tooltip>
+                                            <Tooltip title="Editar Formando">
+                                                <div
+                                                    onClick={(event) => toEditGuest(event, e.id, e.name)}
+                                                    className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
+                                            </Tooltip>
+                                            <Tooltip title="Deletar Formando">
+                                                <div
+                                                    onClick={(event) => openDeleteModal(event, e.id)}
+                                                    className="userConfigbtn flexr">
+                                                    <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                                                </div>
+                                            </Tooltip>
                                         </div>
                                     </div>
 
-                                    {otherGuestIsOpen == e.id && (
+                                    {
                                         e.other_guests?.length > 0
-                                            ?
-                                            e.other_guests?.map((e, y) => {
-                                                return (
-                                                    <div key={y} style={{ width: "100%" }}>
-                                                        <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
-                                                            <div className="otherGuestLine flexr">
-                                                                <p>Convidado <span>{y + 1 < 10 ? `0${y + 1}` : y + 1}</span></p>
-                                                                <p>Nome: <span>{!!e.name ? e.name : "Não preencheu"}</span></p>
-                                                                <p>Ingresso: <span>{!!e.tycketsType?.description ? e.tycketsType?.description : "Não preencheu"}</span></p>
-                                                            </div>
-                                                        </div >
-                                                        <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
+                                        &&
+                                        e.other_guests?.map((e, y) => {
+                                            return (
+                                                <div key={y} style={{ width: "100%" }}>
+                                                    <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
+                                                        <div className="otherGuestLine flexr">
+                                                            <p>Convidado <span>{y + 1 < 10 ? `0${y + 1}` : y + 1}</span></p>
+                                                            <p>Nome: <span>{!!e.name ? e.name : "Não preencheu"}</span></p>
+                                                            <p>Ingresso: <span>{!!e.tycketsType?.description ? e.tycketsType?.description : "Não preencheu"}</span></p>
                                                         </div>
-                                                        {y == e.other_guests?.length &&
-                                                            <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-                                                        }
+                                                    </div >
+                                                    <div className="flexr" style={{ width: "100%", justifyContent: "flex-end" }}>
                                                     </div>
-                                                )
-                                            })
-                                            :
-
-                                            <div style={{ width: "100%", fontSize: " 14px", marginTop: "10px", marginBottom: "10px" }} className="flexr">
-                                                Nenhum convidado adicionado...
-                                            </div>
-                                    )}
+                                                    {y == e.other_guests?.length &&
+                                                        <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
+                                                    }
+                                                </div>
+                                            )
+                                        })
+                                    }
                                 </>
                             )
                         })

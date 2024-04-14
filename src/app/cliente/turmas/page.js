@@ -151,6 +151,7 @@ export default function Turmas() {
     }, [])
 
 
+    console.log(turma)
     return (
         <div className="clienteMain flexr">
             <ToastContainer></ToastContainer>
@@ -170,8 +171,6 @@ export default function Turmas() {
                 <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
                 <div className="clienteUl flexc">
                     <div className="clienteTitle flexr">
-                        <p className="clienteIdLi">Id</p>
-                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                         <p className="eventNameLi">Nome da Turma</p>
                     </div>
                     <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
@@ -186,8 +185,6 @@ export default function Turmas() {
                                     <div
                                         onClick={(event) => goView(event, e.id)}
                                         key={y} className="clienteLine flexr">
-                                        <p className="clienteIdLi">{e.id}</p>
-                                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                                         <p className="eventNameLi">{e.name}</p>
                                         <div className="userConfigbtns flexr">
                                             <div

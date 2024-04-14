@@ -194,6 +194,32 @@ export default function EventsAdd() {
     setPassType(updatedPassType);
   };
 
+  async function searchCEP(zipcode) {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${zipcode.toString().trim().replaceAll("-", "")}/json/`);
+      if (!response.ok) {
+        throw new Error('CEP não encontrado');
+      }
+      const data = await response.json();
+
+      console.log(data)
+      setCity(data?.localidade)
+      setUf(data?.uf)
+      setAddress(data?.logradouro)
+      setNeighborhood(data?.bairro)
+
+    } catch (error) {
+      console.error('Erro ao buscar informações do CEP:', error.message);
+      return null;
+    }
+  }
+
+  useEffect(() => {
+    if (zipcode?.length == 8) {
+      searchCEP(zipcode?.toString().trim().replaceAll("-", ""))
+    }
+  }, [zipcode])
+
   useEffect(() => {
     dataVerify();
   }, [name, uf, address, neighborhood, zipcode, city])
@@ -219,7 +245,7 @@ export default function EventsAdd() {
               id="outlined-size-normal"
               placeholder={`Digite o Nome:'`}
               type="text" />
-            <div className="userAdminDoubleInputsTwo flexr">
+            <div className="userAdminDoubleInputsTwo flexr" style={{ width: "100%" }}>
               <FormControl className="InputsTwoSelect">
                 <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
                 <Select
@@ -290,6 +316,7 @@ export default function EventsAdd() {
             onChange={(e) => setAddress(e.target.value)}
             className="inputStyle"
             label={!!address ? '' : "Rua"}
+            value={address || ''}
             id="outlined-size-normal"
             placeholder={`Nome da Rua:'`}
             type="text" />
@@ -297,6 +324,7 @@ export default function EventsAdd() {
             <TextField
               onChange={(e) => setNumberAdress(e.target.value)}
               className="inputStyle"
+              value={numberAdress || ''}
               label={!!numberAdress ? '' : "Numero"}
               id="outlined-size-normal"
               placeholder={`Digite o Numero:'`}
@@ -304,6 +332,7 @@ export default function EventsAdd() {
             <TextField
               onChange={(e) => setNeighborhood(e.target.value)}
               className="inputStyle"
+              value={neighborhood || ''}
               label={!!neighborhood ? '' : "Bairro"}
               id="outlined-size-normal"
               placeholder={`Digite o Bairro:'`}
@@ -311,6 +340,7 @@ export default function EventsAdd() {
             <TextField
               onChange={(e) => setCity(e.target.value)}
               className="inputStyle"
+              value={city || ''}
               label={!!city ? '' : "Cidade"}
               id="outlined-size-normal"
               placeholder={`Digite a Cidade:'`}
@@ -319,6 +349,7 @@ export default function EventsAdd() {
               onChange={(e) => setUf(e.target.value)}
               className="inputStyle"
               label={!!uf ? '' : "Estado"}
+              value={uf || ''}
               id="outlined-size-normal"
               placeholder={`Digite o Estado:'`}
               type="text" />

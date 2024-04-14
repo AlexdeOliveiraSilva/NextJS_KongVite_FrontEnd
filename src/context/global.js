@@ -46,7 +46,7 @@ export const GlobalProvider = ({ children }) => {
 
     const [eventSelected, setEventSelected] = useState();
 
-    const eventsType = ["Formatura", "Festa", "Venda de Ingressos", "Corporativo"];
+    const eventsType = ["Formatura"];
     const eventsSubType = ["Almoço", "Jantar"];
     const adminSidebarItens = ["dashboard", "administradores", "empresas"];
     const guestSideBar = ["evento", "transferencias"];
