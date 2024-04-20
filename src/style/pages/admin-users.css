@@ -42,10 +42,11 @@
 
 .searchEventsContainer {
   padding: "30px 20px";
-  justify-content: "space-between";
+  justify-content: "flex-start";
   width: "100%";
   flex-wrap: nowrap;
   padding-bottom: 20px;
+  width: 100%;
 }
 
 .searchDateContainer {

@@ -347,11 +347,7 @@ export default function EventGuest() {
               </div>
             }
           </div>
-          {/* {!!name &&
-            <div className="clienteTitleDiv flexr" style={{ justifyContent: "flex-start" }}>
-              <img src="/images/logo-gazz-azul-preto.png"></img>
-            </div>
-          } */}
+
         </div>
         {!!name &&
           <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>

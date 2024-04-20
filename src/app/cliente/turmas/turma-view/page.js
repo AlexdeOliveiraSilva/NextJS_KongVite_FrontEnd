@@ -43,6 +43,7 @@ export default function TurmaView() {
     const [turmaGuest, setTurmaGuest] = useState();
     const [turmaGuestCopy, setTurmaGuestCopy] = useState();
     const [isFetching, setisFetching] = useState(false);
+    const [transferHistoricId, setTranferHistoricId] = useState();
 
 
     async function getTurma() {
@@ -151,8 +152,9 @@ export default function TurmaView() {
         setSendModalIsOpen(false);
     }
 
-    function openTransferModal(e) {
+    function openTransferModal(e, id) {
         e.preventDefault();
+        setTranferHistoricId(+id)
         setTransferModalIsOpen(true);
     }
 
@@ -205,7 +207,7 @@ export default function TurmaView() {
         <div className="clienteMain flexr">
             <ToastContainer></ToastContainer>
             {addInvitesModalIsOpen == true && <InvitesAddModal close={() => setAddInvitesModalIsOpen()} id={1}></InvitesAddModal>}
-            {transferModalIsOpen == true && <TransferHistoric close={() => closeTransferModal()} id={1}></TransferHistoric>}
+            {transferModalIsOpen == true && <TransferHistoric close={() => closeTransferModal()} id={transferHistoricId}></TransferHistoric>}
             {sendModalIsOpen == true && <SendInviteModal close={() => closeSendModal()} isAdd={false}></SendInviteModal>}
             {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteGuest()} word="confirmar" ></DeletModal>}
             <div className="clienteContent flexc">
@@ -291,7 +293,7 @@ export default function TurmaView() {
                                             </Tooltip>
                                             <Tooltip title="Histórico de Tranferências">
                                                 <div
-                                                    onClick={(event) => openTransferModal(event)}
+                                                    onClick={(event) => openTransferModal(event, e.id)}
                                                     className="userConfigbtn flexr"><TransformIcon className="userConfigIcon"></TransformIcon></div>
                                             </Tooltip>
                                             <Tooltip title="Editar Formando">

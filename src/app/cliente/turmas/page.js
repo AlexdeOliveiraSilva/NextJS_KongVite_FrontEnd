@@ -172,7 +172,10 @@ export default function Turmas() {
                 <div className="clienteUl flexc">
                     <div className="clienteTitle flexr">
                         <p className="eventNameLi">Nome da Turma</p>
+                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                        <p className="eventNameLi">Formandos</p>
                     </div>
+
                     <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
                         {isFetching == true
                             ?
@@ -186,6 +189,8 @@ export default function Turmas() {
                                         onClick={(event) => goView(event, e.id)}
                                         key={y} className="clienteLine flexr">
                                         <p className="eventNameLi">{e.name}</p>
+                                        <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                                        <p className="eventNameLi">{e.totalMainGuests}</p>
                                         <div className="userConfigbtns flexr">
                                             <div
                                                 onClick={(event) => toEditTurma(event, e.id, e.name)}

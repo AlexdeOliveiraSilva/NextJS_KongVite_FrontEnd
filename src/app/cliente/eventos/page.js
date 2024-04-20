@@ -156,54 +156,62 @@ export default function Eventos() {
     let x = eventList;
     setEventList(eventListCopy);
 
-    let go = filterErrors()
+    let go = filterErrors();
 
-    if (go == false) return ""
+    if (go === false) return "";
 
     if (!!nameFilter || (!!dateStartFilter && !!dateEndFilter)) {
+      let filteredEvents = eventListCopy;
+
       if (!!nameFilter) {
-        setEventList(eventListCopy.filter(e => e.name.toLowerCase().includes(nameFilter.toLowerCase())))
+        filteredEvents = filteredEvents.filter(e => e.name.toLowerCase().includes(nameFilter.toLowerCase()));
       }
 
       if (!!dateStartFilter && !!dateEndFilter) {
-        setEventList(eventListCopy.filter(e => {
+        filteredEvents = filteredEvents.filter(e => {
           const eventDate = new Date(e.date);
           const startDate = new Date(dateStartFilter);
           const endDate = new Date(dateEndFilter);
+
+          eventDate.setHours(0, 0, 0, 0);
+          startDate.setHours(0, 0, 0, 0);
+          endDate.setHours(0, 0, 0, 0);
+
           return eventDate >= startDate && eventDate <= endDate;
-        }));
+        });
       }
+
+      setEventList(filteredEvents);
     }
   }
+
 
   function filterErrors() {
-
-
     if ((!dateStartFilter && !!dateEndFilter) || (!!dateStartFilter && !dateEndFilter)) {
-      toast.error("Para buscar por Data, o inicio e fim.")
-      return false
+      toast.error("Para buscar por Data, é necessário definir tanto a data de início quanto a data de término.");
+      return false;
+    } else if (!!dateStartFilter && !!dateEndFilter) {
+      const startDate = new Date(dateStartFilter);
+      const endDate = new Date(dateEndFilter);
+
+      if (startDate > endDate) {
+        toast.error("A data de início deve ser anterior à data de término.");
+        return false;
+      } else {
+        return true;
+      }
     } else {
 
-      if (!!dateStartFilter && !!dateEndFilter) {
-        const startDate = new Date(dateStartFilter);
-        const endDate = new Date(dateEndFilter);
-
-        if (startDate > endDate) {
-          toast.error("A Data de inicio tem que ser anterior a data de fim")
-          return false
-        } else return true
-      } else return true
+      return true;
     }
-
-
   }
+
 
   useEffect(() => {
 
     getEvents();
   }, [])
 
-  console.log(eventList)
 
   return (
     <div className="clienteMain flexr">
@@ -237,16 +245,24 @@ export default function Eventos() {
             <div className="flexr" style={{ padding: "0 20px", gap: "10px" }}>
               <label htmlFor="dataInicio">Entre:</label>
               <TextField
-                onChange={(e) => setDateStartFilter(e.target.value)}
-                type="datetime-local" id="nomeEvento"
+                onChange={(e) => {
+                  const dateTimeValue = e.target.value;
+                  const dateOnly = dateTimeValue.split('T')[0];
+                  setDateStartFilter(dateOnly);
+                }}
+                type="date" id="nomeEvento"
                 className="inputStyle" value={dateStartFilter}
               />
             </div>
             <div className="flexr" style={{ padding: "0 20px", gap: "10px" }}>
               <label htmlFor="dataFim">e:</label>
               <TextField
-                onChange={(e) => setDateEndFilter(e.target.value)}
-                type="datetime-local" id="nomeEvento"
+                onChange={(e) => {
+                  const dateTimeValue = e.target.value;
+                  const dateOnly = dateTimeValue.split('T')[0];
+                  setDateEndFilter(dateOnly)
+                }}
+                type="date" id="nomeEvento"
                 className="inputStyle" value={dateEndFilter}
               />
             </div>
@@ -265,7 +281,11 @@ export default function Eventos() {
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
             <p className="clienteTypeLi">Tipo</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            <p className="clienteAvaibleLi">Ingressos</p>
+            <p className="clienteAvaibleLi">Disponíveis</p>
+            <div className="displayNone700">
+              <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+            </div>
+            <p className="clienteAvaibleLi">Cadastrados</p>
             <div className="displayNone700">
               <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
             </div>
@@ -286,7 +306,11 @@ export default function Eventos() {
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                     <p className="clienteTypeLi">{e.type}</p>
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                    <p className="clienteAvaibleLi">0</p>
+                    <p className="clienteAvaibleLi">{e.totalAvaliable - e.totalUsed}</p>
+                    <div className="displayNone700">
+                      <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
+                    </div>
+                    <p className="clienteAvaibleLi">{e.totalAvaliable}</p>
                     <div className="displayNone700">
                       <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                     </div>
