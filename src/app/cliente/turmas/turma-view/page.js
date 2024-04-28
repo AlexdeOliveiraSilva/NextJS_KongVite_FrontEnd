@@ -23,20 +23,19 @@ import AddIcon from '@mui/icons-material/Add';
 import Tooltip from '@mui/material/Tooltip';
 import TransferHistoric from "@/components/Modal/transferHistoric";
 import InvitesAddModal from "@/components/Modal/invitesAddForClient";
+import UploadGuestModal from "@/components/Modal/uploadGuest";
 
 export default function TurmaView() {
     const router = useRouter();
     const { KONG_URL, user, eventEdit, setGuestEditId, setGuestEditName } = useContext(GlobalContext);
-    const [addTurmasIsOpen, setAddTurmasIsOpen] = useState(false);
-    const [event, setEvent] = useState();
     const [isLoading, setIsLoading] = useState();
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
     const [transferModalIsOpen, setTransferModalIsOpen] = useState(false);
     const [addInvitesModalIsOpen, setAddInvitesModalIsOpen] = useState(false);
+    const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
     const [sendModalIsOpen, setSendModalIsOpen] = useState(false);
     const [deleteIdSelected, setDeleteIdSelected] = useState();
     const [turmaEdit, setTurmaEdit] = useState();
-    const [turmaNameEdit, setTurmaNameEdit] = useState();
     const [otherGuestIsOpen, setOtherGuestIsOpen] = useState();
     const [search, setSearch] = useState("")
     const [turmaData, setTurmaData] = useState();
@@ -151,6 +150,14 @@ export default function TurmaView() {
     function closeSendModal() {
         setSendModalIsOpen(false);
     }
+    function openUploadModal(e) {
+        e.preventDefault();
+        setUploadModalIsOpen(true);
+    }
+
+    function closeUploadModal() {
+        setUploadModalIsOpen(false);
+    }
 
     function openTransferModal(e, id) {
         e.preventDefault();
@@ -209,6 +216,7 @@ export default function TurmaView() {
             {addInvitesModalIsOpen == true && <InvitesAddModal close={() => setAddInvitesModalIsOpen()} id={1}></InvitesAddModal>}
             {transferModalIsOpen == true && <TransferHistoric close={() => closeTransferModal()} id={transferHistoricId}></TransferHistoric>}
             {sendModalIsOpen == true && <SendInviteModal close={() => closeSendModal()} isAdd={false}></SendInviteModal>}
+            {uploadModalIsOpen == true && <UploadGuestModal close={() => closeUploadModal()}></UploadGuestModal>}
             {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteGuest()} word="confirmar" ></DeletModal>}
             <div className="clienteContent flexc">
                 <div className="adminUsersHeader flexr">
@@ -239,6 +247,9 @@ export default function TurmaView() {
                         <button
                             onClick={(e) => toAddGuest(e)}
                             className="btnOrange">Add Formando</button>
+                        <button
+                            onClick={(e) => openUploadModal(e)}
+                            className="btnBlue">Importar</button>
                     </div>
                 </div>
                 <div className="userLineTitle flexr">

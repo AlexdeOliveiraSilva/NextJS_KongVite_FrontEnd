@@ -13,6 +13,12 @@ import AddGuest from "@/components/Modal/addGuest";
 import InvitesModal from "@/components/Modal/invitesDownload";
 import ChangeModal from "@/components/Modal/chancgePassword";
 import Loader from "@/components/fragments/loader";
+import SplideCard from "@/components/fragments/splideCard";
+import { Splide, SplideSlide } from '@splidejs/react-splide';
+import '@splidejs/react-splide/css';
+import '@splidejs/react-splide/css/skyblue';
+import '@splidejs/react-splide/css/sea-green';
+import '@splidejs/react-splide/css/core';
 
 
 export default function EventGuest() {
@@ -256,7 +262,7 @@ export default function EventGuest() {
 
 
     if (!!y && !!z) {
-
+      console.log(y, z, "aaaaaaa")
       getGuests(y.classEvent.id);
 
       setClassGuestId(y.classEvent.id);
@@ -346,6 +352,16 @@ export default function EventGuest() {
                 </div>
               </div>
             }
+          </div>
+          <div className="clienteTitleDivSplider flexr">
+            <Splide aria-label="My Favorite Images">
+              <SplideSlide>
+                <SplideCard></SplideCard>
+              </SplideSlide>
+              <SplideSlide>
+                <SplideCard></SplideCard>
+              </SplideSlide>
+            </Splide>
           </div>
 
         </div>

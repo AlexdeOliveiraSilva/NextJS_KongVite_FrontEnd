@@ -281,11 +281,7 @@ export default function Eventos() {
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
             <p className="clienteTypeLi">Tipo</p>
             <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            <p className="clienteAvaibleLi">Disponíveis</p>
-            <div className="displayNone700">
-              <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            </div>
-            <p className="clienteAvaibleLi">Cadastrados</p>
+            <p className="clienteAvaibleLi">Ingressos</p>
             <div className="displayNone700">
               <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
             </div>
@@ -306,11 +302,7 @@ export default function Eventos() {
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                     <p className="clienteTypeLi">{e.type}</p>
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                    <p className="clienteAvaibleLi">{e.totalAvaliable - e.totalUsed}</p>
-                    <div className="displayNone700">
-                      <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                    </div>
-                    <p className="clienteAvaibleLi">{e.totalAvaliable}</p>
+                    <p className="clienteAvaibleLi">{e.totalAvaliable - e.totalUsed}/{e.totalAvaliable}</p>
                     <div className="displayNone700">
                       <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                     </div>

@@ -214,6 +214,7 @@ export default function EventsAdd() {
     }
   }
 
+
   useEffect(() => {
     if (zipcode?.length == 8) {
       searchCEP(zipcode?.toString().trim().replaceAll("-", ""))
