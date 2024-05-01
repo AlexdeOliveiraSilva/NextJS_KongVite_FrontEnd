@@ -246,6 +246,7 @@ export default function UploadGuestModal({ close }) {
                             </div>
                             : step == 2 ?
                                 <div className='uploadList flexc'>
+
                                     {!!data && data.map((e, y) => {
                                         return (
                                             <div key={y} className={y == 0 ? 'uploadListFirstLine flexr' : 'uploadListLine flexr'}>
