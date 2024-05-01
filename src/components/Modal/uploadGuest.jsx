@@ -240,7 +240,7 @@ export default function UploadGuestModal({ close }) {
                             <div className='flexc contentUploadBox'>
                                 <label htmlFor="fileInput" className="uploadLabel">
                                     <DriveFolderUploadIcon style={{ width: "100%", fontSize: "60px", color: "var(--blue-primary)" }} />
-                                    <p style={{ fontSize: "18px", color: "var(--blue-primary)", marginTop: "20px" }}>Clique ou arraste aqui...</p>
+                                    <p style={{ fontSize: "18px", color: "var(--blue-primary)", marginTop: "20px" }}>Clique aqui...</p>
                                 </label>
                                 <input type="file" id="fileInput" className="fileInput" onChange={handleFileUpload} accept=".xls,.xlsx" />
                             </div>
