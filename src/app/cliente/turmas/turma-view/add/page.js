@@ -109,7 +109,21 @@ export default function GuestAdd() {
     e.preventDefault();
 
     if (!checkInputs()) {
-      toast.error("Preencha todos os campos")
+      if (!name || !!nameError) {
+        toast.error("Nome, deve conter pelo enos 3 caracteres")
+      }
+      if (!selfPass) {
+        toast.error("Preencha o Tipo do Convite")
+      }
+      if (!document || !!documentError) {
+        toast.error("Documento deve ser Valido")
+      }
+      if (!email || !!emailError) {
+        toast.error("E-mail deve ser Valido")
+      }
+      if (!phone || phoneError) {
+        toast.error("Telefone deve ser Valido")
+      }
       return ""
     }
 
@@ -239,6 +253,7 @@ export default function GuestAdd() {
       return false
     }
   }
+
 
   function openSendModal() {
     setSendModalIsOpen(true);

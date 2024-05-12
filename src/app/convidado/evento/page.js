@@ -15,6 +15,7 @@ import ChangeModal from "@/components/Modal/chancgePassword";
 import Loader from "@/components/fragments/loader";
 import SplideCard from "@/components/fragments/splideCard";
 import { Splide, SplideSlide } from '@splidejs/react-splide';
+import DownloadIcon from '@mui/icons-material/Download';
 import '@splidejs/react-splide/css';
 import '@splidejs/react-splide/css/skyblue';
 import '@splidejs/react-splide/css/sea-green';
@@ -145,6 +146,7 @@ export default function EventGuest() {
           });
           setDeleteGuestModalIsOpen(false);
           setGuestDeleteId("")
+          f5();
           setIsLoading(false);
         }
       } catch (error) {
@@ -170,7 +172,7 @@ export default function EventGuest() {
 
   function openEditGuest(e, data) {
     e.preventDefault();
-
+    e.stopPropagation();
     setGuestData(data)
     setAddGuestModalIsOpen(true)
   }
@@ -183,12 +185,13 @@ export default function EventGuest() {
     setGuestEditName("");
     getGuests(y.classEvent.id);
     setRefreshPage(!refreshPage);
+    f5();
     setAddGuestModalIsOpen(false);
   }
 
   function openDeleteGuest(e, id) {
     e.preventDefault();
-
+    e.stopPropagation();
     setGuestDeleteId(id)
     setDeleteGuestModalIsOpen(true)
   }
@@ -240,6 +243,49 @@ export default function EventGuest() {
       } catch (error) {
         console.log("catch", error)
         return ""
+      }
+    }
+  }
+
+  async function toDownload(uuid, load) {
+
+    if (!!jwt && !!uuid && !!url) {
+      setIsLoading(load);
+
+      try {
+        let response = await fetch(`${url}/invite/${uuid}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': jwt
+          }
+        });
+
+        if (response.ok) {
+          let blob = await response.blob();
+          let url = window.URL.createObjectURL(blob);
+
+          let a = document.createElement('a');
+          a.href = url;
+          a.download = 'image.jpg';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+
+          let y = [...isDownloaded, uuid]
+
+          setIsDownloaded(y)
+
+          setIsLoading("");
+        } else {
+          console.log("erro else")
+          setIsLoading("");
+        }
+
+
+      } catch (error) {
+        console.log("error:", error)
+        setIsLoading("");
       }
     }
   }
@@ -301,6 +347,13 @@ export default function EventGuest() {
     return `${dia}/${mes}/${ano} às ${horas}:${minutos} horas`;
   }
 
+  function f5() {
+    if (!!window) {
+      window.location.reload();
+    }
+  }
+
+
   return (
     <div className="clienteMain flexr">
       <ToastContainer></ToastContainer>
@@ -354,14 +407,19 @@ export default function EventGuest() {
             }
           </div>
           <div className="clienteTitleDivSplider flexr">
-            <Splide aria-label="My Favorite Images">
-              <SplideSlide>
-                <SplideCard></SplideCard>
-              </SplideSlide>
-              <SplideSlide>
-                <SplideCard></SplideCard>
-              </SplideSlide>
-            </Splide>
+            {!!myData &&
+              <Splide aria-label="">
+                {myData?.mainConvidado?.guestsTicketsTypeNumber.length > 0 &&
+                  myData.mainConvidado?.guestsTicketsTypeNumber.map((e, y) => {
+                    return (
+                      <SplideSlide key={y}>
+                        <SplideCard name={e.tycketsType.description} f={e.available} s={e.number}></SplideCard>
+                      </SplideSlide>
+                    )
+                  }, [])
+                }
+              </Splide>
+            }
           </div>
 
         </div>
@@ -400,6 +458,7 @@ export default function EventGuest() {
               :
 
               guests?.length > 0 ? guests.sort((a, b) => a.name.localeCompare(b.name)).sort((a, b) => a.tycketsType?.description.localeCompare(b.tycketsType?.description)).map((e, y) => {
+                console.log("ss1ss", e)
                 return (
                   <div
                     onClick={(event) => openEditGuest(event, e)}
@@ -408,6 +467,13 @@ export default function EventGuest() {
                     <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
                     <p className="eventNameLi" style={{ whiteSpace: "nowrap" }}>{e.name}</p>
                     <div className="userConfigbtns flexr">
+                      {/* <button
+                        disabled={isDownloaded.includes(e.uuid) ? true : false}
+                        onClick={() => toDownload(e.uuid, y.toString())}
+                        className={'downBtn'}
+                      >
+                        <DownloadIcon style={{ color: "#ffffff" }}></DownloadIcon>
+                      </button> */}
                       <div
                         onClick={(event) => openEditGuest(event, e)}
                         className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
