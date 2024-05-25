@@ -174,7 +174,15 @@ export default function Login() {
       setUserName(localStorage.getItem("user_name"));
       setUserType(localStorage.getItem("user_type"));
       setUserEmail(localStorage.getItem("user_email"));
-      router.push('/admin/dashboard')
+
+
+      if (localStorage.getItem("user_type") == 3) {
+        router.push('/convidado/evento/');
+      } else if (localStorage.getItem("user_type") == 2) {
+        router.push('/cliente/eventos/');
+      } else {
+        router.push('/admin/dashboard/');
+      }
     }
   }, [])
 

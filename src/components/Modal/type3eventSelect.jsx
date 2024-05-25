@@ -47,6 +47,8 @@ export default function GetEventGuest({ close }) {
                     }
                 })).json()
 
+
+
                 if (!x?.message) {
                     let user = x
                     const data = JSON.stringify({

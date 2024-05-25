@@ -102,7 +102,7 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
                         tycketsTypeId: selfPass
                     })
                 })).json()
-                console.log("aaa", x)
+
                 if (!!x?.message) {
 
                     close();

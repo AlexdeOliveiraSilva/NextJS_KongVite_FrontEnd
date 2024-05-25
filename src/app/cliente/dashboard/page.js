@@ -49,7 +49,6 @@ export default function Dashboard() {
         getEvent();
     }, [])
 
-    console.log("data", data)
 
     return (
         <div className="clienteMain flexr">

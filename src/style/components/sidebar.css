@@ -5,7 +5,6 @@
   padding: 20px 10px 50px 10px;
   transition: all 0.7s ease;
   gap: 20px;
-  border-radius: 0 20px 20px 0;
   background-color: var(--blue-primary);
 }
 .sidebarMainClose {
@@ -97,7 +96,7 @@
 
 .sidebarMenuItemActiveNow p {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--white-primary);
 }
 
@@ -121,8 +120,7 @@
   border-left: 5px solid rgb(255, 255, 255);
 }
 .sidebarMenuItemActiveNow .sidebarMenuIcon {
-  color: rgb(0, 0, 97) !important;
-  background-color: rgb(255, 255, 255) !important;
+  color: rgb(255, 255, 255) !important;
   width: 25px;
   height: 25px;
   border-radius: 5px;
@@ -133,7 +131,7 @@
   height: 25px;
   border-radius: 5px;
   padding: 1px;
-  color: rgb(255, 255, 255) !important;
+  color: var(--blue-disabled) !important;
 }
 
 .sidebarMenuItemActive:hover .sidebarMenuIcon {
@@ -143,13 +141,14 @@
 .sidebarTextMenu {
   font-size: 16px;
   font-weight: 400;
-  color: var(--white-primary);
+  color: var(--blue-disabled);
   transition: all 1s ease;
 }
 
 .sidebarTextmenuActive {
-  font-size: 18px;
+  font-size: 16px;
   color: var(--title);
+  font-weight: 400;
   transition: all 1s ease;
 }
 

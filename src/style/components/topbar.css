@@ -44,6 +44,7 @@
   transition: all 1s ease;
   display: flex;
   align-items: flex-start;
+  z-index: 999;
 }
 .topbarPageMidle {
   width: 100%;
@@ -166,4 +167,53 @@
   .topbarContent {
     border-radius: 0;
   }
+}
+
+/* ******************************************* NEW TOP BAR */
+
+.newTopMain {
+  width: 100%;
+  margin: 0;
+
+  justify-content: flex-end;
+  gap: 20px;
+  padding: 0 5%;
+}
+.newTopMail {
+  background-color: var(--blue-primary);
+  border-radius: 6px;
+  padding: 7px 10px;
+  position: relative;
+}
+.newTopMailAcent {
+  background-color: var(--red-primary);
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  color: var(--white-primary);
+  font-size: 10px;
+}
+
+.newTopBox {
+  background-color: var(--white-primary);
+  border-radius: 6px;
+  padding: 7px 40px 7px 10px;
+  position: relative;
+  gap: 13px;
+}
+
+.newTopBox h6 {
+  color: var(--blue-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+.newTopBox p {
+  color: var(--grey-ligth);
+  font-size: 10px;
+  font-weight: 400;
+  width: 100%;
+  text-align: left;
 }

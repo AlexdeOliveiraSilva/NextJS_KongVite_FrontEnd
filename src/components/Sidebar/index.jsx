@@ -13,6 +13,7 @@ import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import LogoutIcon from '@mui/icons-material/Logout';
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
+import { IoIosSend, IoMdHome } from "react-icons/io";
 
 export default function Sidebar() {
     const path = usePathname();
@@ -63,9 +64,9 @@ export default function Sidebar() {
             case "convidados":
                 return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "evento":
-                return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
+                return <IoMdHome className="sidebarMenuIcon" style={commonStyle} />;
             case "transferencias":
-                return <DashboardIcon className="sidebarMenuIcon" style={commonStyle} />;
+                return <IoIosSend className="sidebarMenuIcon" style={commonStyle} />;
             default:
                 return null;
         }

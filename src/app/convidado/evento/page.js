@@ -3,9 +3,6 @@
 import { useState, useEffect, useContext } from "react"
 import { GlobalContext } from "@/context/global";
 import { useRouter } from "next/navigation";
-import Separator from "@/components/fragments/separatorLine";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -15,11 +12,16 @@ import ChangeModal from "@/components/Modal/chancgePassword";
 import Loader from "@/components/fragments/loader";
 import SplideCard from "@/components/fragments/splideCard";
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import DownloadIcon from '@mui/icons-material/Download';
 import '@splidejs/react-splide/css';
 import '@splidejs/react-splide/css/skyblue';
 import '@splidejs/react-splide/css/sea-green';
 import '@splidejs/react-splide/css/core';
+
+import BannerInfo from "@/components/BannerInfo";
+import ClientInfo from "@/components/ClientInfo";
+import GuestInfo from "@/components/GuestsInfo";
+import { TiPlus } from "react-icons/ti";
+
 
 
 export default function EventGuest() {
@@ -42,6 +44,7 @@ export default function EventGuest() {
   const [email, setEmail] = useState("");
 
   const [date, setDate] = useState("");
+  const [hour, setHour] = useState("");
 
   const [guests, setGuests] = useState([]);
 
@@ -49,9 +52,12 @@ export default function EventGuest() {
   const [guestData, setGuestData] = useState();
   const [guestDeleteId, setGuestDeleteId] = useState();
   const [guestEditName, setGuestEditName] = useState();
-  const [typesData, setTypesData] = useState([]);
+  const [typesData, setTypesData] = useState([]),
+    [totalInvites, setTotalInvites] = useState(0);
 
   const [newPasswordModal, setNewpasswordModal] = useState(false);
+
+  const [infobannerCopy, setInforBannerCopy] = useState([]);
 
   async function getGuests(eventId) {
 
@@ -103,6 +109,7 @@ export default function EventGuest() {
           }
         })).json()
 
+
         if (!x.message) {
           setMyData(x)
           return ""
@@ -139,6 +146,9 @@ export default function EventGuest() {
             situation: 2
           })
         })).json()
+
+
+
 
         if (!!x?.guest) {
           toast.success("Convidado Deletado com sucesso.", {
@@ -203,10 +213,7 @@ export default function EventGuest() {
     setDeleteGuestModalIsOpen(false);
   }
 
-  function openChangePassword() {
 
-    setNewpasswordModal(true)
-  }
 
   function deleteChangePassword() {
 
@@ -233,6 +240,7 @@ export default function EventGuest() {
           }
         })).json()
 
+
         if (!x?.message) {
           setTypesData(x.guestsTicketsTypeNumber);
         } else {
@@ -247,48 +255,7 @@ export default function EventGuest() {
     }
   }
 
-  async function toDownload(uuid, load) {
 
-    if (!!jwt && !!uuid && !!url) {
-      setIsLoading(load);
-
-      try {
-        let response = await fetch(`${url}/invite/${uuid}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': jwt
-          }
-        });
-
-        if (response.ok) {
-          let blob = await response.blob();
-          let url = window.URL.createObjectURL(blob);
-
-          let a = document.createElement('a');
-          a.href = url;
-          a.download = 'image.jpg';
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-
-          let y = [...isDownloaded, uuid]
-
-          setIsDownloaded(y)
-
-          setIsLoading("");
-        } else {
-          console.log("erro else")
-          setIsLoading("");
-        }
-
-
-      } catch (error) {
-        console.log("error:", error)
-        setIsLoading("");
-      }
-    }
-  }
 
   function setInvitesOpenModal() {
 
@@ -308,7 +275,6 @@ export default function EventGuest() {
 
 
     if (!!y && !!z) {
-      console.log(y, z, "aaaaaaa")
       getGuests(y.classEvent.id);
 
       setClassGuestId(y.classEvent.id);
@@ -318,8 +284,10 @@ export default function EventGuest() {
       setPhone(y.user?.phone);
       setEmail(y.user?.email);
       setDate(formatDateToInput(z.date));
+      setHour(formatHourToInput(z.date));
     }
   }, [eventChoice, eventClasses, refreshPage])
+
 
   useEffect(() => {
     getAvaibles();
@@ -344,7 +312,19 @@ export default function EventGuest() {
     const horas = String(data.getHours()).padStart(2, '0');
     const minutos = String(data.getMinutes()).padStart(2, '0');
 
-    return `${dia}/${mes}/${ano} às ${horas}:${minutos} horas`;
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  function formatHourToInput(dataString) {
+    const data = new Date(dataString);
+
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    const horas = String(data.getHours()).padStart(2, '0');
+    const minutos = String(data.getMinutes()).padStart(2, '0');
+
+    return `${horas}:${minutos}`;
   }
 
   function f5() {
@@ -353,15 +333,92 @@ export default function EventGuest() {
     }
   }
 
+  const textTeste = [
+    {
+      id: 1,
+      text: "Entre, você está prestes a dar vida aos seus momentos especiais! Com a KongVite, cada convite é uma história. Vamos tornar cada convite uma experiência única!",
+      token: 'tokenteste'
+    }
+  ]
+
+  function deleteInfo(id) {
+
+    let x = !!infobannerCopy && infobannerCopy.filter((e) => +e.id != +id)
+
+    setInforBannerCopy(x)
+  }
+
+  useEffect(() => {
+    setInforBannerCopy(textTeste)
+  }, [])
+
+
+  function getTotal() {
+    let x = 0;
+
+    !!myData && myData?.mainConvidado?.guestsTicketsTypeNumber.map((e) => {
+      if (e.available > 0) {
+        x = (+x + +e.available)
+      }
+    })
+
+    setTotalInvites(x)
+  }
+
+  useEffect(() => {
+
+    getTotal()
+  }, [typesData])
+
 
   return (
-    <div className="clienteMain flexr">
+    <div className="clientEventMain flexc" >
       <ToastContainer></ToastContainer>
       {!!newPasswordModal && <ChangeModal close={(event) => deleteChangePassword(event)}></ChangeModal>}
       {!!invitesOpen && <InvitesModal close={() => setInvitesCloseModal()} data={myData} jwt={!!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")} url={KONG_URL} ></InvitesModal>}
       {!!deleteGuestModalIsOpen && <DeletModal close={() => closeDeleteGuest()} func={() => deleteGuest()} word={"confirmar"}></DeletModal>}
       {!!addGuestModalIsOpen && <AddGuest close={() => closeAddGuest()} classId={classGuestId} typesData={typesData} guestData={guestData}></AddGuest>}
-      <div className="clienteContent flexc">
+
+      <div className="margin5percent">
+        {!!infobannerCopy && infobannerCopy.map((e, y) => {
+          if (y == 0) {
+            return (
+              <BannerInfo key={y} image='/images/kong-like.png' name={!!user?.name ? user?.name.split(' ')[0] : ""} text={e.text} del={() => deleteInfo(e.id)}></BannerInfo>
+            )
+          }
+        })}
+      </div>
+
+      <ClientInfo eventName={eventName} invites={totalInvites} date={date} hour={hour} tickets={!!myData ? myData?.mainConvidado?.guestsTicketsTypeNumber : []}></ClientInfo>
+
+      <div className="margin5percent flexc" style={{ width: '100%', justifyContent: "flex-start", alignItems: "flex-start" }}>
+        <button className="btnBlueThird flexr"
+          onClick={() => openAddGuest()}
+          style={{
+            marginTop: "-20px",
+            borderRadius: "7px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            gap: "15px"
+          }}>
+          <TiPlus size={20} />ADICIONAR CONVIDADO
+        </button>
+
+        <GuestInfo
+          self={!!myData && myData?.mainConvidado}
+          data={!!myData && myData?.acompanhantes}
+          setGuestDeleteId={setGuestDeleteId}
+          setDeleteGuestModalIsOpen={setDeleteGuestModalIsOpen}
+          setGuestData={setGuestData}
+          setAddGuestModalIsOpen={setAddGuestModalIsOpen}
+          setNewpasswordModal={setNewpasswordModal}
+        ></GuestInfo>
+      </div>
+
+
+      {/* **************************** OLD PAGE */}
+
+      {/* <div className="clienteContent flexc">
         <div className="adminUsersHeader flexr" style={{ margin: "10px 0" }}>
           <div className="adminUsersTitle flexr" style={{ justifyContent: "flex-start" }}>
             <h1>{!!eventName && eventName}</h1>
@@ -474,7 +531,9 @@ export default function EventGuest() {
                       >
                         <DownloadIcon style={{ color: "#ffffff" }}></DownloadIcon>
                       </button> */}
-                      <div
+
+
+      {/*<div
                         onClick={(event) => openEditGuest(event, e)}
                         className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
                       <div
@@ -491,7 +550,7 @@ export default function EventGuest() {
             }
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

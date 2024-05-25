@@ -413,3 +413,398 @@
     min-width: 150px;
   }
 }
+
+/* 
+******************************************* NEW INFO BANNER */
+.margin5percent {
+  padding: 0 5%;
+}
+
+.mainInfoBanner {
+  width: 100%;
+  height: auto;
+  min-height: 180px;
+  background: transparent linear-gradient(180deg, #a0ffda 0%, #83fafa 100%) 0%
+    0% no-repeat padding-box;
+  border-radius: 15px;
+  opacity: 1;
+  padding: 0 30px;
+  justify-content: flex-start;
+  gap: 50px;
+  position: relative;
+}
+.mainInfoContent {
+  width: auto;
+  height: 100%;
+  max-width: 50%;
+  position: relative;
+  justify-content: center;
+  gap: 5px;
+}
+
+.mainInfoContent h1 {
+  width: 100%;
+  height: auto;
+  /* UI Properties */
+  font-weight: 600;
+  font-size: 25px;
+  text-align: left;
+  letter-spacing: 0.25px;
+  color: #0b192e;
+  opacity: 1;
+  margin: 0 !important;
+}
+
+.mainInfoContent p {
+  width: 100%;
+  height: auto;
+  /* UI Properties */
+  font-size: 13px;
+  text-align: left;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  color: #6e6e6e;
+  opacity: 1;
+  margin: 0 !important;
+}
+
+.mainInfoContent button {
+  width: 100%;
+  height: auto;
+  /* UI Properties */
+  font-size: 13px;
+  text-align: left;
+  text-decoration: underline;
+  font-weight: 600;
+  letter-spacing: 0px;
+  color: #0b192e;
+  opacity: 1;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.bannerInfoClose {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+}
+
+/* 
+******************************************* NEW CLIENT PAGES */
+
+.clientEventMain {
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  padding: 40px 0;
+}
+
+.clientEventMain img {
+  width: 253px;
+  height: 193px;
+  margin-top: -15px;
+}
+
+.mainClientInfo {
+  width: 100%;
+  height: auto;
+  /* UI Properties */
+  background-color: var(--grey-ultra-ligth);
+  margin-top: 30px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 30px 80px;
+  margin-top: 20px;
+}
+
+.mainClientInfo p {
+  width: 100%;
+  /* UI Properties */
+  text-align: left;
+  color: #6e6e6e;
+  font-size: 16px;
+  letter-spacing: 0px;
+  opacity: 1;
+}
+
+.mainClientInfo p span {
+  width: 100%;
+  /* UI Properties */
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  color: #0b192e;
+  letter-spacing: 0px;
+  opacity: 1;
+}
+.iconEventContent {
+  width: 100%;
+  padding: 0 0 30px 0;
+  justify-content: flex-start;
+  gap: 30px;
+}
+.iconEvent {
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  background-color: var(--white-primary);
+  color: var(--blue-third);
+}
+.iconEventData h6 {
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+  line-height: 13px;
+  letter-spacing: 0.65px;
+  color: var(--grey-ligth);
+  text-transform: uppercase;
+  opacity: 1;
+  margin: 0;
+}
+.iconEventData h1 {
+  width: 100%;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 35px;
+  letter-spacing: 0.65px;
+  color: var(--blue-primary);
+  text-transform: uppercase;
+  opacity: 1;
+  margin: 0;
+}
+.iconEventData p {
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+  line-height: 13px;
+  letter-spacing: 0.65px;
+  color: var(--grey-ligth);
+  opacity: 1;
+  margin: 0;
+}
+.typeCardBox {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+  align-items: flex-start;
+  padding: 40px 0;
+}
+.typeCard {
+  width: 100%;
+  background-color: var(--white-primary);
+  min-height: 100px;
+  box-shadow: var(--shad-ligth);
+  border-radius: 10px;
+  justify-content: flex-start;
+  padding: 20px;
+  gap: 20px;
+}
+.typeCardAvaible {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  min-height: 60px;
+  border-radius: 60px;
+  color: var(--white-primary);
+  font-size: 35px;
+}
+.typeCardName {
+  width: 100%;
+  gap: 10px;
+}
+.typeCardDesc {
+  width: 100%;
+  gap: 10px;
+}
+.typeCardDesc h6 {
+  font-size: 14px;
+  text-transform: uppercase;
+  width: 100%;
+  font-weight: bold;
+}
+.typeCardName p {
+  width: 100%;
+  font-size: 12px;
+}
+
+.mainGuestInfo {
+  width: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 70px 0;
+}
+.mainGuestTable {
+  width: 1000px;
+  height: auto;
+}
+.mainGuestFilters {
+  width: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+}
+.GuestColunsTags {
+  width: 130px;
+  padding: 10px;
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+  gap: 10px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.mainGuestInside {
+  width: 100%;
+  background-color: var(--white-primary);
+  border-radius: 0 12px 12px 12px;
+  padding: 50px;
+  gap: 20px;
+}
+
+.GuestInsideColuns {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: center !important;
+}
+.GuestInsideColuns p {
+  font-weight: 500;
+}
+.GuestInsideColuns .firstChild {
+  text-align: left !important;
+  width: 180px;
+}
+.GuestInsideColuns .secondChild {
+  text-align: left !important;
+  width: 50%;
+}
+.GuestInsideColuns .trhirdChild {
+  text-align: center !important;
+  width: 20%;
+}
+.GuestInsideColuns .lastChild {
+  text-align: center !important;
+  width: 30%;
+}
+
+.GuestInsideLines {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: center !important;
+}
+
+.GuestInsideLines .firstChild {
+  width: 180px;
+}
+.GuestInsideLines .firstChild p {
+  width: 70%;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: var(--white-primary);
+  font-weight: 500;
+}
+
+.GuestInsideLines .secondChild {
+  text-align: left !important;
+  width: 50%;
+}
+.GuestInsideLines .trhirdChild {
+  text-align: center !important;
+  width: 20%;
+}
+.GuestInsideLines .lastChild {
+  text-align: center !important;
+  width: 30%;
+  justify-content: end;
+  gap: 15px;
+}
+
+@media (max-width: 1520px) {
+  .typeCardBox {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1370px) {
+  .mainGuestTable {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 1220px) {
+  .typeCardBox {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .mainInfoBanner {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    padding-top: 30px;
+  }
+  .mainInfoContent {
+    width: 100% !important;
+    max-width: 95%;
+  }
+  .mainInfoContent h1 {
+    width: 100% !important;
+  }
+  .mainInfoContent p {
+    width: 100% !important;
+  }
+  .iconEventContent {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .typeCardBox {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .mainClientInfo {
+    padding: 30px 60px;
+  }
+  .GuestInsideLines {
+    position: relative;
+  }
+  .GuestInsideColuns {
+    position: relative;
+  }
+  .trhirdChild {
+    display: none;
+  }
+  .lastChild {
+    z-index: 2;
+    position: absolute;
+    right: 5px;
+    width: 125px !important;
+  }
+}
+@media (max-width: 640px) {
+  .firstChild {
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .mainClientInfo {
+    padding: 30px;
+  }
+  .mainGuestInside {
+    padding: 30px 10px;
+  }
+}
+
+@media (max-width: 350px) {
+  .clientEventMain img {
+    width: 100%;
+    height: 100%;
+  }
+}

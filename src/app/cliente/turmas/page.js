@@ -151,7 +151,6 @@ export default function Turmas() {
     }, [])
 
 
-    console.log(turma)
     return (
         <div className="clienteMain flexr">
             <ToastContainer></ToastContainer>

@@ -180,7 +180,6 @@ export default function EventView() {
         getEvent();
     }, [])
 
-    console.log(passType)
     return (
         <div className="clienteMain flexr">
             <ToastContainer></ToastContainer>

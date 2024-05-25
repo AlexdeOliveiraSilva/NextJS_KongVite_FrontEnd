@@ -67,7 +67,6 @@ export default function GuestEdit() {
             number: item.number
           }));
 
-          console.log(x, "xxxx")
           setName(x.name);
           setDocument(x.document);
           setPhone(x.phone);
@@ -316,7 +315,6 @@ export default function GuestEdit() {
     setChangeIsOpen(false)
   }
 
-  console.log("SELFPASS", selfPass)
 
   return (
     <div className="adminUsersMain flexr">
