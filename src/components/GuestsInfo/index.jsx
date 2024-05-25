@@ -170,12 +170,14 @@ export default function GuestInfo({ self, data, setGuestDeleteId, setDeleteGuest
                                 <div className="lastChild flexr">
                                     {isLoading != self.uuid ?
                                         <BsDownload
+                                            style={{ cursor: "pointer" }}
                                             onClick={() => toDownload(self.uuid)}
                                             size={30} color="#71798691" />
                                         :
                                         <Loader></Loader>
                                     }
                                     <RiLockPasswordLine
+                                        style={{ cursor: "pointer" }}
                                         onClick={(event) => openChangePassword(event)}
                                         size={30} color="#71798691" />
 
@@ -205,16 +207,19 @@ export default function GuestInfo({ self, data, setGuestDeleteId, setDeleteGuest
                                     <div className="lastChild flexr">
                                         {isLoading != e.uuid ?
                                             <BsDownload
+                                                style={{ cursor: "pointer" }}
                                                 onClick={() => toDownload(e.uuid)}
                                                 size={30} color="#71798691" />
                                             :
                                             <Loader></Loader>
                                         }
                                         <FaRegEdit
+                                            style={{ cursor: "pointer" }}
                                             onClick={(event) => openEditGuest(event, e)}
                                             size={30} color="#71798691" />
 
                                         <RiDeleteBinLine
+                                            style={{ cursor: "pointer" }}
                                             onClick={(event) => { openDeleteGuest(event, e.id) }}
                                             size={30} color="#71798691" />
 

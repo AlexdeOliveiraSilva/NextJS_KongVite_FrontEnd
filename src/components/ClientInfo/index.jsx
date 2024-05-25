@@ -38,7 +38,7 @@ export default function ClientInfo({ eventName, invites, date, hour, tickets }) 
                 </div>
             }
             {!!invites &&
-                <p>Você possui um total de <span>{invites} convites disponíveis</span> {!!invites && invites > 0 ? ", utilize-os conforme a divisão feita abaixo" : ""}.</p>
+                <p>Você possui um total de <span>{invites} convite{invites > 1 ? "s" : ""} disponíve{invites > 1 ? "is" : "l"}</span> {!!invites && invites > 0 ? `, utilize${invites > 1 ? "-os" : ""} conforme a divisão feita abaixo` : ""}.</p>
             }
             <div className="typeCardBox flexr">
                 {!!tickets && tickets.sort((a, b) => a.tycketsType?.description.localeCompare(b.tycketsType?.description)).map((e, y) => {

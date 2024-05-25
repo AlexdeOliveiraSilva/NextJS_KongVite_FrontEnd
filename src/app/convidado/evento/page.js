@@ -353,21 +353,21 @@ export default function EventGuest() {
   }, [])
 
 
-  function getTotal() {
-    let x = 0;
-
-    !!myData && myData?.mainConvidado?.guestsTicketsTypeNumber.map((e) => {
-      if (e.available > 0) {
-        x = (+x + +e.available)
-      }
-    })
-
-    setTotalInvites(x)
-  }
-
   useEffect(() => {
+    console.log("1")
+    setTimeout(() => {
+      let x = 0;
+      console.log("2")
 
-    getTotal()
+      !!myData && myData?.mainConvidado?.guestsTicketsTypeNumber.map((e) => {
+        if (e.available > 0) {
+          x = (+x + +e.available)
+        }
+      })
+      console.log("3", x)
+
+      setTotalInvites(x)
+    }, 1000)
   }, [typesData])
 
 
@@ -389,7 +389,13 @@ export default function EventGuest() {
         })}
       </div>
 
-      <ClientInfo eventName={eventName} invites={totalInvites} date={date} hour={hour} tickets={!!myData ? myData?.mainConvidado?.guestsTicketsTypeNumber : []}></ClientInfo>
+      <ClientInfo
+        eventName={eventName}
+        invites={totalInvites}
+        date={date} hour={hour}
+        tickets={!!myData ? myData?.mainConvidado?.guestsTicketsTypeNumber : []}>
+
+      </ClientInfo>
 
       <div className="margin5percent flexc" style={{ width: '100%', justifyContent: "flex-start", alignItems: "flex-start" }}>
         <button className="btnBlueThird flexr"
