@@ -21,6 +21,7 @@ export default function EventsEdit() {
   const [name, setName] = useState();
   const [date, setDate] = useState();
   const [address, setAddress] = useState();
+  const [place, setPlace] = useState();
   const [zipcode, setZipcode] = useState();
   const [numberAdress, setNumberAdress] = useState();
   const [neighborhood, setNeighborhood] = useState();
@@ -118,6 +119,7 @@ export default function EventsEdit() {
           body: JSON.stringify({
             id: eventId,
             name: name,
+            place: place,
             date: date,
             address: address,
             zipcode: zipcode,
@@ -278,6 +280,7 @@ export default function EventsEdit() {
 
           setEventData(x);
           setName(x.name);
+          setPlace(x.place);
           setType(x.type);
           setSubType(x.subType);
           setNotifyUsersAboutDeletingInvitations(x.notifyUsersAboutDeletingInvitations);
@@ -386,17 +389,7 @@ export default function EventsEdit() {
       <ToastContainer></ToastContainer>
       {!!imageToShow && <ImageModal close={() => setImageToShow('')} image={imageToShow}></ImageModal>}
       <div className="clienteContent flexc">
-        {/* <div className="adminUsersHeader flexr" style={{ margin: "15px 0" }}>
-          <div className="adminUsersTitle flexr">
-            <h1>Editar Evento{!!eventData && `- ${eventData.name}`}</h1>
-          </div>
-          <div className="adminUsersAdd flexr">
-            <button
-              onClick={(event) => editTheEvent(event)}
-              style={{ minWidth: "150px" }}
-              className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
-          </div>
-        </div> */}
+
         <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
         <div className="clienteUl flexc" style={{ padding: "20px 0", height: "auto" }}>
           <div className="userAdminDoubleInputs flexr">
@@ -485,15 +478,26 @@ export default function EventsEdit() {
           </div>
           {!!dateError && <p className="errorP">* Preencha uma Data.</p>}
           {!!cepError && <p className="errorP" style={{ textAlign: "right" }}>* Preencha um CEP.</p>}
-          <TextField
-            onChange={(e) => setAddress(e.target.value)}
-            className="inputStyle"
-            value={address}
-            focused={!!address ? true : false}
-            label={"Rua"}
-            id="outlined-size-normal"
-            placeholder={`Nome da Rua:'`}
-            type="text" />
+          <div className="userAdminDoubleInputs flexr">
+            <TextField
+              onChange={(e) => setPlace(e.target.value)}
+              className="inputStyle"
+              value={place}
+              focused={!!place ? true : false}
+              label={"Local do evento"}
+              id="outlined-size-normal"
+              placeholder={`Local do evento:'`}
+              type="text" />
+            <TextField
+              onChange={(e) => setAddress(e.target.value)}
+              className="inputStyle"
+              value={address}
+              focused={!!address ? true : false}
+              label={"Rua"}
+              id="outlined-size-normal"
+              placeholder={`Nome da Rua:'`}
+              type="text" />
+          </div>
           <div className="userAdminDoubleInputs flexr">
             <TextField
               onChange={(e) => setNumberAdress(e.target.value)}

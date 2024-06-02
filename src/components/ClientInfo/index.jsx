@@ -10,7 +10,9 @@ import { BsFillTicketPerforatedFill } from "react-icons/bs";
 
 
 
-export default function ClientInfo({ eventName, invites, date, hour, tickets }) {
+export default function ClientInfo({ eventName, place, invites, date, hour, tickets }) {
+
+    const [ticketsSorted, setTicketsSorted] = useState()
 
     const colors = [
         '#0B192E',
@@ -18,6 +20,18 @@ export default function ClientInfo({ eventName, invites, date, hour, tickets }) 
         '#18A87C',
         '#00E1E2'
     ]
+
+    useEffect(() => {
+        if (tickets) {
+            let x = tickets.sort((a, b) => a.tycketsType?.description.localeCompare(b.tycketsType?.description))
+
+            setTicketsSorted(x)
+        }
+
+    }, [tickets])
+
+    console.log("tick", invites)
+
 
     return (
         <div className="mainClientInfo flexc">
@@ -27,7 +41,7 @@ export default function ClientInfo({ eventName, invites, date, hour, tickets }) 
                     <div className="iconEventData flexc">
                         <h6>EVENTO</h6>
                         <h1>{eventName}</h1>
-                        <p>Local: { }</p>
+                        <p>Local: {place}</p>
                     </div>
                     <div className="iconEvent flexr"><IoCalendarClearOutline size={40} /></div>
                     <div className="iconEventData flexc">
@@ -37,25 +51,23 @@ export default function ClientInfo({ eventName, invites, date, hour, tickets }) 
                     </div>
                 </div>
             }
-            {!!invites &&
-                <p>Você possui um total de <span>{invites} convite{invites > 1 ? "s" : ""} disponíve{invites > 1 ? "is" : "l"}</span> {!!invites && invites > 0 ? `, utilize${invites > 1 ? "-os" : ""} conforme a divisão feita abaixo` : ""}.</p>
-            }
+
+            <p>Você possui um total de <span>{invites} convite{invites != 1 ? "s" : ""} disponíve{invites != 1 ? "is" : "l"}</span> {!!invites && invites > 0 ? `, utilize${invites > 1 ? "-os" : ""} conforme a divisão feita abaixo` : ""}.</p>
+
             <div className="typeCardBox flexr">
-                {!!tickets && tickets.sort((a, b) => a.tycketsType?.description.localeCompare(b.tycketsType?.description)).map((e, y) => {
+                {!!ticketsSorted && ticketsSorted.map((e, y) => {
                     const c = colors[y % colors.length];
                     return (
-                        <>
-                            <div key={y} className="typeCard flexr" style={{ borderLeft: "10px solid", borderColor: c }}>
-                                <div className="typeCardAvaible flexr" style={{ backgroundColor: c }}>{e.number}</div>
-                                <div className="typeCardName flexc" style={{ color: c }}>
-                                    <div className="typeCardDesc flexr">
-                                        <BsFillTicketPerforatedFill size={25} />
-                                        <h6 style={{ color: c }}>{e.tycketsType?.description}</h6>
-                                    </div>
-                                    <p>Total de <i>{e.available}</i> disponíveis.</p>
+                        <div key={y} className="typeCard flexr" style={{ borderLeft: "10px solid", borderColor: c }}>
+                            <div className="typeCardAvaible flexr" style={{ backgroundColor: c }}>{e.number}</div>
+                            <div className="typeCardName flexc" style={{ color: c }}>
+                                <div className="typeCardDesc flexr">
+                                    <BsFillTicketPerforatedFill size={25} />
+                                    <h6 style={{ color: c }}>{e.tycketsType?.description}</h6>
                                 </div>
+                                <p>Total de <i>{e.available}</i> disponíveis.</p>
                             </div>
-                        </>
+                        </div>
                     )
                 })}
             </div>

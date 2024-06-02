@@ -20,6 +20,7 @@ export default function EventsAdd() {
   const { KONG_URL, user, eventsType, eventsSubType } = useContext(GlobalContext);
   const [name, setName] = useState();
   const [date, setDate] = useState();
+  const [place, setPlace] = useState();
   const [address, setAddress] = useState();
   const [zipcode, setZipcode] = useState();
   const [numberAdress, setNumberAdress] = useState();
@@ -110,6 +111,7 @@ export default function EventsAdd() {
             name: name,
             date: date,
             address: address,
+            place: place,
             zipcode: zipcode,
             number: numberAdress,
             neighborhood: neighborhood,
@@ -202,7 +204,7 @@ export default function EventsAdd() {
       }
       const data = await response.json();
 
-      console.log(data)
+
       setCity(data?.localidade)
       setUf(data?.uf)
       setAddress(data?.logradouro)
@@ -313,14 +315,24 @@ export default function EventsAdd() {
           </div>
           {!!dateError && <p className="errorP">* Preencha uma Data.</p>}
           {!!cepError && <p className="errorP" style={{ textAlign: "right" }}>* Preencha um CEP.</p>}
-          <TextField
-            onChange={(e) => setAddress(e.target.value)}
-            className="inputStyle"
-            label={!!address ? '' : "Rua"}
-            value={address || ''}
-            id="outlined-size-normal"
-            placeholder={`Nome da Rua:'`}
-            type="text" />
+          <div className="userAdminDoubleInputs flexr">
+            <TextField
+              onChange={(e) => setPlace(e.target.value)}
+              className="inputStyle"
+              label={!!place ? '' : "Local do evento"}
+              value={place || ''}
+              id="outlined-size-normal"
+              placeholder={`Local do evento:'`}
+              type="text" />
+            <TextField
+              onChange={(e) => setAddress(e.target.value)}
+              className="inputStyle"
+              label={!!address ? '' : "Rua"}
+              value={address || ''}
+              id="outlined-size-normal"
+              placeholder={`Nome da Rua:'`}
+              type="text" />
+          </div>
           <div className="userAdminDoubleInputs flexr">
             <TextField
               onChange={(e) => setNumberAdress(e.target.value)}

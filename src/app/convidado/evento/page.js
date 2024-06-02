@@ -34,6 +34,7 @@ export default function EventGuest() {
   const [invitesOpen, setInvitesOpen] = useState(false)
 
   const [eventName, setEventName] = useState();
+  const [eventPlace, setEventPlace] = useState();
   const [className, setClassName] = useState();
   const [classGuestId, setClassGuestId] = useState();
 
@@ -279,6 +280,7 @@ export default function EventGuest() {
 
       setClassGuestId(y.classEvent.id);
       setEventName(z.name);
+      setEventPlace(z.place)
       setClassName(y?.classEvent?.name);
       setName(y?.user?.name);
       setPhone(y.user?.phone);
@@ -354,21 +356,22 @@ export default function EventGuest() {
 
 
   useEffect(() => {
-    console.log("1")
+
     setTimeout(() => {
       let x = 0;
-      console.log("2")
+
 
       !!myData && myData?.mainConvidado?.guestsTicketsTypeNumber.map((e) => {
         if (e.available > 0) {
           x = (+x + +e.available)
         }
       })
-      console.log("3", x)
 
+      console.log("xxxx", x)
       setTotalInvites(x)
     }, 1000)
-  }, [typesData])
+
+  }, [typesData, myData])
 
 
   return (
@@ -391,6 +394,7 @@ export default function EventGuest() {
 
       <ClientInfo
         eventName={eventName}
+        place={eventPlace}
         invites={totalInvites}
         date={date} hour={hour}
         tickets={!!myData ? myData?.mainConvidado?.guestsTicketsTypeNumber : []}>

@@ -90,7 +90,7 @@ export default function GuestInfo({ self, data, setGuestDeleteId, setDeleteGuest
 
 
             } catch (error) {
-                console.log("5")
+
                 console.log("error:", error)
                 setIsLoading("");
             }
@@ -127,6 +127,7 @@ export default function GuestInfo({ self, data, setGuestDeleteId, setDeleteGuest
     }, [filter])
 
 
+
     return (
         <div className="mainGuestInfo flexc">
             <div className="mainGuestTable flexc">
@@ -156,9 +157,11 @@ export default function GuestInfo({ self, data, setGuestDeleteId, setDeleteGuest
                         <React.Fragment>
                             <div className="GuestInsideLines">
                                 <div className="firstChild">
-                                    <p style={{ backgroundColor: "var(--blue-primary)" }}>SEM DADO</p>
+                                    <p style={{ backgroundColor: "var(--blue-fourth)" }}>{self.tycketsType?.description}</p>
                                 </div>
-                                <div className="secondChild">
+                                <div
+                                    style={{ fontWeight: "bold" }}
+                                    className="secondChild">
                                     {self.name}
                                 </div>
                                 <div className="trhirdChild flexr">
