@@ -1,6 +1,7 @@
 'use client'
 
 import * as XLSX from 'xlsx';
+import React from 'react';
 import Loader from "../fragments/loader"
 import { useEffect, useState, useContext } from "react"
 import CloseIcon from '@mui/icons-material/Close';
@@ -28,11 +29,50 @@ export default function UploadGuestModal({ close }) {
         [dataCopy, setDataCopy] = useState(),
         [data, setData] = useState(),
         [isFetching, setIsFetching] = useState(false),
+
+        [excelCopy, setExcelCopy] = useState(),
+
+        [excelColumns, setExcelColumns] = useState(),
+
         [selfPass, setSelfPass] = useState();
 
+    const [columnName, setColumnName] = useState({
+        Nome: '',
+        Documento: '',
+        Email: '',
+        Telefone: '',
+    });
 
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
+    const setFileColumn = (event) => {
+        let file = event.target.files[0];
+
+        setExcelCopy(file);
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            const columnNames = jsonData[0];
+
+            setExcelColumns(columnNames);
+
+            setStep(2);
+        };
+
+        reader.readAsArrayBuffer(file);
+    };
+
+
+
+
+    const handleFileUpload = () => {
+        let file = excelCopy
 
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -45,28 +85,44 @@ export default function UploadGuestModal({ close }) {
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
             const mappedData = jsonData.map(row => {
-                const mappedRow = {};
+                const mappedRow = { type: !!passtype ? passtype[0].id : undefined, guestsTicketsTypeNumber: {} };
 
                 row.forEach((value, index) => {
-                    const columnName = jsonData[0][index];
+                    const columnNamePrev = jsonData[0][index];
 
-                    if (columnName) {
-                        const normalizedColumnName = columnName.toLowerCase().replaceAll("-", "").trim();
+                    if (columnNamePrev) {
 
+                        switch (columnNamePrev) {
+                            case columnName.Nome:
+                                mappedRow['Nome'] = value;
+                                break;
 
-                        if (normalizedColumnName === "nome" || normalizedColumnName === "documento" ||
-                            normalizedColumnName === "telefone" || normalizedColumnName === "email") {
-                            mappedRow[normalizedColumnName] = value;
+                            case columnName.Documento:
+                                mappedRow['Documento'] = value;
+                                break;
+
+                            case columnName.Email:
+                                mappedRow['Email'] = value;
+                                break;
+
+                            case columnName.Telefone:
+                                mappedRow['Telefone'] = value;
+                                break;
+
+                            default:
+                                break;
                         }
                     }
                 });
 
+
                 return mappedRow;
             });
 
+
             setData(mappedData);
             setDataCopy(mappedData);
-            setStep(2);
+            setStep(3);
 
         };
 
@@ -116,6 +172,8 @@ export default function UploadGuestModal({ close }) {
 
         let x;
 
+        console.log('aaaaaaa', guest)
+
         if (!!jwt) {
             setIsLoading(true)
             try {
@@ -126,12 +184,17 @@ export default function UploadGuestModal({ close }) {
                         'Authorization': jwt
                     },
                     body: JSON.stringify({
-                        name: guest.nome || guest.Nome,
-                        document: guest.documento || guest.Documento,
-                        phone: guest.telefone || guest.Telefone,
-                        email: guest.email || guest.Email,
-                        tycketsTypeId: tycketsTypeId,
-                        guestsTicketsTypeNumber: invitesAvaible
+                        name: guest.nome || guest.Nome.toString(),
+                        document: guest.documento || guest.Documento.toString(),
+                        phone: guest.telefone || guest.Telefone.toString(),
+                        email: guest.email || guest.Email.toString(),
+                        tycketsTypeId: guest.type || guest.Type,
+                        guestsTicketsTypeNumber: guest.guestsTicketsTypeNumber
+                            ? Object.values(guest.guestsTicketsTypeNumber).map((e) => ({
+                                tycketsTypeId: e.tycketsTypeId,
+                                number: e.number
+                            }))
+                            : []
                     })
                 })).json()
 
@@ -186,9 +249,17 @@ export default function UploadGuestModal({ close }) {
         }
     };
 
+    const handleSelectChange = (field) => (event) => {
+        setColumnName(prevState => ({
+            ...prevState,
+            [field]: event.target.value,
+        }));
+    };
+
     async function confirmData(y) {
 
         if (!!data && y < 4) {
+            console.log('data', data)
             setStep(y)
         } else if (!!data && y >= 4) {
             setIsFetching(true);
@@ -221,6 +292,12 @@ export default function UploadGuestModal({ close }) {
         setData(dataCopy);
     }, [dataCopy]);
 
+
+    useEffect(() => {
+        console.log(columnName)
+    }, [columnName])
+
+
     return (
         <div
             onClick={close}
@@ -232,9 +309,14 @@ export default function UploadGuestModal({ close }) {
                     onClick={close}
                     className='modalClose flexr'><CloseIcon></CloseIcon></div>
                 <div className='flexc' style={{ width: "100%" }}>
-                    <div style={{ justifyContent: "space-between", width: "80%" }}>
+                    <div style={{ justifyContent: "space-between", width: "95%" }}>
                         <div className='flexc' style={{ marginBottom: "20px" }}>
-                            <h2>{step == 1 ? "Importar arquivos por Excel" : step == 2 ? "Dados Coletados" : step == 3 ? "Tipo de Ingressos" : ""}</h2>
+                            <h2>{
+                                step == 1 ? "Importar arquivos por Excel" :
+                                    step == 2 ? "Escolha de Colunas" :
+                                        step == 3 ? "Tipo de Ingressos" :
+                                            step == 4 ? "Enviando" :
+                                                ""}</h2>
                         </div>
                         {step == 1 ?
                             <div className='flexc contentUploadBox'>
@@ -242,83 +324,169 @@ export default function UploadGuestModal({ close }) {
                                     <DriveFolderUploadIcon style={{ width: "100%", fontSize: "60px", color: "var(--blue-primary)" }} />
                                     <p style={{ fontSize: "18px", color: "var(--blue-primary)", marginTop: "20px" }}>Clique aqui...</p>
                                 </label>
-                                <input type="file" id="fileInput" className="fileInput" onChange={handleFileUpload} accept=".xls,.xlsx" />
+                                <input type="file" id="fileInput" className="fileInput" onChange={setFileColumn} accept=".xls,.xlsx" />
                             </div>
                             : step == 2 ?
-                                <div className='uploadList flexc'>
-
-                                    {!!data && data.map((e, y) => {
-                                        return (
-                                            <div key={y} className={y == 0 ? 'uploadListFirstLine flexr' : 'uploadListLine flexr'}>
-                                                <div className='uploadListItem flexr'>{e.nome || e.Nome}</div>
-                                                <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                                                <div className='uploadListItem flexr'>{e.documento || e.Documento}</div>
-                                                <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                                                <div className='uploadListItem flexr'>{e.telefone || e.Telefone}</div>
-                                                {y != 0 &&
-                                                    <Tooltip title="Deletar Formando">
-                                                        <div
-                                                            onClick={() => handleFileDelete(e.documento || e.Documento)}
-                                                            className="uploadConfigbtn flexr">
-                                                            <DeleteIcon className="userConfigIcon"></DeleteIcon>
-                                                        </div>
-                                                    </Tooltip>
-                                                }
-                                            </div>
-                                        )
-                                    })}
+                                <div className='flexc'>
+                                    <div className='flexc' style={{ minWidth: '90%', gap: 10, overflowY: 'auto' }}>
+                                        <div className='flexr contentUploadLine'>
+                                            <p>Nome</p>
+                                            <select
+                                                onChange={handleSelectChange('Nome')}
+                                                className='flexr'
+                                                style={{ padding: '5px 10px' }}
+                                            >
+                                                <option></option>
+                                                {!!excelColumns && excelColumns.map((e, y) => {
+                                                    return (
+                                                        <option key={y} value={e}>{e}</option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
+                                        <div className='flexr contentUploadLine'>
+                                            <p>Documento</p>
+                                            <select
+                                                onChange={handleSelectChange('Documento')}
+                                                className='flexr'
+                                                style={{ padding: '5px 10px' }}
+                                            >
+                                                <option></option>
+                                                {!!excelColumns && excelColumns.map((e, y) => {
+                                                    return (
+                                                        <option key={y} value={e}>{e}</option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
+                                        <div className='flexr contentUploadLine'>
+                                            <p>Telefone</p>
+                                            <select
+                                                onChange={handleSelectChange('Telefone')}
+                                                className='flexr'
+                                                style={{ padding: '5px 10px' }}
+                                            >
+                                                <option></option>
+                                                {!!excelColumns && excelColumns.map((e, y) => {
+                                                    return (
+                                                        <option key={y} value={e}>{e}</option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
+                                        <div className='flexr contentUploadLine'>
+                                            <p>E-mail</p>
+                                            <select
+                                                onChange={handleSelectChange('Email')}
+                                                className='flexr'
+                                                style={{ padding: '5px 10px' }}
+                                            >
+                                                <option></option>
+                                                {!!excelColumns && excelColumns.map((e, y) => {
+                                                    return (
+                                                        <option key={y} value={e}>{e}</option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
+                                    </div>
                                     <button
-                                        onClick={() => confirmData(3)}
-                                        className='btnOrange' style={{ height: "30px", marginTop: "20px" }}>Proximo</button>
+                                        onClick={() => {
+                                            if (
+                                                columnName.Nome != '' &&
+                                                columnName.Documento != '' &&
+                                                columnName.Email != '' &&
+                                                columnName.Telefone != ''
+                                            ) {
+                                                handleFileUpload()
+                                            } else {
+                                                toast.error('Todos os campos devem ser preenchidos')
+                                            }
+
+                                        }}
+                                        className='btnOrange' style={{ height: "30px", marginTop: "20px" }}>Confirmar</button>
                                 </div>
                                 : step == 3 ?
-                                    <div >
-                                        <div className="flexr" style={{ marginBottom: "20px" }}>
-                                            <FormControl className="InputsTwoSelect" style={{ minWidth: "200px" }}>
-                                                <InputLabel id="demo-simple-select-label">Tipo de Ingresso do Formando</InputLabel>
-                                                <Select
-                                                    style={{
-                                                        minWidth: "200px"
-                                                    }}
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    value={selfPass}
-                                                    onChange={(e) => setTycketsTypeId(e.target.value)}
-                                                >
-                                                    {!!passtype ?
-                                                        passtype.map((e, y) => (
-                                                            <MenuItem key={y} value={e.id}>
-                                                                {e.description}
-                                                            </MenuItem>
-                                                        ))
-                                                        :
-                                                        <MenuItem value={999}>Sem opções</MenuItem>
-                                                    }
-                                                </Select>
-                                            </FormControl>
-                                        </div>
-                                        <div className="flexr" style={{ gap: "20px", justifyContent: "flex-start" }}>
-                                            {passtype.map((e, y) => (
-                                                <div className="invitesTypeDiv flexc" key={y}>
-                                                    <p><span>{`Convidado - ${e.description}`}</span></p>
-                                                    <p>Quantidade</p>
-                                                    <TextField
-                                                        onChange={(event) => handleInputChange(event.target.value, e.id)}
-                                                        className="inputStyle"
-                                                        id="outlined-size-normal"
-                                                        placeholder={`Digite a Quantidade:'`}
-                                                        type="number"
-                                                        defaultValue={0}
-                                                    />
+                                    <div className='uploadList flexc'>
+
+                                        {!!data && data.map((e, y) => {
+                                            return (
+                                                <div key={y} className={y === 0 ? 'uploadListFirstLine flexr' : 'uploadListLine flexr'}>
+                                                    <div className='uploadListItemName flexr'>{e.nome || e.Nome}</div>
+                                                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%" />
+                                                    <div className='uploadListItemDoc flexr'>{e.documento || e.Documento}</div>
+                                                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%" />
+                                                    {y === 0 ? (
+                                                        <div className='uploadListItemDoc flexr'>Ingresso</div>
+                                                    ) : (
+                                                        <select
+                                                            style={{ padding: '0px 10px' }}
+                                                            className='uploadListItemDoc'
+                                                            value={e.type || ''}
+                                                            onChange={(event) => {
+                                                                const newData = [...data];
+                                                                newData[y] = { ...newData[y], type: +event.target.value };
+                                                                setData(newData);
+                                                            }}
+                                                        >
+                                                            {!!passtype ?
+                                                                passtype.map((p, i) => (
+                                                                    <option key={i} value={p.id}>
+                                                                        {p.description}
+                                                                    </option>
+                                                                ))
+                                                                :
+                                                                <option value={999}>Sem opções</option>
+                                                            }
+                                                        </select>
+                                                    )}
+
+                                                    {!!passtype && passtype.map((p, i) => (
+                                                        <React.Fragment key={i}>
+                                                            <Separator color={"var(--grey-ligth)"} width="1px" height="100%" />
+                                                            {y === 0 ? (
+                                                                <div className='uploadListItemDoc flexr'>{p.description}</div>
+                                                            ) : (
+                                                                <input
+                                                                    style={{ padding: '0px 10px' }}
+                                                                    type='number'
+                                                                    className='uploadListItemDoc'
+                                                                    value={e.guestsTicketsTypeNumber && e.guestsTicketsTypeNumber[p.id] ? e.guestsTicketsTypeNumber[p.id].number : ''}
+                                                                    onChange={(event) => {
+                                                                        const newData = [...data];
+                                                                        const guestsTicketsTypeNumber = {
+                                                                            ...e.guestsTicketsTypeNumber,
+                                                                            [p.id]: {
+                                                                                tycketsTypeId: p.id,
+                                                                                number: +event.target.value
+                                                                            }
+                                                                        };
+                                                                        newData[y] = { ...newData[y], guestsTicketsTypeNumber };
+                                                                        setData(newData);
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        </React.Fragment>
+                                                    ))}
+
+                                                    {y !== 0 && (
+                                                        <Tooltip title="Deletar Formando">
+                                                            <div
+                                                                onClick={() => handleFileDelete(e.documento || e.Documento)}
+                                                                className="uploadConfigbtn flexr"
+                                                            >
+                                                                <DeleteIcon className="userConfigIcon" />
+                                                            </div>
+                                                        </Tooltip>
+                                                    )}
                                                 </div>
-                                            ))
-                                            }
-                                        </div>
-                                        <div className="flexr" style={{ width: "100%", paddingTop: "20px" }}>
-                                            <button
-                                                onClick={() => confirmData(4)}
-                                                className='btnOrange' style={{ height: "30px", marginTop: "20px" }}>Concluir</button>
-                                        </div>
+                                            );
+                                        })}
+
+
+                                        <button
+                                            onClick={() => confirmData(4)}
+                                            className='btnOrange' style={{ height: "30px", marginTop: "20px" }}>Proximo</button>
                                     </div>
                                     : step == 4 &&
                                     <div >
@@ -331,6 +499,32 @@ export default function UploadGuestModal({ close }) {
                                             }
                                         </div>
                                     </div>
+
+
+                            // <div >
+                            //     <div className="flexr" style={{ gap: "20px", justifyContent: "flex-start" }}>
+                            //         {passtype.map((e, y) => (
+                            //             <div className="invitesTypeDiv flexc" key={y}>
+                            //                 <p><span>{`Convidado - ${e.description}`}</span></p>
+                            //                 <p>Quantidade</p>
+                            //                 <TextField
+                            //                     onChange={(event) => handleInputChange(event.target.value, e.id)}
+                            //                     className="inputStyle"
+                            //                     id="outlined-size-normal"
+                            //                     placeholder={`Digite a Quantidade:'`}
+                            //                     type="number"
+                            //                     defaultValue={0}
+                            //                 />
+                            //             </div>
+                            //         ))
+                            //         }
+                            //     </div>
+                            //     <div className="flexr" style={{ width: "100%", paddingTop: "20px" }}>
+                            //         <button
+                            //             onClick={() => confirmData(5)}
+                            //             className='btnOrange' style={{ height: "30px", marginTop: "20px" }}>Concluir</button>
+                            //     </div>
+                            // </div>
                         }
                     </div>
                 </div>
