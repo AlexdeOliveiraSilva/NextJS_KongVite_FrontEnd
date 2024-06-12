@@ -24,7 +24,7 @@ export default function UploadGuestModal({ close }) {
     const [isLoading, setIsLoading] = useState(false),
         [step, setStep] = useState(1),
         [passtype, setPassType] = useState(),
-        [tycketsTypeId, setTycketsTypeId] = useState(),
+        [tycketsType, setTycketsType] = useState([]),
         [invitesAvaible, setInvitesAvaible] = useState([]),
         [dataCopy, setDataCopy] = useState(),
         [data, setData] = useState(),
@@ -76,6 +76,7 @@ export default function UploadGuestModal({ close }) {
 
         const reader = new FileReader();
         reader.onload = (e) => {
+
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
 
@@ -85,7 +86,7 @@ export default function UploadGuestModal({ close }) {
             const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
             const mappedData = jsonData.map(row => {
-                const mappedRow = { type: !!passtype ? passtype[0].id : undefined, guestsTicketsTypeNumber: {} };
+                const mappedRow = { type: !!passtype ? passtype[0].id : undefined, guestsTicketsTypeNumber: [] };
 
                 row.forEach((value, index) => {
                     const columnNamePrev = jsonData[0][index];
@@ -112,13 +113,32 @@ export default function UploadGuestModal({ close }) {
                             default:
                                 break;
                         }
+
+                        !!passtype && passtype.map((w, z) => {
+                            let key = w.description
+                            let already = mappedRow.guestsTicketsTypeNumber
+                            let data = {
+                                tycketsTypeId: w.id,
+                                number: value
+                            }
+
+
+                            if (tycketsType.hasOwnProperty(key)) {
+                                if (tycketsType[key] == columnNamePrev) {
+                                    mappedRow.guestsTicketsTypeNumber = [...already, data];
+                                }
+                            }
+                        })
+
+
                     }
                 });
 
-
+                console.log('mappedRow', mappedRow)
                 return mappedRow;
             });
 
+            console.log('mappedDatamappedDatamappedDatamappedData', mappedData)
 
             setData(mappedData);
             setDataCopy(mappedData);
@@ -172,7 +192,6 @@ export default function UploadGuestModal({ close }) {
 
         let x;
 
-        console.log('aaaaaaa', guest)
 
         if (!!jwt) {
             setIsLoading(true)
@@ -250,7 +269,17 @@ export default function UploadGuestModal({ close }) {
     };
 
     const handleSelectChange = (field) => (event) => {
+
+
         setColumnName(prevState => ({
+            ...prevState,
+            [field]: event.target.value,
+        }));
+    };
+
+    const handleSelectTypeChange = (field) => (event) => {
+
+        setTycketsType(prevState => ({
             ...prevState,
             [field]: event.target.value,
         }));
@@ -259,7 +288,7 @@ export default function UploadGuestModal({ close }) {
     async function confirmData(y) {
 
         if (!!data && y < 4) {
-            console.log('data', data)
+
             setStep(y)
         } else if (!!data && y >= 4) {
             setIsFetching(true);
@@ -267,6 +296,8 @@ export default function UploadGuestModal({ close }) {
 
             for (let index = 0; index < data.length; index++) {
                 if (index != 0) {
+
+                    console.log(data[index])
 
                     const returning = await addGuest(data[index])
 
@@ -277,10 +308,7 @@ export default function UploadGuestModal({ close }) {
                         close();
                     }
                 }
-
-
             }
-
         }
     }
 
@@ -294,7 +322,7 @@ export default function UploadGuestModal({ close }) {
 
 
     useEffect(() => {
-        console.log(columnName)
+
     }, [columnName])
 
 
@@ -389,6 +417,23 @@ export default function UploadGuestModal({ close }) {
                                                 })}
                                             </select>
                                         </div>
+                                        {!!passtype && passtype.map((p, i) => (
+                                            <div key={i} className='flexr contentUploadLine'>
+                                                <p>{p.description}</p>
+                                                <select
+                                                    onChange={handleSelectTypeChange(`${p.description}`)}
+                                                    className='flexr'
+                                                    style={{ padding: '5px 10px' }}
+                                                >
+                                                    <option></option>
+                                                    {!!excelColumns && excelColumns.map((e, y) => {
+                                                        return (
+                                                            <option key={y} value={e}>{e}</option>
+                                                        );
+                                                    })}
+                                                </select>
+                                            </div>
+                                        ))}
                                     </div>
                                     <button
                                         onClick={() => {
@@ -441,33 +486,36 @@ export default function UploadGuestModal({ close }) {
                                                         </select>
                                                     )}
 
-                                                    {!!passtype && passtype.map((p, i) => (
-                                                        <React.Fragment key={i}>
-                                                            <Separator color={"var(--grey-ligth)"} width="1px" height="100%" />
-                                                            {y === 0 ? (
-                                                                <div className='uploadListItemDoc flexr'>{p.description}</div>
-                                                            ) : (
-                                                                <input
-                                                                    style={{ padding: '0px 10px' }}
-                                                                    type='number'
-                                                                    className='uploadListItemDoc'
-                                                                    value={e.guestsTicketsTypeNumber && e.guestsTicketsTypeNumber[p.id] ? e.guestsTicketsTypeNumber[p.id].number : ''}
-                                                                    onChange={(event) => {
-                                                                        const newData = [...data];
-                                                                        const guestsTicketsTypeNumber = {
-                                                                            ...e.guestsTicketsTypeNumber,
-                                                                            [p.id]: {
-                                                                                tycketsTypeId: p.id,
-                                                                                number: +event.target.value
-                                                                            }
-                                                                        };
-                                                                        newData[y] = { ...newData[y], guestsTicketsTypeNumber };
-                                                                        setData(newData);
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        </React.Fragment>
-                                                    ))}
+                                                    {/* {!!passtype && passtype.map((p, i) => {
+                                                        (
+                                                            <React.Fragment key={i}>
+                                                                <Separator color={"var(--grey-ligth)"} width="1px" height="100%" />
+                                                                {y === 0 ?
+                                                                    (
+                                                                        <div className='uploadListItemDoc flexr'>{p.description}</div>
+                                                                    ) : (
+                                                                        <input
+                                                                            style={{ padding: '0px 10px' }}
+                                                                            type='number'
+                                                                            className='uploadListItemDoc'
+                                                                            value={e.guestsTicketsTypeNumber && e.guestsTicketsTypeNumber[p.id] ? e.guestsTicketsTypeNumber[p.id].number : ''}
+                                                                            onChange={(event) => {
+                                                                                const newData = [...data];
+                                                                                const guestsTicketsTypeNumber = {
+                                                                                    ...e.guestsTicketsTypeNumber,
+                                                                                    [p.id]: {
+                                                                                        tycketsTypeId: p.id,
+                                                                                        number: +event.target.value
+                                                                                    }
+                                                                                };
+                                                                                newData[y] = { ...newData[y], guestsTicketsTypeNumber };
+                                                                                setData(newData);
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                            </React.Fragment>
+                                                        )
+                                                    })} */}
 
                                                     {y !== 0 && (
                                                         <Tooltip title="Deletar Formando">

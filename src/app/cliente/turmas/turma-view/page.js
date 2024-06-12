@@ -157,6 +157,7 @@ export default function TurmaView() {
 
     function closeUploadModal() {
         setUploadModalIsOpen(false);
+        window.location.reload()
     }
 
     function openTransferModal(e, id) {

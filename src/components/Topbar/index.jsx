@@ -264,14 +264,14 @@ export default function Topbar() {
                     <h1>{changeTitle(path)}</h1>
                 </div>
                 <div className="topbarPageMidle flexr">
-                    {user?.type == 1
+                    {/* {user?.type == 1
                         ?
                         <TopbarAdmin></TopbarAdmin>
                         : user?.type == 2 ?
                             <TopbarCompany data={companyData}></TopbarCompany>
                             :
                             <TopbarGuest invites={inviteslaking} open={() => openTransferPassword()} load={loadData}></TopbarGuest>
-                    }
+                    } */}
                 </div>
                 <div
                     onClick={(e) => {
