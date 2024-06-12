@@ -338,20 +338,38 @@ export default function EventGuest() {
   const textTeste = [
     {
       id: 1,
+      cookie: 'breject001',
       text: "Entre, você está prestes a dar vida aos seus momentos especiais! Com a KongVite, cada convite é uma história. Vamos tornar cada convite uma experiência única!",
       token: 'tokenteste'
     }
   ]
 
-  function deleteInfo(id) {
+  function deleteInfo(id, cookie) {
 
     let x = !!infobannerCopy && infobannerCopy.filter((e) => +e.id != +id)
+
+    if (!!cookie) {
+      localStorage.setItem(cookie, false)
+    }
 
     setInforBannerCopy(x)
   }
 
   useEffect(() => {
-    setInforBannerCopy(textTeste)
+    let bannercopy = textTeste
+    let x;
+
+    textTeste.map((e, y) => {
+
+      if (!!localStorage.getItem(`${e.cookie.toString()}`)) {
+        x == !!bannercopy && bannercopy.filter((z) => +e.id != z.id)
+
+        bannercopy = x
+      }
+    })
+
+    setInforBannerCopy(bannercopy)
+
   }, [])
 
 
@@ -386,7 +404,7 @@ export default function EventGuest() {
         {!!infobannerCopy && infobannerCopy.map((e, y) => {
           if (y == 0) {
             return (
-              <BannerInfo key={y} image='/images/kong-like.png' name={!!user?.name ? user?.name.split(' ')[0] : ""} text={e.text} del={() => deleteInfo(e.id)}></BannerInfo>
+              <BannerInfo key={y} image='/images/kong-like.png' name={!!user?.name ? user?.name.split(' ')[0] : ""} banner={e} del={deleteInfo}></BannerInfo>
             )
           }
         })}

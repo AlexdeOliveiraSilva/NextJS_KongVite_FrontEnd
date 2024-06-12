@@ -30,7 +30,6 @@ export default function ClientInfo({ eventName, place, invites, date, hour, tick
 
     }, [tickets])
 
-    console.log("tick", invites)
 
 
     return (

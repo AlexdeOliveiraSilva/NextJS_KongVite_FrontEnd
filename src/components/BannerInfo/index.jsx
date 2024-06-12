@@ -6,18 +6,31 @@ import { IoCloseOutline } from "react-icons/io5";
 
 
 
-export default function BannerInfo({ image, name, text, del }) {
+export default function BannerInfo({ image, name, banner, del }) {
+    const [confirmIsOpen, setConfirmIsOpen] = useState(false)
+
+    function close(type) {
+        if (type == 1) {
+            console.log('1')
+            del(banner.id)
+        } else {
+            console.log('2')
+            del(banner.id, banner.cookie)
+        }
+    }
+
 
     return (
         <div className="mainInfoBanner flexr">
+            <div></div>
             <img src={image}></img>
             <div className="mainInfoContent flexc">
                 <h1>Olá, {name}!</h1>
-                <p>{text}</p>
-                <button onClick={del}>Não mostrar essa mensagem novamente.</button>
+                <p>{banner.text}</p>
+                <button onClick={() => close(2)}>Não mostrar essa mensagem novamente.</button>
             </div>
             <IoCloseOutline
-                onClick={del}
+                onClick={() => close(1)}
                 className="bannerInfoClose" size={25} />
         </div>
     )
