@@ -12,7 +12,7 @@ import { BsDownload } from "react-icons/bs";
 import Loader from "../fragments/loader";
 import { RiLockPasswordLine } from "react-icons/ri";
 
-export default function GuestInfo({ self, data, setGuestDeleteId, setDeleteGuestModalIsOpen, setGuestData, setAddGuestModalIsOpen, setNewpasswordModal }) {
+export default function GuestInfo({ data, setGuestDeleteId, setDeleteGuestModalIsOpen, setGuestData, setAddGuestModalIsOpen, setNewpasswordModal }) {
     const { KONG_URL, user, eventEdit, eventChoice, eventClasses, setRefreshPage, refreshPage } = useContext(GlobalContext);
 
     const colors = [
@@ -153,42 +153,6 @@ export default function GuestInfo({ self, data, setGuestDeleteId, setDeleteGuest
                         <p className="lastChild"></p>
                     </div>
                     <Separator width={'100%'} height={"1px"} color={"#71798639"}></Separator>
-                    {!!self &&
-                        <React.Fragment>
-                            <div className="GuestInsideLines">
-                                <div className="firstChild">
-                                    <p style={{ backgroundColor: "var(--blue-fourth)" }}>{self.tycketsType?.description}</p>
-                                </div>
-                                <div
-                                    style={{ fontWeight: "bold" }}
-                                    className="secondChild">
-                                    {self.name}
-                                </div>
-                                <div className="trhirdChild flexr">
-                                    {self.status === 'AUSENTE' ?
-                                        <IoMdCloseCircleOutline size={30} color="#71798691" />
-                                        : <IoIosCheckmarkCircleOutline size={30} color="var(--blue-third)" />
-                                    }
-                                </div>
-                                <div className="lastChild flexr">
-                                    {isLoading != self.uuid ?
-                                        <BsDownload
-                                            style={{ cursor: "pointer" }}
-                                            onClick={() => toDownload(self.uuid)}
-                                            size={30} color="#71798691" />
-                                        :
-                                        <Loader></Loader>
-                                    }
-                                    <RiLockPasswordLine
-                                        style={{ cursor: "pointer" }}
-                                        onClick={(event) => openChangePassword(event)}
-                                        size={30} color="#71798691" />
-
-                                </div>
-                            </div>
-                            <Separator width={'100%'} height={"1px"} color={"#71798639"}></Separator>
-                        </React.Fragment>
-                    }
                     {!!dataCopy ? dataCopy.sort((a, b) => a.tycketsType?.description.localeCompare(b.tycketsType?.description)).map((e, y) => {
                         const ticket = tickets.find(ticket => ticket.name === e.tycketsType?.description);
                         const backgroundColor = ticket ? ticket.color : 'transparent';
@@ -233,7 +197,7 @@ export default function GuestInfo({ self, data, setGuestDeleteId, setDeleteGuest
                         )
                     })
                         :
-                        <p style={{ margin: "30px 0" }}>Sem Convidados...</p>
+                        !data ? <p style={{ margin: "30px 0" }}>Carregando...</p> : <p style={{ margin: "30px 0" }}>Sem Convidados...</p>
                     }
                 </div>
             </div>

@@ -58,13 +58,13 @@ export default function ClientInfo({ eventName, place, invites, date, hour, tick
                     const c = colors[y % colors.length];
                     return (
                         <div key={y} className="typeCard flexr" style={{ borderLeft: "10px solid", borderColor: c }}>
-                            <div className="typeCardAvaible flexr" style={{ backgroundColor: c }}>{e.number}</div>
+                            <div className="typeCardAvaible flexr" style={{ backgroundColor: c }}>{e.available}</div>
                             <div className="typeCardName flexc" style={{ color: c }}>
                                 <div className="typeCardDesc flexr">
                                     <BsFillTicketPerforatedFill size={25} />
                                     <h6 style={{ color: c }}>{e.tycketsType?.description}</h6>
                                 </div>
-                                <p>Total de <i>{e.available}</i> disponíveis.</p>
+                                <p>Total de <i>{e.number}</i> disponíveis.</p>
                             </div>
                         </div>
                     )

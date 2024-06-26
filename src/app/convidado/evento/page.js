@@ -433,8 +433,8 @@ export default function EventGuest() {
         </button>
 
         <GuestInfo
-          self={!!myData && myData?.mainConvidado}
-          data={!!myData && myData?.acompanhantes}
+
+          data={!!myData ? [myData?.mainConvidado, ...myData?.acompanhantes] : null}
           setGuestDeleteId={setGuestDeleteId}
           setDeleteGuestModalIsOpen={setDeleteGuestModalIsOpen}
           setGuestData={setGuestData}
