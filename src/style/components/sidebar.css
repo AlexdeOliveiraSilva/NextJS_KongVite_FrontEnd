@@ -1,7 +1,6 @@
 .sidebarMain {
   width: 300px;
   height: 100vh;
-  box-shadow: var(--shad-3d);
   padding: 20px 10px 50px 10px;
   transition: all 0.7s ease;
   gap: 20px;

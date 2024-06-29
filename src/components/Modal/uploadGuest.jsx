@@ -138,7 +138,6 @@ export default function UploadGuestModal({ close }) {
                 return mappedRow;
             });
 
-            console.log('mappedDatamappedDatamappedDatamappedData', mappedData)
 
             setData(mappedData);
             setDataCopy(mappedData);
@@ -297,7 +296,6 @@ export default function UploadGuestModal({ close }) {
             for (let index = 0; index < data.length; index++) {
                 if (index != 0) {
 
-                    console.log(data[index])
 
                     const returning = await addGuest(data[index])
 

@@ -9,6 +9,7 @@ import { GlobalProvider } from "@/context/global"
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 import FloatBar from "@/components/Floatbar";
+import NewClientTopBar from "@/components/Topbar/newClientTopBar";
 
 export const metadata = {
   title: "Kong Vite App",
@@ -27,8 +28,8 @@ export default async function Layout({ children }) {
       <body className="dashBody" >
         <GlobalProvider>
           <Sidebar />
-          <div className="layoutSize flexc">
-            <Topbar />
+          <div className="layoutSizeNew flexc" style={{ overflowY: "auto" }}>
+            <NewClientTopBar />
             {children}
           </div>
           <FloatBar />

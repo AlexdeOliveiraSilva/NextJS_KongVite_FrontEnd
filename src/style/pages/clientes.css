@@ -135,18 +135,29 @@
 
 .clienteLine {
   width: 100%;
-  height: 40px;
+  max-width: 900px;
+  height: 60px;
   flex-wrap: nowrap;
   border-radius: 8px;
-  border: 1px solid var(--grey-ligth);
   justify-content: flex-start !important;
-  padding: 5px 10px;
+  padding: 5px 10px 5px 20px;
   position: relative;
   cursor: pointer;
+  background-color: var(--white-primary);
+  border: 2px solid transparent;
 }
 .clienteLine:hover {
-  background-color: var(--white-secondary);
+  border: 2px solid var(--blue-third);
 }
+.clienteLine p {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--grey-ligth);
+}
+.TurmaList {
+  width: 100%;
+}
+
 .clienteIdLi {
   width: 5%;
   min-width: 40px;
@@ -196,10 +207,9 @@
   width: auto;
   min-width: 250px;
   padding-left: 15px;
-  font-weight: 500;
 }
 .eventDateLi {
-  width: 100%;
+  width: 30%;
   padding-left: 15px;
   font-weight: 500;
   white-space: nowrap;
@@ -331,6 +341,9 @@
     flex-direction: column;
     padding: 30px 0;
   }
+  .clienteLine {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 900px) {
@@ -382,11 +395,15 @@
     justify-content: space-between;
     padding: 20px 40px;
   }
+  .clienteTypeLi {
+    display: none;
+  }
 }
 
 @media (max-width: 570px) {
-  .clienteTypeLi {
-    display: none;
+  .eventNameLi {
+    width: 100%;
+    min-width: auto !important;
   }
   .adminUsersAdd {
     flex-direction: column;
@@ -418,6 +435,7 @@
 ******************************************* NEW INFO BANNER */
 .margin5percent {
   padding: 0 5%;
+  width: 100%;
 }
 
 .mainInfoBanner {
@@ -497,7 +515,7 @@
   width: 100%;
   height: 100%;
   justify-content: flex-start;
-  padding: 40px 0;
+  padding: 0;
 }
 
 .clientEventMain img {
@@ -726,6 +744,193 @@
   gap: 15px;
 }
 
+/* ************************************ NEW EVENTS */
+
+.eventsBoxWhite {
+  width: 100%;
+  height: auto;
+  background-color: var(--white-primary);
+  margin-top: 50px;
+  border-radius: 12px;
+  padding: 70px 0;
+}
+.noEventsIcon {
+  background-color: var(--grey-secondary);
+  width: 140px;
+  height: 140px;
+  border-radius: 140px;
+}
+.noEventsContet {
+  max-width: 350px;
+}
+.noEventsContet h1 {
+  color: var(--blue-primary);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+.noEventsContet p {
+  color: var(--grey-ligth);
+  font-size: 13px;
+  font-weight: 400;
+  text-align: center;
+}
+.newEventFloatBtn {
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 5px !important;
+  bottom: -20px;
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%);
+}
+.newEventBtn {
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 5px !important;
+  box-shadow: var(--shad-ligth);
+}
+.newEventBtnWhite {
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 5px !important;
+  box-shadow: var(--shad-ligth);
+  background-color: var(--white-primary);
+  width: auto;
+  height: 55px;
+  padding: 10px 30px;
+}
+.newEventBtn div {
+  background-color: var(--blue-primary);
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  color: var(--blue-third);
+}
+.clientEventList {
+  width: 100%;
+  padding-top: 20px;
+  justify-content: flex-start;
+}
+.clientEventFilters {
+  background-color: var(--grey-ultra-ligth);
+  width: 100%;
+  padding: 20px 5% !important;
+  font-size: 14px;
+  justify-content: flex-start;
+}
+.ticketsEventContent {
+  background-color: var(--white-primary);
+  height: 50px;
+  width: auto;
+  min-width: 620px;
+  max-width: 900px;
+  border-radius: 10px;
+  box-shadow: var(--shad-ligth);
+  position: absolute;
+  left: 5%;
+  bottom: -25px;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 0 20px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+.ticketsEventContent p {
+  font-size: 14px;
+  font-weight: 400;
+  padding-right: 5px;
+}
+.ticketsEventContent h6 {
+  min-width: 120px;
+  text-align: center;
+  padding: 3px 25px;
+  border-radius: 5px;
+  color: var(--white-primary);
+  font-weight: 600;
+}
+.inputClientEventStyle {
+  background-color: var(--white-primary);
+  border-radius: 8px;
+  border: none;
+}
+.inputClientEventStyleName {
+  background-color: var(--white-primary);
+  border-radius: 8px;
+  border: none;
+  width: 400px;
+}
+.clientListTitle {
+  padding: 0 0 0 20px;
+}
+.clientListTitle h2 {
+  font-size: 14px;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--grey-ligth);
+}
+.clientEventTabBar {
+  min-width: 640px;
+  max-width: 640px;
+  border-bottom: 1px solid #b6b6b6;
+  justify-content: flex-start;
+  gap: 10px;
+  z-index: 1;
+  padding-left: 10px;
+}
+.clientEventTab {
+  width: 100px;
+  height: 40px;
+  border-radius: 8px 8px 0 0;
+  border-width: 1px 1px 1px 1px !important;
+  border: 1px solid #b6b6b6;
+  margin-bottom: -1px;
+  background-color: #dbdbdb;
+  cursor: pointer;
+  z-index: 2;
+}
+.clientEventTabSelected {
+  width: 100px;
+  height: 40px;
+  border-radius: 8px 8px 0 0;
+  border-width: 1px 1px 0 1px !important;
+  border: 1px solid #b6b6b6;
+  margin-bottom: -1px;
+  background-color: var(--white-secondary);
+  z-index: 2;
+}
+.turmaSpacator {
+  width: 100%;
+}
+.clientEventTab p,
+.clientEventTabSelected p {
+  font-size: 13px;
+  font-weight: 600;
+}
+.TurmaDash {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  min-width: 900px;
+  max-width: 900px;
+}
+.TurmaCard {
+  background-color: var(--white-primary);
+  height: 150px;
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: var(--shad-ligth);
+  padding: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.TurmaCard h1 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
 @media (max-width: 1520px) {
   .typeCardBox {
     grid-template-columns: repeat(3, 1fr);
@@ -745,7 +950,16 @@
   }
 }
 
+@media (max-width: 920px) {
+  .ticketsEventContent {
+    max-width: 85vw;
+  }
+}
+
 @media (max-width: 720px) {
+  .turmaSpacator {
+    display: none;
+  }
   .mainInfoBanner {
     flex-direction: column-reverse;
     align-items: flex-start;
@@ -790,6 +1004,15 @@
 @media (max-width: 640px) {
   .firstChild {
     display: none;
+  }
+  .ticketsEventContent {
+    min-width: 85vw;
+    height: auto;
+    padding: 20px;
+  }
+  .clientEventTab {
+    min-width: 90vw;
+    max-width: 90vw;
   }
 }
 

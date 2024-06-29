@@ -230,18 +230,32 @@ export default function EventsEdit() {
     let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
     let res;
 
-    res = await fileUpload(eventId)
+    if (!!imageStack) {
+      res = await fileUpload(eventId)
 
-    setImageURL(res?.fileUrl)
+      if (!!res?.fileUrl && !!typeStack) {
 
-    if (!!res?.fileUrl && !!typeStack) {
+        setImageURL(res?.fileUrl)
 
-      setPassType([...passType, {
-        name: typeStack,
-        image: res?.fileUrl
-      }]);
 
-      setPassTypeObject({ name: '', image: '' });
+
+        setPassType([...passType, {
+          name: typeStack,
+          image: res?.fileUrl
+        }]);
+
+        setPassTypeObject({ name: '', image: '' });
+      } else {
+        if (!typeStack) {
+          toast.error('Digite um nome para o Ingresso')
+        }
+
+        if (!res?.fileUrl) {
+          toast.error('Erro ao fazer upload da Imagem')
+        }
+      }
+    } else {
+      toast.error('Adicione uma imagem')
     }
   };
 
@@ -280,7 +294,6 @@ export default function EventsEdit() {
 
           setEventData(x);
           setName(x.name);
-          setPlace(x.place);
           setType(x.type);
           setSubType(x.subType);
           setNotifyUsersAboutDeletingInvitations(x.notifyUsersAboutDeletingInvitations);
@@ -291,6 +304,11 @@ export default function EventsEdit() {
           setNeighborhood(x.neighborhood);
           setCity(x.city)
           setUf(x.uf)
+
+          if (!!x.eventsClasses && x.eventsClasses.length > 0) {
+
+            setPlace(x.eventsClasses[0]?.events?.place);
+          }
         }
 
       } catch (error) {

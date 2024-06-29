@@ -4,16 +4,22 @@ import { useState, useEffect, useContext } from "react"
 import { GlobalContext } from "@/context/global";
 import { useRouter } from "next/navigation";
 import Separator from "@/components/fragments/separatorLine";
-import EditIcon from '@mui/icons-material/Edit';
+import { FaEdit } from "react-icons/fa";
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeletModal from "@/components/Modal/deletModal";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "@/components/fragments/loader";
 import TextField from '@mui/material/TextField';
+import BannerInfo from "@/components/BannerInfo";
+import { RiMapPinLine } from "react-icons/ri";
+import { TiPlus } from "react-icons/ti";
 
 export default function Eventos() {
   const router = useRouter();
+  const [infobannerCopy, setInforBannerCopy] = useState([]);
+
+
   const { KONG_URL, user, company, setEventEdit } = useContext(GlobalContext);
   const [eventList, setEventList] = useState([]);
   const [eventListCopy, setEventListCopy] = useState([]);
@@ -91,7 +97,7 @@ export default function Eventos() {
     setEventEdit(id)
     localStorage.setItem("event_edit", id)
 
-    router.push('/cliente/event-view')
+    router.push('/cliente/turmas')
   }
 
 
@@ -206,123 +212,190 @@ export default function Eventos() {
     }
   }
 
+  const textTeste = [
+    {
+      id: 1,
+      cookie: 'breject001',
+      text: "Entre, você está prestes a dar vida aos seus momentos especiais!",
+      text2: "Você ainda não possui um evento cadastrado, bora começar?",
+      action: 'Bora! Criar um novo evento.',
+      token: 'tokenteste'
+    }
+  ]
+
+  function deleteInfo(id, cookie) {
+
+    let x = !!infobannerCopy && infobannerCopy.filter((e) => +e.id != +id)
+
+    if (!!cookie) {
+      localStorage.setItem(cookie, false)
+    }
+
+    setInforBannerCopy(x)
+  }
+
+
 
   useEffect(() => {
 
     getEvents();
   }, [])
 
+  useEffect(() => {
+    let bannercopy = textTeste
+    let x;
+
+    textTeste.map((e, y) => {
+
+      if (!!localStorage.getItem(`${e.cookie.toString()}`)) {
+        x == !!bannercopy && bannercopy.filter((z) => +e.id != z.id)
+
+        bannercopy = x
+      }
+    })
+
+    setInforBannerCopy(bannercopy)
+
+  }, [])
+
 
   return (
-    <div className="clienteMain flexr">
+    <div className="clientEventMain flexc" >
       <ToastContainer></ToastContainer>
       {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteEvent()} word="confirmar" ></DeletModal>}
-      <div className="clienteContent flexc">
-        <div className="adminUsersHeader flexr">
-          <div className="adminUsersTitle flexr">
-            <h1>Lista de Eventos</h1>
-          </div>
-          <div className="adminUsersAdd flexr">
+      <div className="margin5percent">
+        <div className="newTopSitemap flexr">
+          <h1 style={{ fontWeight: 600, marginRight: 10 }}>Eventos</h1>
+          {!!eventList && eventList.length > 0 &&
             <button
               onClick={(e) => toNewEvent(e)}
-              className="btnOrange">Novo Evento!</button>
-          </div>
-        </div>
-
-
-        <div className="searchEventsContainer flexr">
-          <div className="flexr" style={{ padding: "0 20px", width: "100%" }}>
-            <TextField
-              onChange={(e) => setNameFilter(e.target.value)}
-              style={{ width: "100%" }}
-              type="text" id="nomeEvento"
-              className="inputStyle" label="Buscar por Nome..." value={nameFilter}
-            />
-          </div>
-          <Separator color={"#dadada"} width="1px" height="100%"></Separator>
-
-          <div className="searchDateContainer flexr">
-            <div className="flexr" style={{ padding: "0 20px", gap: "10px" }}>
-              <label htmlFor="dataInicio">Entre:</label>
-              <TextField
-                onChange={(e) => {
-                  const dateTimeValue = e.target.value;
-                  const dateOnly = dateTimeValue.split('T')[0];
-                  setDateStartFilter(dateOnly);
-                }}
-                type="date" id="nomeEvento"
-                className="inputStyle" value={dateStartFilter}
-              />
-            </div>
-            <div className="flexr" style={{ padding: "0 20px", gap: "10px" }}>
-              <label htmlFor="dataFim">e:</label>
-              <TextField
-                onChange={(e) => {
-                  const dateTimeValue = e.target.value;
-                  const dateOnly = dateTimeValue.split('T')[0];
-                  setDateEndFilter(dateOnly)
-                }}
-                type="date" id="nomeEvento"
-                className="inputStyle" value={dateEndFilter}
-              />
-            </div>
-          </div>
-
-          <button className="btnBlue" onClick={filtrarEventos}>Buscar</button>
-        </div>
-        <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-
-
-
-
-        <div className="clienteUl flexc">
-          <div className="clienteTitle flexr">
-            <p className="eventNameLi">Nome do Evento</p>
-            <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            <p className="clienteTypeLi">Tipo</p>
-            <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            <p className="clienteAvaibleLi">Ingressos</p>
-            <div className="displayNone700">
-              <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            </div>
-            <p className="eventDateLi">Data</p>
-          </div>
-          <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
-            {isFetching == true
-              ?
-              <Loader></Loader>
-              :
-
-              !!eventList && eventList.map((e, y) => {
-                return (
-                  <div
-                    onClick={(event) => toEvent(event, e.id)}
-                    key={y} className="clienteLine flexr">
-                    <p className="eventNameLi">{e.name}</p>
-                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                    <p className="clienteTypeLi">{e.type}</p>
-                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                    <p className="clienteAvaibleLi">{e.totalAvaliable - e.totalUsed}/{e.totalAvaliable}</p>
-                    <div className="displayNone700">
-                      <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                    </div>
-                    <p className="eventDateLi">{dateConvert(e.date)}</p>
-                    <div className="userConfigbtns flexr">
-                      <div
-                        onClick={(event) => toEditEvent(event, e.id)}
-                        className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
-                      <div
-                        onClick={(event) => { openDeleteModal(event, e.id) }}
-                        className="userConfigbtn flexr">
-                        <DeleteIcon className="userConfigIcon"></DeleteIcon>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-          </div>
+              className="btnBlueThird flexr newEventBtn gap-4">CRIAR NOVO EVENTO
+            </button>
+          }
         </div>
       </div>
+      <div className="margin5percent">
+        {!!infobannerCopy && infobannerCopy.map((e, y) => {
+          if (y == 0 && (!eventList || eventList.length == 0)) {
+            return (
+              <BannerInfo
+                key={y}
+                image='/images/kong-like.png'
+                name={!!user?.name ? user?.name.split(' ')[0] : ""}
+                banner={e} del={deleteInfo}
+                doAction={(e) => toNewEvent(e)}
+              ></BannerInfo>
+            )
+          }
+        })}
+      </div>
+
+      <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
+        {isFetching == true
+          ?
+          <div style={{ width: '100%', height: 300 }} className="flexc">
+            <Loader></Loader>
+          </div>
+          :
+
+          !!eventList && eventList.length > 0 ?
+            <div className="clientEventList flexc">
+              <div className=" clientEventFilters flexr">
+                <div className="flexr gap-2" style={{ justifyContent: 'flex-start' }}>
+                  <label htmlFor="dataInicio" style={{ whiteSpace: 'nowrap' }}>Buscar Evento: </label>
+                  <TextField
+                    onChange={(e) => setNameFilter(e.target.value)}
+                    type="text" id="nomeEvento"
+                    className="inputClientEventStyleName" label="Buscar por Nome..." value={nameFilter}
+                  />
+                </div>
+                <div className="flexr" style={{ padding: "0 20px", gap: "10px" }}>
+                  <label htmlFor="dataInicio">Entre:</label>
+                  <TextField
+                    onChange={(e) => {
+                      const dateTimeValue = e.target.value;
+                      const dateOnly = dateTimeValue.split('T')[0];
+                      setDateStartFilter(dateOnly);
+                    }}
+                    type="date" id="nomeEvento"
+                    placeholder=""
+                    className="inputClientEventStyle" value={dateStartFilter}
+                  />
+                </div>
+                <div className="flexr" style={{ padding: "0 20px", gap: "10px" }}>
+                  <label htmlFor="dataFim">e:</label>
+                  <TextField
+                    onChange={(e) => {
+                      const dateTimeValue = e.target.value;
+                      const dateOnly = dateTimeValue.split('T')[0];
+                      setDateEndFilter(dateOnly)
+                    }}
+                    type="date" id="nomeEvento"
+                    placeholder=""
+                    className="inputClientEventStyle" value={dateEndFilter}
+                  />
+                </div>
+                <button
+                  onClick={filtrarEventos}
+                  className="newEventBtnWhite flexr">Buscar</button>
+              </div>
+
+
+              <div className="margin5percent flexc gap-4" style={{ justifyContent: 'center', alignItems: 'flex-start', marginTop: '60px' }}>
+                <div className="clientListTitle flexr">
+                  <h2 className="eventNameLi">Nome do Evento</h2>
+                  <h2 className="clienteTypeLi">Tipo do Evento</h2>
+                  <h2 className="clienteAvaibleLi">Ingressos</h2>
+                  <h2 className="eventDateLi">Data</h2>
+                </div>
+                {eventList.map((e, y) => {
+                  return (
+                    <div
+                      onClick={(event) => toEvent(event, e.id)}
+                      key={y} className="clienteLine flexr">
+                      <p className="eventNameLi" style={{ fontWeight: 700, color: 'var(--blue-primary)' }}>{e.name}</p>
+
+                      <p className="clienteTypeLi">{e.type}</p>
+
+                      <p className="clienteAvaibleLi">{e.totalAvaliable - e.totalUsed}/{e.totalAvaliable}</p>
+
+
+                      <p className="eventDateLi">{dateConvert(e.date)}</p>
+                      <div className="userConfigbtns flexr">
+                        <div
+                          onClick={(event) => toEditEvent(event, e.id)}
+                          className="userConfigbtn flexr"><FaEdit className="userConfigIcon"></FaEdit></div>
+                        <div
+                          onClick={(event) => { openDeleteModal(event, e.id) }}
+                          className="userConfigbtn flexr">
+                          <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+
+            </div>
+
+            :
+            <div className="eventsBoxWhite flexc gap-6" style={{ position: 'relative' }}>
+              <div className="noEventsIcon flexr" >
+                <RiMapPinLine size={70} color="var(--blue-third)" />
+              </div>
+              <div className="noEventsContet">
+                <h1>Para iniciar, crie um novo evento</h1>
+                <p>Crie um evento para poder fazer as distribuições de seus ingressos de uma maneira descomplicada.</p>
+              </div>
+              <button
+                onClick={(e) => toNewEvent(e)}
+                className="btnBlueThird flexr newEventFloatBtn gap-4"><div className="flexr"><TiPlus /></div> CRIAR NOVO EVENTO</button>
+            </div>
+        }
+      </div>
+
     </div>
+
   );
 }

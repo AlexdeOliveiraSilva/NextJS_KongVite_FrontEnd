@@ -161,28 +161,20 @@
   font-weight: 500;
 }
 .userConfigbtns {
-  position: absolute;
-  gap: 10px;
-  top: 50%;
-  right: 20px;
-  width: auto;
+  gap: 15px;
+  width: 100px;
   height: auto;
-  transform: translateY(-50%);
 }
 .userConfigbtn {
-  width: 28px;
-  height: 28px;
-  background-color: var(--orange-primary);
-  border-radius: 8px;
-  z-index: 3;
+  width: 23px;
+  height: 23px;
   cursor: pointer;
 }
-.userConfigbtn:hover {
-  background-color: var(--orange-secondary);
-}
+
 .userConfigIcon {
-  width: 20px;
-  height: 20px;
+  width: 23px;
+  height: 23px;
+  color: var(--grey-ligth);
 }
 .userLine1150 {
   display: flex;

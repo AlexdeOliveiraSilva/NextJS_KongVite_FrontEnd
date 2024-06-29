@@ -174,7 +174,15 @@
 .newTopMain {
   width: 100%;
   margin: 0;
-
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 20px;
+  padding: 0 5%;
+}
+.newTopInvitesMain {
+  width: 100%;
+  margin: 0;
+  align-items: flex-start;
   justify-content: flex-end;
   gap: 20px;
   padding: 0 5%;
@@ -184,6 +192,50 @@
   border-radius: 6px;
   padding: 7px 10px;
   position: relative;
+}
+.totalinvitesMain {
+  background-color: var(--white-primary);
+  border-radius: 10px;
+  box-shadow: var(--shad-ligth);
+  border-radius: 6px;
+  padding: 1px 30px;
+  gap: 15px;
+}
+.totalinvitesMain h2 {
+  color: var(--blue-primary);
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.totalinvitesMain h1 {
+  color: var(--blue-primary);
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.newTopInvites {
+  background-color: var(--green-secondary);
+  border-radius: 6px;
+  padding: 7px 10px;
+  position: relative;
+}
+.newTopSitemap {
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0;
+  padding: 0 0 20px 0;
+  flex-wrap: nowrap;
+  gap: 15px;
+}
+.newTopSitemap h1 {
+  color: var(--blue-primary);
+  font-weight: 600;
+  font-size: 18px;
+  white-space: nowrap;
+}
+.newTopUserBox {
+  gap: 10px;
 }
 .newTopMailAcent {
   background-color: var(--red-primary);
@@ -216,4 +268,14 @@
   font-weight: 400;
   width: 100%;
   text-align: left;
+}
+
+@media (max-width: 640px) {
+  .newTopInvitesMain {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .newTopSitemap {
+    padding: 0;
+  }
 }

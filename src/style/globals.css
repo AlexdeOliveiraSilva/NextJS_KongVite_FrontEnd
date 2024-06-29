@@ -16,11 +16,12 @@
 
   --red-primary: #ff0000;
   --green-primary: #1ca900;
-
+  --green-secondary: #49fc8e;
   --orange-primary: #ff9100;
   --orange-secondary: #ffb75a;
 
   --grey-ligth: #777777;
+  --grey-secondary: #ebecf0;
   --grey-ultra-ligth: #dfe0e6;
 
   --blue-primary-opacity: rgba(7, 25, 48, 0.269);

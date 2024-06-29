@@ -14,6 +14,7 @@ import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import LogoutIcon from '@mui/icons-material/Logout';
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import { IoIosSend, IoMdHome } from "react-icons/io";
+import { LuPlusCircle } from "react-icons/lu";
 
 export default function Sidebar() {
     const path = usePathname();
@@ -52,15 +53,15 @@ export default function Sidebar() {
             case "eventos":
                 return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "novo-evento":
-                return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
+                return <LuPlusCircle className="sidebarMenuIcon" style={commonStyle} />;
             case "event-view":
                 return <AddBusinessIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "usuarios":
                 return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "sair-evento":
-                return <LogoutIcon className="sidebarMenuIcon" style={commonStyle} />;
+                return <LuPlusCircle className="sidebarMenuIcon" style={commonStyle} />;
             case "turmas":
-                return <WorkspacesIcon className="sidebarMenuIcon" style={commonStyle} />;
+                return <IoMdHome className="sidebarMenuIcon" style={commonStyle} />;
             case "convidados":
                 return <AccountCircleIcon className="sidebarMenuIcon" style={commonStyle} />;
             case "evento":
@@ -89,7 +90,7 @@ export default function Sidebar() {
             case "usuarios":
                 return "Usuários";
             case "sair-evento":
-                return "Sair do Evento";
+                return "Novo Evento";
             case "turmas":
                 return "Turmas";
             case "convidados":

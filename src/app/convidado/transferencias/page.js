@@ -42,7 +42,6 @@ export default function Dashboard() {
           }
         })).json()
 
-        console.log("aaa", x)
         if (!x.message) {
           setMyData(x)
           setLoadData(false)
@@ -76,38 +75,36 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div className="dashboardMain flexr">
-      <div className="dashboardContent flexc">
-        <div className="clienteUl flexc">
-          <div className="clienteTitle flexr">
-            <p className="clienteTypeLi">Ingresso</p>
-            <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            <p className="eventNameLi">Nome</p>
-            <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-            <p className="eventNameLi">Data</p>
-          </div>
-          <div className="clienteUl flexc" style={{ marginTop: "10px" }}>
-            {loadData == true ?
-              <Loader></Loader>
-              :
-              myData?.length > 0 ? myData.map((e, y) => {
-                return (
-                  <div
-                    onClick={(event) => goView(event, e.id)}
-                    key={y} className="clienteLine flexr">
-                    <p className="clienteTypeLi">{e.amount} - {e.tycketsType?.description}</p>
-                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                    <p className="eventNameLi">{e.guests_guestsTransfers_guestIdDestinyToguests?.name}</p>
-                    <Separator color={"var(--grey-ligth)"} width="1px" height="100%"></Separator>
-                    <p className="eventNameLi">{formatDateToInput(e.createdAt)}</p>
-                  </div>
-                )
-              })
-                :
-                <p style={{ marginTop: "30px" }}>Nenhuma Tranferência</p>
-            }
-          </div>
+    <div className="clientEventMain flexc" >
+      <div className="margin5percent flexc gap-4" style={{ justifyContent: 'center', alignItems: 'flex-start', marginTop: '60px' }}>
+        <div className="newTopSitemap flexr">
+          <h1 style={{ fontWeight: 600, marginRight: 10 }}>Transferências</h1>
         </div>
+        <div className="clientListTitle flexr">
+          <h2 className="clienteTypeLi">Ingresso</h2>
+          <h2 className="eventNameLi">Nome</h2>
+          <h2 className="eventDateLi">Data</h2>
+        </div>
+        {loadData == true ?
+          <div style={{ width: '100%', height: '300px' }}>
+            <Loader></Loader>
+          </div>
+          :
+          myData?.length > 0 ? myData.map((e, y) => {
+            return (
+              <div
+                onClick={(event) => goView(event, e.id)}
+                key={y} className="clienteLine flexr">
+                <p className="clienteTypeLi">{e.amount} - {e.tycketsType?.description}</p>
+                <p className="eventNameLi">{e.guests_guestsTransfers_guestIdDestinyToguests?.name}</p>
+                <p className="eventNameLi">{formatDateToInput(e.createdAt)}</p>
+              </div>
+            )
+          })
+            :
+            <p style={{ marginTop: "30px" }}>Nenhuma Tranferência</p>
+        }
+
       </div>
     </div>
   );
