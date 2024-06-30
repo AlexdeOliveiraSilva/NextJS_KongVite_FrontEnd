@@ -14,7 +14,7 @@ import TextField from '@mui/material/TextField';
 import BannerInfo from "@/components/BannerInfo";
 import { RiMapPinLine } from "react-icons/ri";
 import { TiPlus } from "react-icons/ti";
-
+import moment from "moment";
 export default function Eventos() {
   const router = useRouter();
   const [infobannerCopy, setInforBannerCopy] = useState([]);
@@ -64,6 +64,7 @@ export default function Eventos() {
   }
 
   function dateConvert(dataISO) {
+
     const data = new Date(dataISO);
     const dia = data.getDate().toString().padStart(2, '0');
     const mes = (data.getMonth() + 1).toString().padStart(2, '0');
@@ -74,7 +75,7 @@ export default function Eventos() {
 
     const brFormat = `${dia}/${mes}/${ano} ${hora}:${minutos}:${segundos}`;
 
-    return brFormat;
+    return moment(dataISO).utc().format("DD/MM/YYYY HH:mm");
   }
 
   function toNewEvent(e) {

@@ -14,6 +14,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import ImageModal from "@/components/Modal/imageModal";
+import moment from "moment";
+
 
 export default function EventsEdit() {
   const router = useRouter();
@@ -275,6 +277,7 @@ export default function EventsEdit() {
   };
 
   async function getEvent() {
+    setisLoading(true)
     let x;
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
     let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
@@ -318,6 +321,7 @@ export default function EventsEdit() {
     } else {
       console.log("else")
     }
+    setisLoading(false)
   }
 
   async function getPassTypes() {
@@ -379,15 +383,9 @@ export default function EventsEdit() {
   }
 
   function formatDateToInput(dataString) {
-    const data = new Date(dataString);
 
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    const horas = String(data.getHours()).padStart(2, '0');
-    const minutos = String(data.getMinutes()).padStart(2, '0');
+    return moment(dataString).utc().format("YYYY-MM-DD HH:mm");
 
-    return `${ano}-${mes}-${dia}T${horas}:${minutos}`;
   }
 
   useEffect(() => {
