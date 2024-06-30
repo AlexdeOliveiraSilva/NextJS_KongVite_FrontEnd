@@ -14,6 +14,7 @@ import Loader from "@/components/fragments/loader";
 import { IoCalendarClearOutline } from "react-icons/io5";
 import { LuMapPin } from "react-icons/lu";
 import { TiPlus } from "react-icons/ti";
+import Separator from "@/components/fragments/separatorLine";
 
 export default function Turmas() {
     const router = useRouter();
@@ -31,7 +32,8 @@ export default function Turmas() {
     const [eventPlace, setEventPlace] = useState();
     const [date, setDate] = useState("");
     const [hour, setHour] = useState("");
-    const [alreadyPassType, setAlreadyPassType] = useState([]);
+    const [alreadyPassType, setAlreadyPassType] = useState([]),
+        [data, setData] = useState();;
     const [tabStep, setTabStep] = useState(1);
 
     function toOpenTurma(e) {
@@ -182,16 +184,7 @@ export default function Turmas() {
         router.push('/cliente/turmas/turma-view')
     }
 
-    useEffect(() => {
-        getTurmas()
 
-    }, [])
-
-    useEffect(() => {
-        if (!!event) {
-            getPassTypes()
-        }
-    }, [event])
 
     function formatDateToInput(dataString) {
         const data = new Date(dataString);
@@ -223,8 +216,45 @@ export default function Turmas() {
         '#00E1E2'
     ];
 
-    console.log('event', turma)
+    async function getEventDashData() {
+        let x;
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+        let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
 
+        if (!!jwt && !!eventId) {
+            try {
+
+                x = await (await fetch(`${KONG_URL}/companys/dashboardGeneral/${eventId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': jwt
+                    }
+                })).json()
+
+                if (!x.message) {
+
+                    setData(x.turmas)
+                }
+
+            } catch (error) {
+
+                return ""
+            }
+        } else {
+
+        }
+    }
+    useEffect(() => {
+        getTurmas()
+        getEventDashData()
+    }, [])
+
+    useEffect(() => {
+        if (!!event) {
+            getPassTypes()
+        }
+    }, [event])
 
     return (
         <div className="clientEventMain flexc">
@@ -291,29 +321,46 @@ export default function Turmas() {
                     </div>
                     {tabStep == 1 ?
                         <div className="TurmaDash" style={{ marginTop: '40px' }}>
-                            {turma.map((e, y) => {
-                                console.log(e)
+                            {!!data && data?.map((e, y) => {
                                 return (
-                                    <>
-                                        <div key={y} className="TurmaCard flexc">
-                                            <h1>{e.name}</h1>
-                                            <div></div>
+                                    <div key={y} className="TurmaCard flexc gap-2">
+                                        <h1>{!!e.name && e.name}</h1>
+                                        <div className="clientListDashMain flexc">
+                                            <div className="clientListDash flexr">
+                                                <h2 className="clientedashBigLi">Tipo da entrada</h2>
+                                                <h2 className="clientedashLitLi">Ausentes</h2>
+                                                <h2 className="clientedashLitLi">Presentes</h2>
+                                                <h2 className="clientedashLitLi">Total</h2>
+                                            </div>
+                                            <Separator color={"#BEBEBE"} width="100%" height="1px"></Separator>
+                                            <div className="clientListOver flexc">
+                                                {e.types?.map((x, z) => {
+                                                    return (
+                                                        <>
+                                                            <div className="clientListDash flexr">
+                                                                <h2 className="clientedashBigLi"
+                                                                    style={{
+                                                                        backgroundColor: colors[z % colors.length],
+                                                                        color: '#ffffff',
+                                                                        fontWeight: '600'
+                                                                    }}>{x.description}</h2>
+                                                                <h2 className="clientedashLitLi">{x.ausente}</h2>
+                                                                <h2 className="clientedashLitLi">{x.presente}</h2>
+                                                                <h2 className="clientedashLitLi">{x.total}</h2>
+                                                            </div>
+                                                            <Separator color={"#BEBEBE"} width="100%" height="1px"></Separator>
+
+                                                        </>
+                                                    )
+                                                }
+                                                )
+                                                }
+                                            </div>
                                         </div>
-                                        <div key={y} className="TurmaCard flexc">
-                                            <h1>{e.name}</h1>
-                                            <div></div>
-                                        </div>
-                                        <div key={y} className="TurmaCard flexc">
-                                            <h1>{e.name}</h1>
-                                            <div></div>
-                                        </div>
-                                        <div key={y} className="TurmaCard flexc">
-                                            <h1>{e.name}</h1>
-                                            <div></div>
-                                        </div>
-                                    </>
+                                    </div>
                                 )
                             })}
+
                         </div>
                         : tabStep == 2 &&
                         <div className="TurmaList flexc gap-4" style={{ justifyContent: 'center', alignItems: 'flex-start', marginTop: '60px' }}>
@@ -373,3 +420,37 @@ export default function Turmas() {
         </div>
     );
 }
+// {
+//     !!data && data?.map((e, y) => e.types?.map((x, z) => {
+//         return (
+//             <div key={y} className="flexc clienteDashMain" style={{ padding: "10px", marginTop: "15px" }}>
+//                 <h6>Turma: <b>{!!e.name && e.name}</b> - Ingresso: {!!x.description && x.description}</h6>
+//                 <div className="clienteDashGrid">
+//                     <div className="clienteDashCard flexr">
+//                         <div className="clienteCardContent flexc">
+
+//                             <h6>Ausente{x.ausente > 1 && "s"}</h6>
+//                         </div>
+
+//                     </div>
+//                     <div className="clienteDashCard flexr">
+//                         <div className="clienteCardContent flexc">
+
+//                             <h6>Presente{x.presente > 1 && "s"}</h6>
+//                         </div>
+
+//                     </div>
+//                     <div className="clienteDashCard flexr">
+//                         <div className="clienteCardContent flexc">
+
+//                             <h6>Total</h6>
+//                         </div>
+
+//                     </div>
+//                 </div>
+//             </div>
+
+
+//         )
+//     }))
+// }
