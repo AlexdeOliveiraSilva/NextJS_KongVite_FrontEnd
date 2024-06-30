@@ -17,6 +17,8 @@ import ImageModal from "@/components/Modal/imageModal";
 import { TiPlus } from "react-icons/ti";
 import { FaImage } from "react-icons/fa";
 import DeleteIcon from '@mui/icons-material/Delete';
+import moment from "moment";
+
 
 export default function EventsEdit() {
   const router = useRouter();
@@ -155,7 +157,6 @@ export default function EventsEdit() {
       setisLoading(true)
       let w = combineDateTime()
 
-      console.log('TESTE HORA', w)
 
 
       try {
@@ -327,6 +328,7 @@ export default function EventsEdit() {
   };
 
   async function getEvent() {
+    setisLoading(true)
     let x;
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
     let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
@@ -370,6 +372,7 @@ export default function EventsEdit() {
     } else {
       console.log("else")
     }
+    setisLoading(false)
   }
 
   async function getPassTypes() {
@@ -431,17 +434,17 @@ export default function EventsEdit() {
   }
 
   function formatDateToInput(dataString) {
-    const data = new Date(dataString);
 
-    data.setHours(data.getHours() - 3);
+    // data.setHours(data.getHours() - 3);
 
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    const horas = String(data.getHours()).padStart(2, '0');
-    const minutos = String(data.getMinutes()).padStart(2, '0');
+    // const ano = data.getFullYear();
+    // const mes = String(data.getMonth() + 1).padStart(2, '0');
+    // const dia = String(data.getDate()).padStart(2, '0');
+    // const horas = String(data.getHours()).padStart(2, '0');
+    // const minutos = String(data.getMinutes()).padStart(2, '0');
 
-    return `${ano}-${mes}-${dia}T${horas}:${minutos}`;
+    return moment(dataString).utc().format("YYYY-MM-DD HH:mm");
+
   }
 
   const combineDateTime = () => {
@@ -452,7 +455,7 @@ export default function EventsEdit() {
   };
 
   const splitDateTime = (date) => {
-    const [datePart, timePart] = date.split('T');
+    const [datePart, timePart] = date.split(' ');
     setOnlyDate(datePart);
     setOnlyHour(timePart);
   };

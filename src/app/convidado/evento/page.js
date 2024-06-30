@@ -21,7 +21,7 @@ import BannerInfo from "@/components/BannerInfo";
 import ClientInfo from "@/components/ClientInfo";
 import GuestInfo from "@/components/GuestsInfo";
 import { TiPlus } from "react-icons/ti";
-
+import moment from "moment";
 
 
 export default function EventGuest() {
@@ -285,6 +285,7 @@ export default function EventGuest() {
       setName(y?.user?.name);
       setPhone(y.user?.phone);
       setEmail(y.user?.email);
+
       setDate(formatDateToInput(z.date));
       setHour(formatHourToInput(z.date));
     }
@@ -306,27 +307,11 @@ export default function EventGuest() {
   }, [])
 
   function formatDateToInput(dataString) {
-    const data = new Date(dataString);
-
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    const horas = String(data.getHours()).padStart(2, '0');
-    const minutos = String(data.getMinutes()).padStart(2, '0');
-
-    return `${dia}/${mes}/${ano}`;
+    return moment(dataString).utc().format("DD/MM/YYYY");
   }
 
   function formatHourToInput(dataString) {
-    const data = new Date(dataString);
-
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    const horas = String(data.getHours()).padStart(2, '0');
-    const minutos = String(data.getMinutes()).padStart(2, '0');
-
-    return `${horas}:${minutos}`;
+    return moment(dataString).utc().format("HH:mm");
   }
 
   function f5() {
