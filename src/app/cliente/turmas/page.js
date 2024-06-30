@@ -298,7 +298,7 @@ export default function Turmas() {
         setTimeout(() => {
             toast.success('Dados Baixados com sucesso!')
             setIsLoading(false)
-        }, 1000)
+        }, 2000)
     };
 
 
@@ -324,6 +324,7 @@ export default function Turmas() {
                     {!!turma && turma?.length > 0 &&
                         <button
                             onClick={(e) => toOpenTurma(e)}
+                            style={{ maxHeight: '40px' }}
                             className="btnBlueThird flexr newEventBtn gap-4">CRIAR NOVA TURMA
                         </button>
                     }
@@ -331,6 +332,7 @@ export default function Turmas() {
                         <button
                             onClick={() => jsonToExcel(data)}
                             disabled={isLoading}
+                            style={{ maxHeight: '40px' }}
                             className="TurmaDashButton btnBlue">
                             {!!isLoading ? <Loader></Loader> : 'BAIXAR DADOS'}
                         </button>
@@ -340,7 +342,9 @@ export default function Turmas() {
             <div className=" clientEventFilters flexr" style={{ position: 'relative', padding: '40px 5% 40px 5% !important' }}>
                 {!!event ?
                     <>
-                        <div className="iconEventContent flexr">
+                        <div
+                            onClick={() => router.push('/cliente/eventos/edit/')}
+                            className="iconEventContent flexr" style={{ border: '1px solid black' }}>
                             <div className="iconEvent flexr"><LuMapPin size={40} /></div>
                             <div className="iconEventData flexc">
                                 <h6>EVENTO</h6>
@@ -389,7 +393,7 @@ export default function Turmas() {
 
                             {!!data && data?.map((e, y) => {
                                 return (
-                                    <div key={y} className="TurmaCard flexc gap-2">
+                                    <div key={y} className="TurmaCard flexc">
                                         <h1>{!!e.name && e.name}</h1>
                                         <div className="clientListDashMain flexc">
                                             <div className="clientListDash flexr">

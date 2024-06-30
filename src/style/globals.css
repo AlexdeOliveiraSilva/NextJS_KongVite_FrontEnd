@@ -234,6 +234,47 @@ form {
   width: 100%;
   text-align: left;
 }
+.inputNewStyle {
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.inputNewStyle p {
+  width: 130px;
+  min-width: 130px;
+  font-size: 13px;
+  font-weight: 400;
+}
+.inputNewStyle input {
+  width: 100%;
+  background-color: var(--white-primary);
+  border-radius: 3px;
+  justify-content: flex-start;
+  align-items: center;
+  height: 40px;
+  border: 1px solid var(--grey-ultra-ligth);
+  padding: 0 10px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.inputNewStyle select {
+  width: 100%;
+  background-color: var(--white-primary);
+  border-radius: 3px;
+  justify-content: flex-start;
+  align-items: center;
+  height: 40px;
+  border: 1px solid var(--grey-ultra-ligth);
+  padding: 0 10px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.inputNewStyleDouble {
+  width: 100%;
+  gap: 15px;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

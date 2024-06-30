@@ -578,6 +578,19 @@
   padding: 0 0 30px 0;
   justify-content: flex-start;
   gap: 30px;
+  cursor: pointer;
+}
+.newTopSitemap p {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--grey-ligth);
+}
+.DoubleUnique {
+  width: 49%;
+}
+.clientEventInputBox {
+  width: 640px;
+  padding-top: 40px;
 }
 .iconEvent {
   width: 100px;
@@ -965,7 +978,7 @@
   width: 100%;
   border-radius: 12px;
   box-shadow: var(--shad-ligth);
-  padding: 10px 20px 15px 20px;
+  padding: 7px 20px 10px 20px;
   justify-content: flex-start;
   align-items: flex-start;
 }
@@ -973,6 +986,67 @@
   font-size: 18px;
   font-weight: 600;
   margin: 0;
+}
+.inputNotifyDivFirst {
+  background-color: var(--white-primary);
+  height: 40px;
+  width: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: var(--grey-ligth);
+  border-radius: 6px 0 0 6px;
+  border: solid 2px;
+}
+.inputNotifyDivSecond {
+  background-color: var(--white-primary);
+  height: 40px;
+  width: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: var(--grey-ligth);
+  border-radius: 0 6px 6px 0;
+  border: solid 2px;
+}
+.addPasstypeBtn {
+  padding: 5px 15px;
+  border-radius: 4px;
+  box-shadow: var(--shad-ligth);
+  background-color: var(--white-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 30px;
+}
+.addPasstypeBtn:hover {
+  background-color: var(--white-primary);
+}
+.typeLineCard {
+  width: 100%;
+  background-color: var(--white-primary);
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0 10px 5px;
+  border-radius: 12px;
+}
+.typeLineCard p {
+  font-size: 13px;
+  font-weight: 500;
+  width: 90px;
+  max-width: 90px;
+  min-width: auto;
+  text-align: center;
+}
+.typeLineCard h6 {
+  font-size: 13px;
+  font-weight: 600;
+  width: 120px;
+  color: var(--white-primary);
+  border-radius: 4px;
+  padding: 3px 5px;
+  text-align: center;
 }
 
 @media (max-width: 1520px) {

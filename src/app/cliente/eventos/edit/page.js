@@ -14,12 +14,17 @@ import CloseIcon from '@mui/icons-material/Close';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import ImageModal from "@/components/Modal/imageModal";
+import { TiPlus } from "react-icons/ti";
+import { FaImage } from "react-icons/fa";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function EventsEdit() {
   const router = useRouter();
   const { KONG_URL, user, eventsType, eventsSubType, eventEdit, sendtos3 } = useContext(GlobalContext);
   const [name, setName] = useState();
   const [date, setDate] = useState();
+  const [onlyDate, setOnlyDate] = useState();
+  const [onlyHour, setOnlyHour] = useState();
   const [address, setAddress] = useState();
   const [place, setPlace] = useState();
   const [zipcode, setZipcode] = useState();
@@ -50,8 +55,46 @@ export default function EventsEdit() {
     image: ""
   });
   const [isLoading, setisLoading] = useState(false);
+  const [isFileUploading, setisFileUploading] = useState(false);
 
   const [eventData, setEventData] = useState();
+
+  const colors = [
+    '#0B192E',
+    '#2E64AD',
+    '#18A87C',
+    '#00E1E2'
+  ];
+
+  const statesBR = [
+    'AC',
+    'AL',
+    'AP',
+    'AM',
+    'BA',
+    'CE',
+    'DF',
+    'ES',
+    'GO',
+    'MA',
+    'MS',
+    'MT',
+    'MG',
+    'PA',
+    'PB',
+    'PR',
+    'PE',
+    'PI',
+    'RJ',
+    'RN',
+    'RS',
+    'RO',
+    'RR',
+    'SC',
+    'SP',
+    'SE',
+    'TO'
+  ]
 
   function dataVerify() {
     if (name?.length > 0 && name?.length < 2) {
@@ -99,6 +142,7 @@ export default function EventsEdit() {
 
     let x;
 
+
     if (!!jwt && !!eventId && (
       nameError == false &&
       dateError == false &&
@@ -109,6 +153,11 @@ export default function EventsEdit() {
       adressError == false
     )) {
       setisLoading(true)
+      let w = combineDateTime()
+
+      console.log('TESTE HORA', w)
+
+
       try {
         x = await (await fetch(`${KONG_URL}/companys/events/`, {
           method: 'POST',
@@ -120,7 +169,7 @@ export default function EventsEdit() {
             id: eventId,
             name: name,
             place: place,
-            date: date,
+            date: w,
             address: address,
             zipcode: zipcode,
             number: numberAdress,
@@ -164,6 +213,7 @@ export default function EventsEdit() {
       }
     }
   }
+  console.log(date)
 
   async function addPassTypes(jwt, event, data) {
 
@@ -234,7 +284,7 @@ export default function EventsEdit() {
       res = await fileUpload(eventId)
 
       if (!!res?.fileUrl && !!typeStack) {
-
+        setisFileUploading(true)
         setImageURL(res?.fileUrl)
 
 
@@ -245,6 +295,8 @@ export default function EventsEdit() {
         }]);
 
         setPassTypeObject({ name: '', image: '' });
+
+        setisFileUploading(false)
       } else {
         if (!typeStack) {
           toast.error('Digite um nome para o Ingresso')
@@ -289,7 +341,7 @@ export default function EventsEdit() {
             'Authorization': jwt
           }
         })).json()
-
+        console.log(formatDateToInput(x.date))
         if (!x?.message) {
 
           setEventData(x);
@@ -297,7 +349,7 @@ export default function EventsEdit() {
           setType(x.type);
           setSubType(x.subType);
           setNotifyUsersAboutDeletingInvitations(x.notifyUsersAboutDeletingInvitations);
-          setDate(formatDateToInput(x.date));
+          splitDateTime(formatDateToInput(x.date));
           setZipcode(x.zipcode);
           setAddress(x.address);
           setNumberAdress(x.number);
@@ -381,6 +433,8 @@ export default function EventsEdit() {
   function formatDateToInput(dataString) {
     const data = new Date(dataString);
 
+    data.setHours(data.getHours() - 3);
+
     const ano = data.getFullYear();
     const mes = String(data.getMonth() + 1).padStart(2, '0');
     const dia = String(data.getDate()).padStart(2, '0');
@@ -389,6 +443,19 @@ export default function EventsEdit() {
 
     return `${ano}-${mes}-${dia}T${horas}:${minutos}`;
   }
+
+  const combineDateTime = () => {
+    if (onlyDate && onlyHour) {
+      return `${onlyDate}T${onlyHour}`;
+    }
+    return '';
+  };
+
+  const splitDateTime = (date) => {
+    const [datePart, timePart] = date.split('T');
+    setOnlyDate(datePart);
+    setOnlyHour(timePart);
+  };
 
   useEffect(() => {
     dataVerify();
@@ -402,206 +469,235 @@ export default function EventsEdit() {
   useEffect(() => {
 
   }, [passType, imageURL])
+  console.log(notifyUsersAboutDeletingInvitations)
   return (
-    <div className="clienteMain flexr">
-      <ToastContainer></ToastContainer>
-      {!!imageToShow && <ImageModal close={() => setImageToShow('')} image={imageToShow}></ImageModal>}
-      <div className="clienteContent flexc">
+    <>
+      <div className="clientEventMain flexc">
+        <ToastContainer></ToastContainer>
+        {!!imageToShow && <ImageModal close={() => setImageToShow('')} image={imageToShow}></ImageModal>}
+        <div className="margin5percent" style={{ position: 'relative' }}>
+          <div className="newTopSitemap flexc" style={{ alignItems: 'flex-start' }}>
+            <h1 style={{ fontWeight: 600, marginRight: 10 }}>Editar Evento - {name}</h1>
+            <p>Atualize as informações e tipos de ingresso do Evento.</p>
+          </div>
 
-        <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-        <div className="clienteUl flexc" style={{ padding: "20px 0", height: "auto" }}>
-          <div className="userAdminDoubleInputs flexr">
-            <TextField
-              onChange={(e) => setName(e.target.value)}
-              value={name}
-              focused={!!name ? true : false}
-              className="inputStyle"
-              label={"Nome do Evento"}
-              id="outlined-size-normal"
-              placeholder={`Digite o Nome:'`}
-              type="text" />
-            <div className="userAdminDoubleInputsTwo flexr">
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Tipo</InputLabel>
-                <Select
-                  className="InputsTwoSelect"
-                  label="Tipo"
-                  labelId="demo-simple-select-label"
-                  focused={!!type ? true : false}
-                  id="demo-simple-select"
+          <div className="clientEventInputBox flexc">
+            <div className="inputNewStyle flexr">
+              <p>Nome do Evento</p>
+              <input
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+                type="text"
+              ></input>
+            </div>
+
+            {!!nameError && <p className="errorP" style={{ margin: '-10px 0 10px 0' }}>* O Nome deve conter mais que 3 caracteres.</p>}
+
+            <div className="inputNewStyle flexr">
+              <p>Local do Evento</p>
+              <input
+                onChange={(e) => setPlace(e.target.value)}
+                value={place}
+                type="text"
+              ></input>
+            </div>
+
+            <div className="inputNewStyleDouble flexr">
+              <div className="inputNewStyle flexr">
+                <p>Tipo do Evento</p>
+                <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
                 >
                   {!!eventsType && eventsType.map((e, y) => {
                     return (
-                      <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
+                      <option key={y} value={e.toUpperCase()}>{e}</option>
                     )
                   })}
-                </Select>
-              </FormControl>
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Subtipo</InputLabel>
-                <Select
-                  className="InputsTwoSelect"
-                  label="Subtipo"
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  focused={!!subType ? true : false}
+                </select>
+              </div>
+              <div className="inputNewStyle flexr">
+                <p style={{ textAlign: 'center' }}>Periodo</p>
+                <select
                   value={subType}
                   onChange={(e) => setSubType(e.target.value)}
                 >
                   {!!eventsSubType && eventsSubType.map((e, y) => {
                     return (
-                      <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
+                      <option key={y} value={e.toUpperCase()}>{e}</option>
                     )
                   })}
-                </Select>
-              </FormControl>
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Notificar</InputLabel>
-                <Select
-                  className="InputsTwoSelect"
-                  label="Notificar"
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={notifyUsersAboutDeletingInvitations}
-                  onChange={(e) => setNotifyUsersAboutDeletingInvitations(e.target.value)}
+                </select>
+              </div>
+            </div>
+
+            <div className="inputNewStyleDouble flexr">
+              <div className="inputNewStyle flexr">
+                <p>Data</p>
+                <input
+                  onChange={(e) => setOnlyDate(e.target.value)}
+                  value={onlyDate}
+                  type="date"
+                />
+              </div>
+              <div className="inputNewStyle flexr">
+                <p style={{ textAlign: 'center' }}>Horário</p>
+                <input
+                  onChange={(e) => setOnlyHour(e.target.value)}
+                  value={onlyHour}
+                  type="time"
+                />
+              </div>
+            </div>
+            {!!dateError && <p className="errorP" style={{ margin: '-10px 0 10px 0' }}>* Preencha uma Data.</p>}
+
+            <div className="inputNewStyleDouble flexr" style={{ justifyContent: 'flex-start' }}>
+              <div className="inputNewStyle DoubleUnique flexr">
+                <p>CEP</p>
+                <input
+                  onChange={(e) => setZipcode(e.target.value)}
+                  value={zipcode}
+                  type="number"
+                />
+              </div>
+
+            </div>
+            {!!cepError && <p className="errorP" style={{ margin: '-10px 0 10px 0' }}>* Preencha um CEP válido.</p>}
+
+            <div className="inputNewStyle flexr">
+              <p>Endereço</p>
+              <input
+                onChange={(e) => setAddress(e.target.value)}
+                value={address}
+                type="text"
+              ></input>
+            </div>
+            {!!adressError && <p className="errorP">* Preencha um Endereço.</p>}
+
+            <div className="inputNewStyleDouble flexr">
+              <div className="inputNewStyle flexr">
+                <p>Número</p>
+                <input
+                  onChange={(e) => setNumberAdress(e.target.value)}
+                  value={numberAdress}
+                  type="number"
+                />
+              </div>
+              <div className="inputNewStyle flexr">
+                <p style={{ textAlign: 'center' }}>Bairro</p>
+                <input
+                  onChange={(e) => setNeighborhood(e.target.value)}
+                  value={neighborhood}
+                  type="text" />
+              </div>
+            </div>
+            {!!adressNumberError && <p className="errorP" style={{ margin: '-10px 0 10px 0' }}>* Preencha um Numero.</p>}
+            {!!neighborhoodError && <p className="errorP" style={{ margin: '-10px 0 10px 0' }}>* Preencha um Bairro.</p>}
+
+            <div className="inputNewStyleDouble flexr">
+              <div className="inputNewStyle flexr">
+                <p>Cidade</p>
+                <input
+                  onChange={(e) => setCity(e.target.value)}
+                  value={city}
+                  type="text" />
+              </div>
+              <div className="inputNewStyle flexr">
+                <p style={{ textAlign: 'center' }}>Estado</p>
+                <select
+                  onChange={(e) => setUf(e.target.value)}
+                  value={uf}
                 >
-                  <MenuItem value={"SIM"}>Sim</MenuItem>
-                  <MenuItem value={"NAO"}>Não</MenuItem>
-                </Select>
-              </FormControl>
+                  {statesBR.map((e, y) => {
+                    return (
+                      <option key={y}>{e}</option>
+                    )
+                  })}
+                </select>
+              </div>
+            </div>
+            {!!cityError && <p className="errorP" style={{ margin: '-10px 0 10px 0' }}>* Preencha uma Cidade.</p>}
+            {!!ufError && <p className="errorP" style={{ margin: '-10px 0 10px 0' }}>* Preencha um Estado.</p>}
+
+            <div className="inputNewStyle flexr">
+              <p>Notificações</p>
+              <div className="inputNotifyDiv flexr">
+                <h6
+                  style={notifyUsersAboutDeletingInvitations == 'SIM' ? { borderColor: '#00E1E2', borderRightWidth: '2px' } : { borderColor: 'var(--grey-ultra-ligth)', borderRightWidth: '1px' }}
+                  onClick={notifyUsersAboutDeletingInvitations != 'SIM' ? (e) => setNotifyUsersAboutDeletingInvitations('SIM') : () => console.log('')}
+                  className="inputNotifyDivFirst">Sim</h6>
+
+                <h6
+                  style={notifyUsersAboutDeletingInvitations == 'NAO' ? { borderColor: '#00E1E2', borderLeftWidth: '2px' } : { borderColor: 'var(--grey-ultra-ligth)', borderLeftWidth: '1px' }}
+                  onClick={notifyUsersAboutDeletingInvitations != 'NAO' ? (e) => setNotifyUsersAboutDeletingInvitations('NAO') : () => console.log('')}
+                  className="inputNotifyDivSecond">Não</h6>
+              </div>
             </div>
           </div>
-          {!!nameError && <p className="errorP">* O Nome deve conter mais que 3 caracteres.</p>}
-          <div className="userAdminDoubleInputs flexr">
-            <TextField
-              onChange={(e) => setDate(e.target.value)}
-              focused={!!date ? true : false}
-              label={"Data do Evento"}
-              className="inputStyle"
-              id="outlined-size-normal"
-              value={date}
-              placeholder={`Digite a Data:'`}
-              type="datetime-local" />
-            <TextField
-              onChange={(e) => setZipcode(e.target.value)}
-              className="inputStyle"
-              value={zipcode}
-              focused={!!zipcode ? true : false}
-              label={"CEP"}
-              id="outlined-size-normal"
-              placeholder={`Digite o CEP:'`}
-              type="number" />
-          </div>
-          {!!dateError && <p className="errorP">* Preencha uma Data.</p>}
-          {!!cepError && <p className="errorP" style={{ textAlign: "right" }}>* Preencha um CEP.</p>}
-          <div className="userAdminDoubleInputs flexr">
-            <TextField
-              onChange={(e) => setPlace(e.target.value)}
-              className="inputStyle"
-              value={place}
-              focused={!!place ? true : false}
-              label={"Local do evento"}
-              id="outlined-size-normal"
-              placeholder={`Local do evento:'`}
-              type="text" />
-            <TextField
-              onChange={(e) => setAddress(e.target.value)}
-              className="inputStyle"
-              value={address}
-              focused={!!address ? true : false}
-              label={"Rua"}
-              id="outlined-size-normal"
-              placeholder={`Nome da Rua:'`}
-              type="text" />
-          </div>
-          <div className="userAdminDoubleInputs flexr">
-            <TextField
-              onChange={(e) => setNumberAdress(e.target.value)}
-              className="inputStyle"
-              value={numberAdress}
-              focused={!!numberAdress ? true : false}
-              label={"Numero"}
-              id="outlined-size-normal"
-              placeholder={`Digite o Numero:'`}
-              type="number" />
-            <TextField
-              onChange={(e) => setNeighborhood(e.target.value)}
-              className="inputStyle"
-              value={neighborhood}
-              focused={!!neighborhood ? true : false}
-              label={"Bairro"}
-              id="outlined-size-normal"
-              placeholder={`Digite o Bairro:'`}
-              type="text" />
-            <TextField
-              onChange={(e) => setCity(e.target.value)}
-              className="inputStyle"
-              value={city}
-              focused={!!city ? true : false}
-              label={"Cidade"}
-              id="outlined-size-normal"
-              placeholder={`Digite a Cidade:'`}
-              type="text" />
-            <TextField
-              onChange={(e) => setUf(e.target.value)}
-              className="inputStyle"
-              value={uf}
-              focused={!!uf ? true : false}
-              label={"Estado"}
-              id="outlined-size-normal"
-              placeholder={`Digite o Estado:'`}
-              type="text" />
+        </div>
+
+        <div className='clientEventFilters mt-10'>
+          <div className="newTopSitemap flexc" style={{ alignItems: 'flex-start' }}>
+            <p style={{ color: 'var(--blue-primary)', fontWeight: '600' }}>Adicionar tipos de entrada</p>
           </div>
 
-          {!!adressError && <p className="errorP">* Preencha um Endereço.</p>}
-          {!!adressNumberError && <p className="errorP">* Preencha um Numero.</p>}
-          {!!neighborhoodError && <p className="errorP">* Preencha um Bairro.</p>}
-          {!!cityError && <p className="errorP">* Preencha uma Cidade.</p>}
-          {!!ufError && <p className="errorP">* Preencha um Estado.</p>}
-        </div>
-        <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-        <div className="passTypeHeader flexc">
-          <div className="passTypeTitle flexr">
-            <h1>Tipo de Entrada</h1>
-          </div>
-          <div className="passTypeBlockFirts flexr">
-            <TextField
-              onChange={(e) => setTypeStack(e.target.value)}
-              className="inputStyle"
-              label={!!passTypeObject.name ? '' : "Tipo do Ingresso"}
-              value={typeStack}
-              id="outlined-size-normal"
-              placeholder={`Tipo do Ingresso:`}
-              type="text" />
-            <TextField
-              onChange={(e) => setImageStack(e.target.files[0])}
-              className="inputStyle"
-              value={imageStack[0]}
-              id="outlined-size-normal"
-              type="file" />
-            <button
-              onClick={(event) => addPassType(event)}
-              style={{ minWidth: "110px", fontSize: "16px" }}
-              className="btnBlue">Adicionar</button>
-          </div>
-          <div className="passTypeBlockFirts flexr" style={{ justifyContent: "flex-end" }}>
+          <div className="clientEventInputBox flexc" style={{ paddingTop: '0' }}>
+            <div className="inputNewStyleDouble flexr" style={{ justifyContent: 'flex-start' }}>
+              <div className="inputNewStyle DoubleUnique flexr">
+                <p>Nome do Ingresso</p>
+                <input
+                  onChange={(e) => setTypeStack(e.target.value)}
+                  value={typeStack}
+                  type="text"
+                />
+              </div>
+            </div>
+
+            <div className="inputNewStyleDouble flexr" style={{ justifyContent: 'flex-start' }}>
+              <div className="inputNewStyle DoubleUnique flexr" style={{ width: '100%', paddingTop: '10px' }}>
+                <p>Arte do Ingresso</p>
+                <input
+                  style={{ height: 'auto', backgroundColor: 'transparent', width: '100%' }}
+                  onChange={(e) => setImageStack(e.target.files[0])}
+                  value={imageStack[0]}
+                  type="file"
+                />
+              </div>
+            </div>
             <p style={{ fontSize: "12px", color: "red" }}>* Preferência de Imagem: 400px X 717px e até 2Mb</p>
-          </div>
-        </div>
-        <div className="passTypeFull flexc">
-          <div className="passTypeBlock flexr">
+            <div className="clientEventInputBox flexc" style={{ paddingTop: '0' }}>
+              <div className="inputNewStyleDouble flexr" style={{ justifyContent: 'flex-start', paddingTop: '20px' }}>
+                <div className="inputNewStyle DoubleUnique flexr ">
+                  <p className="pNone"></p>
+                  <button
+                    onClick={(event) => addPassType(event)}
+                    className="addPasstypeBtn flexr gap-2"><TiPlus /> {isFileUploading ? '...Loading' : 'Adicionar'}</button>
+                </div>
+              </div>
+            </div>
+
             {alreadyPassType?.length > 0 &&
               alreadyPassType.map((e, y) => {
                 return (
-                  <div
-                    onClick={(event) => setImageToShow(e.image)}
-                    key={y} className="passTypeBlockItem flexr">
-                    <p>{e.description}</p>
-                    <CloseIcon
-                      onClick={(event) => { event.stopPropagation(), deletePassType(e.description, event, e.id) }}
-                      style={{ color: "#ffffff" }}></CloseIcon>
+                  <div className="inputNewStyle flexr" key={y} >
+                    <p className="pNone"></p>
+                    <div className="typeLineCard flexr">
+                      <div className=" flexr">
+                        <p style={{ color: '#00A527' }}>Salvo</p>
+                        <h6 style={{ backgroundColor: colors[y % colors.length] }}>{e.description}</h6>
+                      </div>
+                      <div className="userConfigbtns flexr">
+                        <div
+                          onClick={(event) => setImageToShow(e.image)}
+                          className="userConfigbtn flexr">
+                          <FaImage className="userConfigIcon"></FaImage></div>
+                        <div
+                          onClick={(event) => { event.stopPropagation(), deletePassType(e.description, event, e.id) }}
+                          className="userConfigbtn flexr">
+                          <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )
               })
@@ -610,31 +706,96 @@ export default function EventsEdit() {
               passType.map((e, y) => {
 
                 return (
-                  <div
-                    onClick={(event) => setImageToShow(e.image)}
-                    key={y} className="passTypeBlockItem flexr">
-                    <p>{e.name}</p>
-                    <CloseIcon
-                      onClick={(event) => deletePassType(e.name, event)}
-                      style={{ color: "#ffffff" }}></CloseIcon>
+                  <div className="inputNewStyle flexr" key={y}>
+                    <p className="pNone"></p>
+                    <div className="typeLineCard flexr">
+                      <div className="flexr justify-start">
+                        <p style={{ color: '#FFAC25' }}>Adicionado</p>
+                        <h6 style={{ backgroundColor: colors[y % colors.length] }}>{e.name}</h6>
+                      </div>
+                      <div className="userConfigbtns flexr">
+                        <div
+                          onClick={(event) => setImageToShow(e.image)}
+                          className="userConfigbtn flexr">
+                          <FaImage className="userConfigIcon"></FaImage></div>
+                        <div
+                          onClick={(event) => deletePassType(e.name, event)}
+                          className="userConfigbtn flexr">
+                          <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )
               })
             }
+
+
+
           </div>
-        </div >
-        <div className="adminUsersHeader flexr" style={{ margin: "15px 0" }}>
-          {/* <div className="adminUsersTitle flexr">
-            <h1>Editar Evento{!!eventData && `- ${eventData.name}`}</h1>
-          </div> */}
-          <div className="adminUsersAdd flexr">
+        </div>
+        <div className="margin5percent" style={{ position: 'relative', padding: '0 !important' }}>
+          <div className="clientEventInputBox flexc" style={{ padding: '50px 0' }}>
             <button
               onClick={(event) => editTheEvent(event)}
-              style={{ minWidth: "150px" }}
-              className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
+              style={{ maxHeight: '35px', minWidth: '120px' }}
+              className="btnBlueThird flexr newEventBtn gap-4"
+            >{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
           </div>
         </div>
       </div>
-    </div >
+
+
+    </>
   );
 }
+
+
+{/* <div className="clienteMain flexr">
+
+    <div className="passTypeFull flexc">
+      <div className="passTypeBlock flexr">
+        {alreadyPassType?.length > 0 &&
+          alreadyPassType.map((e, y) => {
+            return (
+              <div
+                onClick={(event) => setImageToShow(e.image)}
+                key={y} className="passTypeBlockItem flexr">
+                <p>{e.description}</p>
+                <CloseIcon
+                  onClick={(event) => { event.stopPropagation(), deletePassType(e.description, event, e.id) }}
+                  style={{ color: "#ffffff" }}></CloseIcon>
+              </div>
+            )
+          })
+        }
+        {passType?.length > 0 &&
+          passType.map((e, y) => {
+
+            return (
+              <div
+                onClick={(event) => setImageToShow(e.image)}
+                key={y} className="passTypeBlockItem flexr">
+                <p>{e.name}</p>
+                <CloseIcon
+                  onClick={(event) => deletePassType(e.name, event)}
+                  style={{ color: "#ffffff" }}></CloseIcon>
+              </div>
+            )
+          })
+        }
+      </div>
+    </div >
+    <div className="adminUsersHeader flexr" style={{ margin: "15px 0" }}>
+      {/* <div className="adminUsersTitle flexr">
+            <h1>Editar Evento{!!eventData && `- ${eventData.name}`}</h1>
+          </div> */}
+//       <div className="adminUsersAdd flexr">
+//         <button
+//           onClick={(event) => editTheEvent(event)}
+//           style={{ minWidth: "150px" }}
+//           className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
+//       </div>
+//     </div>
+//   </div>
+// </div > */}
