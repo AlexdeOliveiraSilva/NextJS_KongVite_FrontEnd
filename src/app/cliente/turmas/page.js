@@ -15,6 +15,8 @@ import { IoCalendarClearOutline } from "react-icons/io5";
 import { LuMapPin } from "react-icons/lu";
 import { TiPlus } from "react-icons/ti";
 import Separator from "@/components/fragments/separatorLine";
+import * as XLSX from 'xlsx';
+import { MdDownloadForOffline } from "react-icons/md";
 
 export default function Turmas() {
     const router = useRouter();
@@ -184,7 +186,17 @@ export default function Turmas() {
         router.push('/cliente/turmas/turma-view')
     }
 
+    function formatDateFull(dataString) {
+        const data = new Date(dataString);
 
+        const ano = data.getFullYear();
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const dia = String(data.getDate()).padStart(2, '0');
+        const horas = String(data.getHours()).padStart(2, '0');
+        const minutos = String(data.getMinutes()).padStart(2, '0');
+
+        return `${dia}-${mes}-${ano}-${horas}-${minutos}`;
+    }
 
     function formatDateToInput(dataString) {
         const data = new Date(dataString);
@@ -245,6 +257,51 @@ export default function Turmas() {
 
         }
     }
+
+    const jsonToExcel = (jsonData) => {
+        setIsLoading(true)
+
+        let fileName = new Date().toString();
+        const rows = [];
+
+        jsonData.forEach(item => {
+            const { id, name, types } = item;
+            types.forEach(type => {
+                rows.push({
+                    id,
+                    name,
+                    type_id: type.id,
+                    description: type.description,
+                    presente: type.presente,
+                    ausente: type.ausente,
+                    total: type.total,
+                });
+            });
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(rows);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+        const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+        const url = window.URL.createObjectURL(data);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `data-import-${formatDateFull(fileName)}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setTimeout(() => {
+            toast.success('Dados Baixados com sucesso!')
+            setIsLoading(false)
+        }, 1000)
+    };
+
+
     useEffect(() => {
         getTurmas()
         getEventDashData()
@@ -261,13 +318,21 @@ export default function Turmas() {
             <ToastContainer></ToastContainer>
             {!!addTurmasIsOpen ? <AddTurmas close={() => toCloseTurma()} turmaId={turmaEdit} name={turmaNameEdit}></AddTurmas> : ""}
             {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteTurma()} word="confirmar" ></DeletModal>}
-            <div className="margin5percent">
+            <div className="margin5percent" style={{ position: 'relative' }}>
                 <div className="newTopSitemap flexr">
                     <h1 style={{ fontWeight: 600, marginRight: 10 }}>Evento</h1>
                     {!!turma && turma?.length > 0 &&
                         <button
                             onClick={(e) => toOpenTurma(e)}
                             className="btnBlueThird flexr newEventBtn gap-4">CRIAR NOVA TURMA
+                        </button>
+                    }
+                    {!!data &&
+                        <button
+                            onClick={() => jsonToExcel(data)}
+                            disabled={isLoading}
+                            className="TurmaDashButton btnBlue">
+                            {!!isLoading ? <Loader></Loader> : 'BAIXAR DADOS'}
                         </button>
                     }
                 </div>
@@ -321,6 +386,7 @@ export default function Turmas() {
                     </div>
                     {tabStep == 1 ?
                         <div className="TurmaDash" style={{ marginTop: '40px' }}>
+
                             {!!data && data?.map((e, y) => {
                                 return (
                                     <div key={y} className="TurmaCard flexc gap-2">
@@ -420,37 +486,3 @@ export default function Turmas() {
         </div>
     );
 }
-// {
-//     !!data && data?.map((e, y) => e.types?.map((x, z) => {
-//         return (
-//             <div key={y} className="flexc clienteDashMain" style={{ padding: "10px", marginTop: "15px" }}>
-//                 <h6>Turma: <b>{!!e.name && e.name}</b> - Ingresso: {!!x.description && x.description}</h6>
-//                 <div className="clienteDashGrid">
-//                     <div className="clienteDashCard flexr">
-//                         <div className="clienteCardContent flexc">
-
-//                             <h6>Ausente{x.ausente > 1 && "s"}</h6>
-//                         </div>
-
-//                     </div>
-//                     <div className="clienteDashCard flexr">
-//                         <div className="clienteCardContent flexc">
-
-//                             <h6>Presente{x.presente > 1 && "s"}</h6>
-//                         </div>
-
-//                     </div>
-//                     <div className="clienteDashCard flexr">
-//                         <div className="clienteCardContent flexc">
-
-//                             <h6>Total</h6>
-//                         </div>
-
-//                     </div>
-//                 </div>
-//             </div>
-
-
-//         )
-//     }))
-// }
