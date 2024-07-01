@@ -16,13 +16,24 @@ import { LuMapPin } from "react-icons/lu";
 import { TiPlus } from "react-icons/ti";
 import Separator from "@/components/fragments/separatorLine";
 import * as XLSX from 'xlsx';
-import { MdDownloadForOffline } from "react-icons/md";
+import { FaLongArrowAltRight } from "react-icons/fa";
+
+import SendInviteModal from "@/components/Modal/sendInvites";
+import TransferHistoric from "@/components/Modal/transferHistoric";
+import InvitesAddModal from "@/components/Modal/invitesAddForClient";
+import UploadGuestModal from "@/components/Modal/uploadGuest";
+import { Tooltip } from "@mui/material";
+import ReplyIcon from '@mui/icons-material/Reply';
+import TransformIcon from '@mui/icons-material/Transform';
+import AddIcon from '@mui/icons-material/Add';
+
 
 export default function Turmas() {
     const router = useRouter();
-    const { KONG_URL, user, eventEdit } = useContext(GlobalContext);
+    const { KONG_URL, user, eventEdit, setGuestEditId } = useContext(GlobalContext);
     const [addTurmasIsOpen, setAddTurmasIsOpen] = useState(false);
     const [turma, setTurma] = useState();
+    const [turmaCopy, setTurmaCopy] = useState();
     const [event, setEvent] = useState();
     const [isLoading, setIsLoading] = useState();
     const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
@@ -35,8 +46,25 @@ export default function Turmas() {
     const [date, setDate] = useState("");
     const [hour, setHour] = useState("");
     const [alreadyPassType, setAlreadyPassType] = useState([]),
-        [data, setData] = useState();;
+        [data, setData] = useState(),
+        [dataCopy, setDataCopy] = useState();
     const [tabStep, setTabStep] = useState(1);
+    const [pageStep, setPageStep] = useState(1);
+    const [namefilter, setNameFilter] = useState("");
+
+    const [deleteIdGuestSelected, setDeleteIdGuestSelected] = useState();
+    const [deleteGuestModalIsOpen, setDeleteGuestModalIsOpen] = useState(false);
+    const [transferModalIsOpen, setTransferModalIsOpen] = useState(false);
+    const [addInvitesModalIsOpen, setAddInvitesModalIsOpen] = useState(false);
+    const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
+    const [sendModalIsOpen, setSendModalIsOpen] = useState(false);
+    const [otherGuestIsOpen, setOtherGuestIsOpen] = useState();
+    const [search, setSearch] = useState("");
+    const [turmaData, setTurmaData] = useState();
+    const [turmaGuest, setTurmaGuest] = useState();
+    const [guestfilter, setGuestFilter] = useState("");
+    const [turmaGuestCopy, setTurmaGuestCopy] = useState();
+    const [transferHistoricId, setTranferHistoricId] = useState();
 
     function toOpenTurma(e) {
         e.preventDefault();
@@ -47,6 +75,9 @@ export default function Turmas() {
         setAddTurmasIsOpen(false);
         setTurmaEdit();
         getTurmas();
+        if (!!window) {
+            window.location.reload()
+        }
     }
 
     async function getTurmas() {
@@ -65,9 +96,11 @@ export default function Turmas() {
                         'Authorization': jwt
                     }
                 })).json()
+
                 if (!x?.message) {
                     setEvent(x)
                     setTurma(x.eventsClasses);
+                    setTurmaCopy(x.eventsClasses);
                     setIsLoading(false);
                     setisFetching(false);
                     return ""
@@ -78,6 +111,42 @@ export default function Turmas() {
                 return ""
             }
 
+        } else {
+            console.log("else")
+            setisFetching(false);
+        }
+    }
+
+    async function getTurma() {
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+        let turmaId = !!turmaEdit ? turmaEdit : localStorage.getItem("turma_edit");
+        let x;
+
+        if (!!jwt && !!turmaId) {
+            setIsLoading(true);
+            setisFetching(true);
+            try {
+                x = await (await fetch(`${KONG_URL}/companys/turma/get/${turmaId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': jwt
+                    }
+                })).json()
+                if (!x?.message) {
+
+                    setTurmaData(x);
+                    setTurmaGuest(x.guests);
+                    setTurmaGuestCopy(x.guests);
+                    setIsLoading(false);
+                    setisFetching(false);
+                    return ""
+                }
+            } catch (error) {
+                setIsLoading(false);
+                setisFetching(false);
+                return ""
+            }
         } else {
             console.log("else")
             setisFetching(false);
@@ -182,8 +251,14 @@ export default function Turmas() {
         e.preventDefault();
         setTurmaEdit(id)
         localStorage.setItem('turma_edit', id)
+        setTabStep(2)
+        setPageStep(2)
+    }
+    function backView(e) {
+        e.preventDefault();
 
-        router.push('/cliente/turmas/turma-view')
+
+        setPageStep(1)
     }
 
     function formatDateFull(dataString) {
@@ -247,6 +322,7 @@ export default function Turmas() {
                 if (!x.message) {
 
                     setData(x.turmas)
+                    setDataCopy(x.turmas)
                 }
 
             } catch (error) {
@@ -257,6 +333,8 @@ export default function Turmas() {
 
         }
     }
+
+
 
     const jsonToExcel = (jsonData) => {
         setIsLoading(true)
@@ -313,30 +391,167 @@ export default function Turmas() {
         }
     }, [event])
 
+    useEffect(() => {
+
+        if (namefilter && namefilter.length > 0) {
+
+            const filteredData = dataCopy.filter((e) => e.name.toLowerCase().includes(namefilter.toLowerCase()));
+            const filteredTurma = turmaCopy.filter((e) => e.name.toLowerCase().includes(namefilter.toLowerCase()));
+
+            setData(filteredData);
+            setTurma(filteredTurma);
+        } else {
+            setData(dataCopy);
+            setTurma(turmaCopy);
+        }
+
+    }, [namefilter])
+
+
+    // ******************** TURMAS GUEST FUNC
+
+    async function deleteGuest() {
+
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+        let event = !!eventEdit ? eventEdit : localStorage.getItem("event_edit")
+        let turma = !!turmaEdit ? turmaEdit : localStorage.getItem("turma_edit")
+
+        let x;
+
+        if (!!jwt && !!event && !!turma && !!deleteIdGuestSelected) {
+            setIsLoading(true)
+            try {
+                x = await (await fetch(`${KONG_URL}/companys/turma/student/${event}/${turma}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': jwt
+                    },
+                    body: JSON.stringify({
+                        id: deleteIdGuestSelected,
+                        situation: 2
+                    })
+                })).json()
+
+                if (!x?.message) {
+                    toast.success("Convidado deletado.", {
+                        position: "top-right"
+                    });
+
+                    getTurma();
+                    setDeleteModalIsOpen(false)
+                    setIsLoading(false)
+
+                    if (!!window) {
+                        window.location.reload()
+                    }
+                } else {
+                    toast.error("Erro ao Deletar, tente novamente.", {
+                        position: "top-right"
+                    });
+                    setIsLoading(false)
+                }
+
+
+            } catch (error) {
+                toast.error("Erro ao Deletar, tente novamente.", {
+                    position: "top-right"
+                });
+                setIsLoading(false)
+                return ""
+            }
+        }
+    }
+
+    function toEditGuest(e, id, name) {
+        e.preventDefault();
+
+        setGuestEditId(id);
+        localStorage.setItem("guest_edit_id", id)
+
+        router.push('/cliente/turmas/turma-view/edit/')
+    }
+
+    function toAddGuest(e) {
+        e.preventDefault();
+
+        router.push('/cliente/turmas/turma-view/add/')
+    }
+    function openSendModal(e) {
+        e.preventDefault();
+        setSendModalIsOpen(true);
+    }
+
+    function closeSendModal() {
+        setSendModalIsOpen(false);
+    }
+    function openUploadModal(e) {
+        e.preventDefault();
+        setUploadModalIsOpen(true);
+    }
+
+    function closeUploadModal() {
+        setUploadModalIsOpen(false);
+        window.location.reload()
+    }
+
+    function openTransferModal(e, id) {
+        e.preventDefault();
+        setTranferHistoricId(+id)
+        setTransferModalIsOpen(true);
+    }
+
+    function closeTransferModal() {
+        setTransferModalIsOpen(false);
+    }
+
+    function openInvitesAdddModal(e) {
+        e.preventDefault();
+        setAddInvitesModalIsOpen(true);
+    }
+
+    function openDeleteGuestModal(e, id) {
+        e.preventDefault();
+        setDeleteIdGuestSelected(id);
+        setDeleteGuestModalIsOpen(true);
+    }
+
+    function closeDeleteGuestModal() {
+        setDeleteGuestModalIsOpen(false);
+    }
+
+    useEffect(() => {
+        getTurma()
+    }, [turmaEdit])
+
+    useEffect(() => {
+
+        if (guestfilter && guestfilter.length > 0) {
+
+            const filteredData = turmaGuestCopy.filter((e) => e.name.toLowerCase().includes(guestfilter.toLowerCase()));
+
+            setTurmaGuest(filteredData);
+        } else {
+            setTurmaGuest(turmaGuestCopy);
+        }
+
+    }, [guestfilter])
+
     return (
         <div className="clientEventMain flexc">
             <ToastContainer></ToastContainer>
             {!!addTurmasIsOpen ? <AddTurmas close={() => toCloseTurma()} turmaId={turmaEdit} name={turmaNameEdit}></AddTurmas> : ""}
             {deleteModalIsOpen == true && <DeletModal close={() => closeDeleteModal()} func={() => deleteTurma()} word="confirmar" ></DeletModal>}
+
+            {addInvitesModalIsOpen == true && <InvitesAddModal close={() => setAddInvitesModalIsOpen()} id={1}></InvitesAddModal>}
+            {transferModalIsOpen == true && <TransferHistoric close={() => closeTransferModal()} id={transferHistoricId}></TransferHistoric>}
+            {sendModalIsOpen == true && <SendInviteModal close={() => closeSendModal()} isAdd={false}></SendInviteModal>}
+            {uploadModalIsOpen == true && <UploadGuestModal close={() => closeUploadModal()}></UploadGuestModal>}
+            {deleteGuestModalIsOpen == true && <DeletModal close={() => closeDeleteGuestModal()} func={() => deleteGuest()} word="confirmar" ></DeletModal>}
             <div className="margin5percent" style={{ position: 'relative' }}>
                 <div className="newTopSitemap flexr">
                     <h1 style={{ fontWeight: 600, marginRight: 10 }}>Evento</h1>
-                    {!!turma && turma?.length > 0 &&
-                        <button
-                            onClick={(e) => toOpenTurma(e)}
-                            style={{ maxHeight: '40px' }}
-                            className="btnBlueThird flexr newEventBtn gap-4">CRIAR NOVA TURMA
-                        </button>
-                    }
-                    {!!data &&
-                        <button
-                            onClick={() => jsonToExcel(data)}
-                            disabled={isLoading}
-                            style={{ maxHeight: '40px' }}
-                            className="TurmaDashButton btnBlue">
-                            {!!isLoading ? <Loader></Loader> : 'BAIXAR DADOS'}
-                        </button>
-                    }
+
                 </div>
             </div>
             <div className=" clientEventFilters flexr" style={{ position: 'relative', padding: '40px 5% 40px 5% !important' }}>
@@ -344,7 +559,7 @@ export default function Turmas() {
                     <>
                         <div
                             onClick={() => router.push('/cliente/eventos/edit/')}
-                            className="iconEventContent flexr" style={{ border: '1px solid black' }}>
+                            className="iconEventContent flexr" >
                             <div className="iconEvent flexr"><LuMapPin size={40} /></div>
                             <div className="iconEventData flexc">
                                 <h6>EVENTO</h6>
@@ -374,104 +589,287 @@ export default function Turmas() {
                     <div style={{ width: '100%' }} className="flexc"><Loader></Loader></div>
                 }
             </div>
-            {!!turma && turma?.length > 0 ?
-                <div className="margin5percent flexc" style={{ paddingTop: '80px', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+            {!!turmaCopy && turmaCopy?.length > 0 ?
+
+
+
+                // ******************* LISTA TURMAS
+                <div className="margin5percent flexc" style={{ paddingTop: '80px', paddingBottom: '80px', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                     <div className="clientEventTabBar flexr">
                         <div
-                            onClick={tabStep != 1 ? () => setTabStep(1) : () => console.log()}
+                            onClick={
+                                tabStep == 1
+                                    ?
+                                    pageStep == 2
+                                        ?
+                                        () => setPageStep(1)
+                                        :
+                                        () => console.log('')
+                                    :
+                                    tabStep == 2
+                                        ?
+                                        pageStep == 2
+                                            ?
+                                            () => { setPageStep(1), setTabStep(1) }
+                                            :
+                                            () => setTabStep(1)
+                                        :
+                                        () => console.log('')
+                            }
                             className={tabStep == 1 ? "clientEventTabSelected flexr" : "clientEventTab flexr"}>
                             <p>Dashboard</p>
                         </div>
                         <div
-                            onClick={tabStep != 2 ? () => setTabStep(2) : () => console.log()}
+                            onClick={tabStep != 2 && pageStep != 2 ? () => setTabStep(2) : () => console.log()}
                             className={tabStep == 2 ? "clientEventTabSelected flexr" : "clientEventTab flexr"}>
                             <p>Turmas</p>
                         </div>
                     </div>
-                    {tabStep == 1 ?
-                        <div className="TurmaDash" style={{ marginTop: '40px' }}>
+                    {pageStep == 1 ?
+                        <>
+                            <div className="flex flex-row justify-between items-center searchTurmaDiv gap-2" style={{ marginTop: '20px' }}>
+                                <div className="flex flex-row justify-start items-center searchTurmaDiv gap-3" >
+                                    <p htmlFor="dataInicio" style={{ whiteSpace: 'nowrap' }}>Buscar Turma: </p>
+                                    <input
+                                        onChange={(e) => setNameFilter(e.target.value)}
+                                        value={namefilter}
+                                        style={{ maxHeight: '30px' }}
+                                        type="text" id="nomeTurma"
+                                        className="inputClientEventStyleName px-2"
 
-                            {!!data && data?.map((e, y) => {
-                                return (
-                                    <div key={y} className="TurmaCard flexc">
-                                        <h1>{!!e.name && e.name}</h1>
-                                        <div className="clientListDashMain flexc">
-                                            <div className="clientListDash flexr">
-                                                <h2 className="clientedashBigLi">Tipo da entrada</h2>
-                                                <h2 className="clientedashLitLi">Ausentes</h2>
-                                                <h2 className="clientedashLitLi">Presentes</h2>
-                                                <h2 className="clientedashLitLi">Total</h2>
-                                            </div>
-                                            <Separator color={"#BEBEBE"} width="100%" height="1px"></Separator>
-                                            <div className="clientListOver flexc">
-                                                {e.types?.map((x, z) => {
-                                                    return (
-                                                        <>
-                                                            <div className="clientListDash flexr">
-                                                                <h2 className="clientedashBigLi"
-                                                                    style={{
-                                                                        backgroundColor: colors[z % colors.length],
-                                                                        color: '#ffffff',
-                                                                        fontWeight: '600'
-                                                                    }}>{x.description}</h2>
-                                                                <h2 className="clientedashLitLi">{x.ausente}</h2>
-                                                                <h2 className="clientedashLitLi">{x.presente}</h2>
-                                                                <h2 className="clientedashLitLi">{x.total}</h2>
-                                                            </div>
-                                                            <Separator color={"#BEBEBE"} width="100%" height="1px"></Separator>
-
-                                                        </>
-                                                    )
-                                                }
-                                                )
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-
-                        </div>
-                        : tabStep == 2 &&
-                        <div className="TurmaList flexc gap-4" style={{ justifyContent: 'center', alignItems: 'flex-start', marginTop: '60px' }}>
-
-                            <div className="clientListTitle flexr">
-                                <h2 className="eventNameLi">Nome da Turma</h2>
-                                <h2 className="clienteTypeLi" style={{ textAlign: 'start' }}>Formandos</h2>
+                                    />
+                                </div>
+                                {!!turmaCopy && turmaCopy?.length > 0 &&
+                                    <button
+                                        onClick={(e) => toOpenTurma(e)}
+                                        style={{ maxHeight: '30px', whiteSpace: 'nowrap', fontSize: '13px', width: 'auto' }}
+                                        className="btnBlueThird flexr newEventBtn gap-4">CRIAR TURMA
+                                    </button>
+                                }
+                                {!!data &&
+                                    <button
+                                        onClick={() => jsonToExcel(data)}
+                                        disabled={isLoading}
+                                        style={{ maxHeight: '30px', whiteSpace: 'nowrap', border: 'none', fontSize: '13px', width: '120px' }}
+                                        className="TurmaDashButton btnBlue">
+                                        {!!isLoading ? <Loader></Loader> : 'BAIXAR'}
+                                    </button>
+                                }
                             </div>
+                            {tabStep == 1 ?
+                                <div className="TurmaDash" style={{ marginTop: '20px' }}>
 
-                            {isFetching == true
-                                ?
-                                <div style={{ width: '100%' }} className="flexc"><Loader></Loader></div>
-                                :
+                                    {!!data && data?.map((e, y) => {
+                                        return (
+                                            <div
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={(event) => goView(event, e.id)}
+                                                key={y} className="TurmaCard flexc">
+                                                <h1>{!!e.name && e.name}</h1>
+                                                <div className="clientListDashMain flexc">
+                                                    <div className="clientListDash flexr">
+                                                        <h2 className="clientedashBigLi">Tipo da entrada</h2>
+                                                        <h2 className="clientedashLitLi">Ausentes</h2>
+                                                        <h2 className="clientedashLitLi">Presentes</h2>
+                                                        <h2 className="clientedashLitLi">Total</h2>
+                                                    </div>
+                                                    <Separator color={"#BEBEBE"} width="100%" height="1px"></Separator>
+                                                    <div className="clientListOver flexc">
+                                                        {e.types?.map((x, z) => {
+                                                            return (
+                                                                <>
+                                                                    <div className="clientListDash flexr">
+                                                                        <h2 className="clientedashBigLi"
+                                                                            style={{
+                                                                                backgroundColor: colors[z % colors.length],
+                                                                                color: '#ffffff',
+                                                                                fontWeight: '600'
+                                                                            }}>{x.description}</h2>
+                                                                        <h2 className="clientedashLitLi">{x.ausente}</h2>
+                                                                        <h2 className="clientedashLitLi">{x.presente}</h2>
+                                                                        <h2 className="clientedashLitLi">{x.total}</h2>
+                                                                    </div>
+                                                                    <Separator color={"#BEBEBE"} width="100%" height="1px"></Separator>
 
-
-                                turma.map((e, y) => {
-                                    return (
-                                        <div
-                                            onClick={(event) => goView(event, e.id)}
-                                            key={y} className="clienteLine flexr">
-                                            <p className="eventNameLi">{e.name}</p>
-                                            <p className="clienteTypeLi" style={{ textAlign: 'start' }}>{e.totalMainGuests}</p>
-                                            <div className="turmaSpacator"></div>
-                                            <div className="userConfigbtns flexr">
-                                                <div
-                                                    onClick={(event) => toEditTurma(event, e.id, e.name)}
-                                                    className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
-                                                <div
-                                                    onClick={(event) => openDeleteModal(event, e.id)}
-                                                    className="userConfigbtn flexr">
-                                                    <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                                                                </>
+                                                            )
+                                                        }
+                                                        )
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    )
-                                })
+                                        )
+                                    })}
+
+                                </div>
+                                : tabStep == 2 &&
+                                <div className="TurmaList flexc gap-4" style={{ justifyContent: 'center', alignItems: 'flex-start', marginTop: '60px' }}>
+
+                                    <div className="clientListTitle flexr">
+                                        <h2 className="eventNameLi">Nome da Turma</h2>
+                                        <h2 className="clienteTypeLi" style={{ textAlign: 'start' }}>Formandos</h2>
+                                    </div>
+
+                                    {isFetching == true
+                                        ?
+                                        <div style={{ width: '100%' }} className="flexc"><Loader></Loader></div>
+                                        :
+
+
+                                        turma.map((e, y) => {
+                                            return (
+                                                <div
+                                                    onClick={(event) => goView(event, e.id)}
+                                                    key={y} className="clienteLine flexr">
+                                                    <p className="eventNameLi">{e.name}</p>
+                                                    <p className="clienteTypeLi" style={{ textAlign: 'start' }}>{e.totalMainGuests}</p>
+                                                    <div className="turmaSpacator"></div>
+                                                    <div className="userConfigbtns flexr">
+                                                        <div
+                                                            onClick={(event) => toEditTurma(event, e.id, e.name)}
+                                                            className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon></div>
+                                                        <div
+                                                            onClick={(event) => openDeleteModal(event, e.id)}
+                                                            className="userConfigbtn flexr">
+                                                            <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
                             }
-                        </div>
+                        </>
+                        :
+                        <>
+                            <div className="flex flex-row justify-between items-center searchTurmaDiv gap-2" style={{ marginTop: '20px' }}>
+                                <div className="flex flex-row justify-start items-center searchTurmaDiv gap-3" >
+                                    <p htmlFor="dataInicio" style={{ whiteSpace: 'nowrap' }}>Buscar Formando: </p>
+                                    <input
+                                        onChange={(e) => setGuestFilter(e.target.value)}
+                                        value={guestfilter}
+                                        style={{ maxHeight: '30px' }}
+                                        type="text" id="nomeTurma"
+                                        className="inputClientEventStyleName px-2"
+
+                                    />
+                                </div>
+                                {!!turmaCopy && turmaCopy?.length > 0 &&
+                                    <button
+                                        onClick={(e) => toAddGuest(e)}
+                                        style={{ maxHeight: '30px', whiteSpace: 'nowrap', fontSize: '13px', width: 'auto' }}
+                                        className="btnBlueThird flexr newEventBtn gap-4">NOVO FORMANDO
+                                    </button>
+                                }
+                                {!!data &&
+                                    <button
+                                        onClick={(e) => openUploadModal(e)}
+                                        disabled={isLoading}
+                                        style={{ maxHeight: '30px', whiteSpace: 'nowrap', border: 'none', fontSize: '13px', width: '120px' }}
+                                        className="TurmaDashButton btnDisabled">
+                                        {!!isLoading ? <Loader></Loader> : 'IMPORTAR'}
+                                    </button>
+                                }
+                            </div>
+                            <div className="turmasSitemap flex flex-row justify-start gap-2 items-center my-6">
+                                <h6 onClick={(e) => backView(e)}>Turmas</h6>
+                                <FaLongArrowAltRight />
+                                <p>Editar Turma</p>
+                            </div>
+
+                            <div className="TurmaList flexc gap-4" style={{ justifyContent: 'center', alignItems: 'flex-start', marginTop: '20px' }}>
+
+                                <div className="clientListTitle flexr" style={{ overflowX: 'auto', overflowY: 'hidden' }}>
+                                    <h2 className="clienteNameLi">Nome</h2>
+                                    <h2 className="clientePhoneLi" style={{ textAlign: 'start' }}>Telefone</h2>
+                                    {!!turmaGuest && turmaGuest.length > 0 && turmaGuest[0].guestsTicketsTypeNumber?.map((e, y) => {
+                                        return (
+                                            <h2 key={y} className="clientePhoneLi" style={{ textAlign: 'center' }}>{e.tycketsType?.description}</h2>
+                                        )
+                                    })}
+                                </div>
+
+                                {isFetching == true
+                                    ?
+                                    <div style={{ width: '100%' }} className="flexc"><Loader></Loader></div>
+                                    :
+
+
+                                    !!turmaGuest && turmaGuest.map((e, y) => {
+                                        console.log(e)
+                                        return (
+                                            <>
+                                                <div
+                                                    style={{ overflowX: 'auto', overflowY: 'hidden', }}
+                                                    onClick={(event) => goView(event, e.id)}
+                                                    key={y} className="guestLine flex flex-row justify-between items-center"
+                                                >
+                                                    <div className=' flexr'>
+                                                        <p className="clienteNameLi" style={{ fontWeight: 600, color: '#000000' }}>{e.name}</p>
+                                                        <p className="clientePhoneLi" style={{ textAlign: 'start' }}>{e.phone}</p>
+                                                        {e.guestsTicketsTypeNumber?.map((e, y) => {
+                                                            return (
+                                                                <p key={y} className="clientePhoneLi" style={{ textAlign: 'center' }}>{e.number}</p>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                    <div className="userConfigbtns flexr" style={{ gap: '5px', width: 'auto' }}>
+                                                        <Tooltip title="Encaminhar Ingresso por E-mail">
+                                                            <div
+                                                                onClick={(event) => openSendModal(event)}
+                                                                className="userConfigbtn flexr"><ReplyIcon className="userConfigIcon"></ReplyIcon></div>
+                                                        </Tooltip>
+                                                        <Tooltip title="Adicionar mais Convites">
+                                                            <div
+                                                                onClick={(event) => openInvitesAdddModal(event)}
+                                                                className="userConfigbtn flexr"><AddIcon className="userConfigIcon"></AddIcon></div>
+                                                        </Tooltip>
+                                                        <Tooltip title="Histórico de Tranferências">
+                                                            <div
+                                                                onClick={(event) => openTransferModal(event, e.id)}
+                                                                className="userConfigbtn flexr"><TransformIcon className="userConfigIcon"></TransformIcon></div>
+                                                        </Tooltip>
+                                                        <Tooltip title="Editar Formando">
+                                                            <div
+                                                                onClick={(event) => toEditGuest(event, e.id, e.name)}
+                                                                className="userConfigbtn flexr"><EditIcon className="userConfigIcon"></EditIcon>
+                                                            </div>
+                                                        </Tooltip>
+                                                        <Tooltip title="Deletar Formando">
+                                                            <div
+                                                                onClick={(event) => openDeleteGuestModal(event, e.id)}
+                                                                className="userConfigbtn flexr">
+                                                                <DeleteIcon className="userConfigIcon"></DeleteIcon>
+                                                            </div>
+                                                        </Tooltip>
+                                                    </div>
+                                                </div>
+                                                {
+                                                    e.other_guests?.length > 0
+                                                    &&
+                                                    e.other_guests?.map((j, w) => {
+                                                        return (
+                                                            <div className="clienteOtherLine flexr gap-5" style={w == e.other_guests?.length - 1 ? { marginBottom: '10px' } : { marginBottom: '0px' }}>
+                                                                <h6 className="clienteTypeLi">Convidado <span>{w + 1 < 10 ? `0${w + 1}` : w + 1}</span></h6>
+                                                                <h6 className="clienteNameLi">Nome: <span>{!!j.name ? j.name : "Não preencheu"}</span></h6>
+                                                                <h6 className="clienteTypeLi">Ingresso: <span>{!!j.tycketsType?.description ? j.tycketsType?.description : "Não preencheu"}</span></h6>
+                                                            </div >
+                                                        )
+                                                    })
+                                                }
+                                            </>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </>
                     }
                 </div>
                 :
+
+                // ******************* SEM TURMA
                 <div className="margin5percent flexc">
                     <div className="eventsBoxWhite flexc gap-6" style={{ position: 'relative', boxShadow: 'var(shad-ligth)' }}>
                         <div className="noEventsIcon flexr" >
@@ -487,6 +885,6 @@ export default function Turmas() {
                     </div>
                 </div>
             }
-        </div>
+        </div >
     );
 }

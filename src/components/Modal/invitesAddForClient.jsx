@@ -48,7 +48,7 @@ export default function InvitesAddModal({ close, id }) {
                 <div className="userAdminDoubleInputs flexc" style={{ gap: "10px" }}>
                     <h2
                         style={{ marginBottom: "30px" }}
-                    >Histórico de Transferências</h2>
+                    >Adicionar Mais Convites</h2>
 
                     <div
                         onClick={(e) => e.stopPropagation()}

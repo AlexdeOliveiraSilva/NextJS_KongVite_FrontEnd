@@ -261,6 +261,7 @@ export default function GuestAdd() {
 
   function closeSendModal() {
     setSendModalIsOpen(false);
+    router.push('/cliente/turmas/')
   }
 
 

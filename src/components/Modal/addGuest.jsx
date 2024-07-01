@@ -44,7 +44,7 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
                     },
                     body: JSON.stringify({
                         name: name,
-                        document: document,
+                        // document: document,
                         phone: phone,
                         email: email,
                         tycketsTypeId: selfPass
@@ -96,7 +96,7 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
                     body: JSON.stringify({
                         id: guestData?.id,
                         name: name,
-                        document: document,
+                        // document: document,
                         phone: phone,
                         email: email,
                         tycketsTypeId: selfPass
@@ -146,7 +146,7 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
 
 
         setName(!!guestData?.name ? guestData?.name : "")
-        setDocument(!!guestData?.document ? guestData?.document : "")
+        // setDocument(!!guestData?.document ? guestData?.document : "")
         setPhone(!!guestData?.phone ? guestData?.phone : "")
         setEmail(!!guestData?.email ? guestData?.email : "")
         setSelfPass(!!guestData?.tycketsType?.id ? guestData?.tycketsType?.id : "");
@@ -174,14 +174,14 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
                         id="outlined-size-normal"
                         placeholder={`Digite o Nome:'`}
                         type="text" />
-                    <TextField
+                    {/* <TextField
                         onChange={(e) => setDocument(e.target.value)}
                         className="inputStyle"
                         label={!!document ? '' : "Documento"}
                         value={document}
                         id="outlined-size-normal"
                         placeholder={`Digite o Documento:'`}
-                        type="text" />
+                        type="text" /> */}
                     <div className="userAdminDoubleInputs flexr">
                         <TextField
                             onChange={(e) => setPhone(e.target.value)}

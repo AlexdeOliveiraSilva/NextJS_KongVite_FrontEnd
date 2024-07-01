@@ -214,7 +214,7 @@ export default function EventsEdit() {
       }
     }
   }
-  console.log(date)
+
 
   async function addPassTypes(jwt, event, data) {
 
