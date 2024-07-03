@@ -7,13 +7,7 @@ import Separator from "@/components/fragments/separatorLine";
 import Loader from "@/components/fragments/loader";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import CloseIcon from '@mui/icons-material/Close';
-import Galery from "@/components/Modal/galery";
+import { FaLongArrowAltRight } from "react-icons/fa";
 import ImageModal from "@/components/Modal/imageModal";
 import { TiPlus } from "react-icons/ti";
 import { FaImage } from "react-icons/fa";
@@ -330,7 +324,13 @@ export default function EventsAdd() {
 
         <div className="margin5percent" style={{ position: 'relative' }}>
           <div className="newTopSitemap flexc" style={{ alignItems: 'flex-start' }}>
-            <h1 style={{ fontWeight: 600, marginRight: 10 }}>Novo Evento</h1>
+            <h1 className=" flexr gap-2" style={{ fontWeight: 600, marginRight: 10 }}>
+              <a
+                href="/cliente/eventos/"
+                style={{ cursor: 'pointer' }}>Eventos</a>
+              <FaLongArrowAltRight />
+              <span >Adicionar Evento</span>
+            </h1>
             <p>Crie um evento para poder fazer as distribuições de seus ingressos de uma maneira descomplicada.</p>
           </div>
 

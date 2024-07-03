@@ -17,7 +17,6 @@ import { TiPlus } from "react-icons/ti";
 import Separator from "@/components/fragments/separatorLine";
 import * as XLSX from 'xlsx';
 import { FaLongArrowAltRight } from "react-icons/fa";
-
 import SendInviteModal from "@/components/Modal/sendInvites";
 import TransferHistoric from "@/components/Modal/transferHistoric";
 import InvitesAddModal from "@/components/Modal/invitesAddForClient";
@@ -550,7 +549,12 @@ export default function Turmas() {
             {deleteGuestModalIsOpen == true && <DeletModal close={() => closeDeleteGuestModal()} func={() => deleteGuest()} word="confirmar" ></DeletModal>}
             <div className="margin5percent" style={{ position: 'relative' }}>
                 <div className="newTopSitemap flexr">
-                    <h1 style={{ fontWeight: 600, marginRight: 10 }}>Evento</h1>
+                    <h1 className=" flexr gap-2" style={{ fontWeight: 600, marginRight: 10 }}>
+                        <a
+                            href="/cliente/eventos/"
+                            style={{ cursor: 'pointer' }}>Eventos</a>
+                        <FaLongArrowAltRight />
+                        <span >Turmas</span></h1>
 
                 </div>
             </div>
