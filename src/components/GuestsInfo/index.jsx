@@ -148,7 +148,7 @@ export default function GuestInfo({ data, setGuestDeleteId, setDeleteGuestModalI
                     <div className="GuestInsideColuns">
                         <p className="firstChild">Ingresso</p>
                         <p className="secondChild">Nome</p>
-                        <p className="trhirdChild">Confirmação</p>
+                        <p className="trhirdChild">Status</p>
                         <p className="lastChild"></p>
                     </div>
                     <Separator width={'100%'} height={"1px"} color={"#71798639"}></Separator>
@@ -166,8 +166,8 @@ export default function GuestInfo({ data, setGuestDeleteId, setDeleteGuestModalI
                                     </div>
                                     <div className="trhirdChild flexr">
                                         {e.status === 'AUSENTE' ?
-                                            <IoMdCloseCircleOutline size={30} color="#71798691" />
-                                            : <IoIosCheckmarkCircleOutline size={30} color="var(--blue-third)" />
+                                            "Ausente"
+                                            : "Presente"
                                         }
                                     </div>
                                     <div className="lastChild flexr">
