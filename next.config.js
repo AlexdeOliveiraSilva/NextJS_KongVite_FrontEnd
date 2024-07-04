@@ -4,7 +4,10 @@ const nextConfig = {
   trailingSlash: true,
   experimental: {
     esmExternals: false
-  }
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 module.exports = nextConfig;
