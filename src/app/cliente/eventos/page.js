@@ -358,7 +358,7 @@ export default function Eventos() {
 
                       <p className="clienteTypeLi">{e.type}</p>
 
-                      <p className="clienteAvaibleLi">{e.totalAvaliable - e.totalUsed}/{e.totalAvaliable}</p>
+                      <p className="clienteAvaibleLi">{e.totalUsed}/{e.totalAvaliable}</p>
 
 
                       <p className="eventDateLi">{dateConvert(e.date)}</p>
