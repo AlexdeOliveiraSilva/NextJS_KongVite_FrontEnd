@@ -174,7 +174,7 @@ export default function EventsAdd() {
 
         console.log('**********', {
           name: name,
-          date: date,
+          date: combineDateTime(),
           address: address,
           place: place,
           zipcode: zipcode,
@@ -194,7 +194,7 @@ export default function EventsAdd() {
           },
           body: JSON.stringify({
             name: name,
-            date: date,
+            date: combineDateTime(),
             address: address,
             place: place,
             zipcode: zipcode,
@@ -241,7 +241,7 @@ export default function EventsAdd() {
   async function addPassTypes(jwt, event, data) {
     if (!!jwt && !!event && !!data) {
       try {
-        x = await (await fetch(`${KONG_URL}/companys/tycketsType/`, {
+        let x = await (await fetch(`${KONG_URL}/companys/tycketsType/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -256,6 +256,7 @@ export default function EventsAdd() {
 
         return x
       } catch (error) {
+        console.log("Error ao cadastro de tipo de ingresso", error)
         toast.error(`Erro ao Cadastrar Tipo de Ingresso ${data.name}, tente novamente.`, {
           position: "top-right"
         });
