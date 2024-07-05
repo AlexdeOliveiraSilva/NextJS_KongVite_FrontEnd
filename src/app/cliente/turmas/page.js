@@ -628,8 +628,13 @@ export default function Turmas() {
                             className={tabStep == 2 ? "clientEventTabSelected flexr" : "clientEventTab flexr"}>
                             <p>Turmas</p>
                         </div>
+                        <div
+                            onClick={tabStep != 3 && pageStep != 3 ? () => setTabStep(3) : () => console.log()}
+                            className={tabStep == 3 ? "clientEventTabSelected flexr" : "clientEventTab flexr"}>
+                            <p>Usuários</p>
+                        </div>
                     </div>
-                    {pageStep == 1 ?
+                    {pageStep == 1 && tabStep != 3 &&
                         <>
                             <div className="flex flex-row justify-between items-center searchTurmaDiv gap-2" style={{ marginTop: '20px' }}>
                                 <div className="flex flex-row justify-start items-center searchTurmaDiv gap-3" >
@@ -746,7 +751,8 @@ export default function Turmas() {
                                 </div>
                             }
                         </>
-                        :
+                    }
+                    {pageStep == 2 &&
                         <>
                             <div className="flex flex-row justify-between items-center searchTurmaDiv gap-2" style={{ marginTop: '20px' }}>
                                 <div className="flex flex-row justify-start items-center searchTurmaDiv gap-3" >
@@ -870,6 +876,17 @@ export default function Turmas() {
                             </div>
                         </>
                     }
+
+                    {pageStep == 3 &&
+                        <>
+
+
+
+
+                        </>
+                    }
+
+
                 </div>
                 :
 
