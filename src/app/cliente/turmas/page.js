@@ -285,6 +285,39 @@ export default function Turmas() {
         setIsLoading(false)
         getUserTurmas()
     }
+
+    async function deleteUser() {
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
+        let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
+        setIsLoading(true)
+        let res = await fetch(`${KONG_URL}/companys/userTurmas/${eventId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            },
+            body: JSON.stringify({ situation: 2, id: idUser })
+        })
+
+        if (res.status !== 200) {
+            let x = await res.json()
+            toast.error(`${x?.message}`, {
+                position: "top-right"
+            });
+        } else {
+            toast.success("Usuário deletado com sucesso.", {
+                position: "top-right"
+            });
+            setIdUser(null)
+            setNameUser(null)
+            setPasswordUser(null)
+            setAddUser(false)
+        }
+
+        setIsLoading(false)
+        getUserTurmas()
+    }
+
     function openDeleteModal(e, id) {
         e.preventDefault();
         e.stopPropagation();
@@ -956,11 +989,19 @@ export default function Turmas() {
                                     />
                                 </div>
                                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly", marginTop: 10, }}>
+                                    {idUser &&
+                                        <button
+                                            onClick={(e) => { deleteUser() }}
+                                            style={{ maxHeight: '30px', whiteSpace: 'nowrap', fontSize: '13px', width: 'auto' }}
+                                            className="btnBlue flexr newEventBtn gap-4">Apagar
+                                        </button>
+                                    }
                                     <button
                                         onClick={(e) => { setIdUser(null); setAddUser(false); setNameUser(""); setPasswordUser("") }}
                                         style={{ maxHeight: '30px', whiteSpace: 'nowrap', fontSize: '13px', width: 'auto' }}
                                         className="btnOrange flexr newEventBtn gap-4">Cancelar
                                     </button>
+
                                     <button
                                         onClick={(e) => { saveNewUser() }}
                                         style={{ maxHeight: '30px', whiteSpace: 'nowrap', fontSize: '13px', width: 'auto' }}
