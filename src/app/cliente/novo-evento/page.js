@@ -15,7 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function EventsAdd() {
   const router = useRouter();
-  const { KONG_URL, user, eventsType, eventsSubType } = useContext(GlobalContext);
+  const { KONG_URL, user, eventsType, eventsSubType, sendtos3 } = useContext(GlobalContext);
   const [name, setName] = useState();
   const [date, setDate] = useState();
   const [onlyDate, setOnlyDate] = useState();
@@ -47,6 +47,10 @@ export default function EventsAdd() {
   const [isFileUploading, setisFileUploading] = useState(false);
   const [galeryOpen, setGaleryOpen] = useState(false);
   const [imageToShow, setImageToShow] = useState("");
+
+  const [imageStack, setImageStack] = useState(false);
+  const [typeStack, setTypeStack] = useState("");
+
 
   const colors = [
     '#0B192E',
@@ -250,7 +254,7 @@ export default function EventsAdd() {
           body: JSON.stringify({
             description: data.name,
             eventsId: event,
-            image: ""
+            image: data.image
           })
         })).json()
 
@@ -264,14 +268,57 @@ export default function EventsAdd() {
     }
   }
 
-  const addPassType = (event) => {
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result.split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = (error) => {
+        reject('Erro ao converter arquivo para Base64: ' + error);
+      };
+    });
+  }
+
+  async function fileUpload(eventId) {
+    let response;
+    let x = await fileToBase64(imageStack);
+
+    if (!!imageStack && !!eventId && x != undefined) {
+      response = await sendtos3(eventId, 'png', x)
+
+      return response
+    } else {
+      console.log("elsee")
+    }
+
+  }
+
+
+  const addPassType = async (event) => {
     event.preventDefault();
+    let image = null;
+    if (!!imageStack) {
+      let res = await fileUpload((new Date()).getTime())
+
+      if (!!res?.fileUrl) {
+        setisFileUploading(true)
+        image = res?.fileUrl
+        setisFileUploading(false)
+      } else {
+        if (!res?.fileUrl) {
+          toast.error('Erro ao fazer upload da Imagem')
+        }
+      }
+    }
 
     console.log('aqqqqq')
 
     if (passTypeObject.name.length != 0 && passTypeObject.image.length != 0) {
       console.log('aqqqqq2222')
-      setPassType([...passType, passTypeObject]);
+      setPassType([...passType, { ...passTypeObject, image }]);
       console.log('aqqqqq3333')
       setPassTypeObject({ name: '', image: '' });
       console.log('aqqqqq44444')
@@ -512,8 +559,8 @@ export default function EventsAdd() {
                 <p>Arte do Ingresso</p>
                 <input
                   style={{ height: 'auto', backgroundColor: 'transparent', width: '100%' }}
-                  onChange={(e) => setPassTypeObject({ name: passTypeObject.name, image: e.target.files[0] })}
-                  value={passTypeObject.image[0]}
+                  onChange={(e) => { setImageStack(e.target.files[0]); setPassTypeObject({ name: passTypeObject.name, image: e.target.files[0] }) }}
+                  value={imageStack[0]}
                   type="file"
                 />
               </div>
