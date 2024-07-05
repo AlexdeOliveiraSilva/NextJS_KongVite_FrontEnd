@@ -418,7 +418,7 @@ export default function EventGuest() {
 
         <GuestInfo
 
-          data={!!myData ? [myData?.mainConvidado, ...myData?.acompanhantes] : null}
+          data={!!myData ? [{ ...myData?.mainConvidado, itsMe: true }, ...myData?.acompanhantes] : null}
           setGuestDeleteId={setGuestDeleteId}
           setDeleteGuestModalIsOpen={setDeleteGuestModalIsOpen}
           setGuestData={setGuestData}

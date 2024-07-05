@@ -179,17 +179,18 @@ export default function GuestInfo({ data, setGuestDeleteId, setDeleteGuestModalI
                                             :
                                             <Loader></Loader>
                                         }
-                                        {e.name != user.name &&
+                                        {!e.itsMe &&
                                             <>
                                                 <FaRegEdit
                                                     style={{ cursor: "pointer" }}
                                                     onClick={(event) => openEditGuest(event, e)}
                                                     size={30} color="#71798691" />
-
-                                                <RiDeleteBinLine
-                                                    style={{ cursor: "pointer" }}
-                                                    onClick={(event) => { openDeleteGuest(event, e.id) }}
-                                                    size={30} color="#71798691" />
+                                                {e.status !== "PRESENTE" &&
+                                                    <RiDeleteBinLine
+                                                        style={{ cursor: "pointer" }}
+                                                        onClick={(event) => { openDeleteGuest(event, e.id) }}
+                                                        size={30} color="#71798691" />
+                                                }
                                             </>
                                         }
                                     </div>
