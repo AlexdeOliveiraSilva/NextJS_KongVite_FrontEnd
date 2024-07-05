@@ -64,6 +64,12 @@ export default function Turmas() {
     const [guestfilter, setGuestFilter] = useState("");
     const [turmaGuestCopy, setTurmaGuestCopy] = useState();
     const [transferHistoricId, setTranferHistoricId] = useState();
+    const [addUser, setAddUser] = useState(false)
+    const [nameUser, setNameUser] = useState("")
+    const [passwordUser, setPasswordUser] = useState("")
+    const [idUser, setIdUser] = useState(null)
+
+    const [usersEvent, setUsersEvent] = useState([])
 
     function toOpenTurma(e) {
         e.preventDefault();
@@ -227,6 +233,58 @@ export default function Turmas() {
         }
     }
 
+    async function getUserTurmas() {
+        setIsLoading(true)
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
+        let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
+
+        setUsersEvent(await (await fetch(`${KONG_URL}/companys/userTurmas/${eventId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        })).json())
+        setIsLoading(false)
+
+    }
+    async function saveNewUser() {
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
+        let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
+        setIsLoading(true)
+        let body = {
+            id: idUser ? idUser : undefined,
+            name: nameUser,
+            email: nameUser,
+            password: passwordUser ? passwordUser : undefined
+        }
+        let res = await fetch(`${KONG_URL}/companys/userTurmas/${eventId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            },
+            body: JSON.stringify(body)
+        })
+
+        if (res.status !== 200) {
+            let x = await res.json()
+            toast.error(`${x?.message}`, {
+                position: "top-right"
+            });
+        } else {
+            toast.success("Usuário deletado com sucesso.", {
+                position: "top-right"
+            });
+            setIdUser(null)
+            setNameUser(null)
+            setPasswordUser(null)
+            setAddUser(false)
+        }
+
+        setIsLoading(false)
+        getUserTurmas()
+    }
     function openDeleteModal(e, id) {
         e.preventDefault();
         e.stopPropagation();
@@ -629,7 +687,7 @@ export default function Turmas() {
                             <p>Turmas</p>
                         </div>
                         <div
-                            onClick={tabStep != 3 && pageStep != 3 ? () => setTabStep(3) : () => console.log()}
+                            onClick={tabStep != 3 && pageStep != 3 ? () => { setTabStep(3); getUserTurmas() } : () => console.log()}
                             className={tabStep == 3 ? "clientEventTabSelected flexr" : "clientEventTab flexr"}>
                             <p>Usuários</p>
                         </div>
@@ -877,13 +935,69 @@ export default function Turmas() {
                         </>
                     }
 
-                    {pageStep == 3 &&
-                        <>
+                    {tabStep == 3 &&
+                        <div style={{ marginTop: '20px', flexDirection: "column" }}>
+
+                            {addUser && <div style={{ display: "flex", flexDirection: "column", borderStyle: 'solid', borderWidth: 1, borderRadius: 10, padding: 10, }}>
+                                <div style={{ display: "flex", flexDirection: "column", marginBottom: 10, }}>
+                                    <label>Nome</label>
+                                    <input type="text"
+                                        style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 3, paddingTop: 3 }}
+                                        value={nameUser}
+                                        onChange={(e) => setNameUser(e.target.value)}
+                                    />
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                    <label>Senha</label>
+                                    <input type="password"
+                                        style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 3, paddingTop: 3 }}
+                                        value={passwordUser}
+                                        onChange={(e) => setPasswordUser(e.target.value)}
+                                    />
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly", marginTop: 10, }}>
+                                    <button
+                                        onClick={(e) => { setIdUser(null); setAddUser(false); setNameUser(""); setPasswordUser("") }}
+                                        style={{ maxHeight: '30px', whiteSpace: 'nowrap', fontSize: '13px', width: 'auto' }}
+                                        className="btnOrange flexr newEventBtn gap-4">Cancelar
+                                    </button>
+                                    <button
+                                        onClick={(e) => { saveNewUser() }}
+                                        style={{ maxHeight: '30px', whiteSpace: 'nowrap', fontSize: '13px', width: 'auto' }}
+                                        className="btnBlueThird flexr newEventBtn gap-4">Salvar
+                                    </button>
+                                </div>
+                            </div>
+                            }
 
 
+                            {!addUser && <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <button
+                                    onClick={(e) => { setAddUser(true) }}
+                                    style={{ maxHeight: '30px', whiteSpace: 'nowrap', fontSize: '13px', width: 'auto' }}
+                                    className="btnBlueThird flexr newEventBtn gap-4">Adicionar Usuário
+                                </button>
+                            </div>}
 
-
-                        </>
+                            <div className="clientListTitle flexr" style={{ marginTop: 16, flexDirection: "column" }}>
+                                <div className="clientListTitle flexr">
+                                    <h2 className="eventNameLi">Id</h2>
+                                    <h2 className="clienteTypeLi" style={{ textAlign: 'start' }}>Usuário</h2>
+                                </div>
+                                {isLoading && <div style={{ width: '100%' }} className="flexc"><Loader></Loader></div>}
+                                {usersEvent.map((e, y) => {
+                                    return (
+                                        <div
+                                            onClick={() => { setIdUser(e.id); setNameUser(e.name); setAddUser(true); }}
+                                            key={y} className="clienteLine flexr">
+                                            <p className="eventNameLi">{e.id}</p>
+                                            <p className="clienteTypeLi" style={{ textAlign: 'start' }}>{e.name}</p>
+                                        </div>
+                                    )
+                                })
+                                }
+                            </div>
+                        </div>
                     }
 
 
