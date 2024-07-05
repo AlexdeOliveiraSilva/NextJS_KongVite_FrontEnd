@@ -171,10 +171,10 @@ export default function NewTopBar() {
     return (
         <div className="newTopMain flexr">
             {eventChoiceModal == true && <GetEventGuest close={() => closeGuestModalF()} seteffect={(e) => { e.preventDefault(); doRefresh() }}></GetEventGuest>}
-            <div className="newTopMail flexr">
+            {/* <div className="newTopMail flexr">
                 <div className="newTopMailAcent flexr">1</div>
                 <GoMail size={18} color="var(--white-primary)" />
-            </div>
+            </div> */}
             <Separator width={'1px'} height={'100%'} color={'#DFE0E6'} />
             <div
                 onClick={(e) => {
