@@ -256,9 +256,9 @@ export default function NewClientTopBar() {
 
             <TotalInvites invites={inviteslaking}></TotalInvites>
             <div className="newTopUserBox flexr">
-                <div className="newTopInvites flexr">
+                {/* <div className="newTopInvites flexr">
                     <LuPlus size={18} color="var(--blue-primary)" />
-                </div>
+                </div> */}
                 <Separator width={'1px'} height={'30px'} color={'#DFE0E6'} />
                 <div
                     onClick={(e) => {
