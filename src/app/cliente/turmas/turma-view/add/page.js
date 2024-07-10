@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import SendInviteModal from "@/components/Modal/sendInvites";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 export default function GuestAdd() {
   const router = useRouter();
@@ -271,8 +272,14 @@ export default function GuestAdd() {
       {sendModalIsOpen == true && <SendInviteModal close={() => closeSendModal()} isAdd={true}></SendInviteModal>}
       <div className="adminUsersContent flexc">
         <div className="adminUsersHeader flexr">
-          <div className="adminUsersTitle flexr">
-            <h1>Novo Formando</h1>
+          <div className="newTopSitemap flexr">
+            <h1 className=" flexr gap-2" style={{ fontWeight: 600, marginRight: 10 }}>
+              <a
+                href="/cliente/turmas/"
+                style={{ cursor: 'pointer' }}>Turmas</a>
+              <FaLongArrowAltRight />
+              <span >Adicionar Formando</span></h1>
+
           </div>
           <div className="adminUsersAdd flexr">
             <button
