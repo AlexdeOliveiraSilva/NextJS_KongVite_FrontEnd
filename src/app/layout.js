@@ -24,6 +24,6 @@ export default function Layout({ children }) {
 }
 
 export const metadata = {
-  title: "Kong Vite App",
-  description: "That's a next app created for Kong Vite.",
+  title: "KongVite",
+  description: "Gestão de Eventos Simplificada e Eficiente",
 };

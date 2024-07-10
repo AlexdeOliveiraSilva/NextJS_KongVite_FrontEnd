@@ -53,8 +53,8 @@ export default function EventGuest() {
   const [guestData, setGuestData] = useState();
   const [guestDeleteId, setGuestDeleteId] = useState();
   const [guestEditName, setGuestEditName] = useState();
-  const [typesData, setTypesData] = useState([]),
-    [totalInvites, setTotalInvites] = useState(0);
+  const [typesData, setTypesData] = useState([]);
+  const [totalInvites, setTotalInvites] = useState("-");
 
   const [newPasswordModal, setNewpasswordModal] = useState(false);
 
@@ -95,12 +95,10 @@ export default function EventGuest() {
   }
 
   async function getAllData() {
-
+    setIsLoading(true)
     let x;
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
-
     if (!!myId) {
-
       try {
         x = await (await fetch(`${KONG_URL}/student/${myId}`, {
           method: 'GET',
@@ -109,21 +107,18 @@ export default function EventGuest() {
             'Authorization': jwt
           }
         })).json()
-
-
         if (!x.message) {
           setMyData(x)
-          return ""
+          setTotalInvites(x.mainConvidado.guestsTicketsTypeNumber.reduce(p, c => {
+            console.log(c.available)
+            return p + c.available
+          }, 0))
         }
 
       } catch (error) {
-
-        return ""
       }
-    } else {
-
-      return ""
     }
+    setIsLoading(false)
   }
 
 
@@ -259,7 +254,6 @@ export default function EventGuest() {
 
 
   function setInvitesOpenModal() {
-
     setInvitesOpen(true)
   }
   function setInvitesCloseModal() {
@@ -302,9 +296,9 @@ export default function EventGuest() {
 
   }, [myId])
 
-  useEffect(() => {
-    setGuestData('')
-  }, [])
+  // useEffect(() => {
+  //   setGuestData('')
+  // }, [])
 
   function formatDateToInput(dataString) {
     return moment(dataString).utc().format("DD/MM/YYYY");
@@ -315,9 +309,10 @@ export default function EventGuest() {
   }
 
   function f5() {
-    if (!!window) {
-      window.location.reload();
-    }
+    // if (!!window) {
+    //   window.location.reload();
+    // }
+    getAllData()
   }
 
   const textTeste = [
@@ -358,23 +353,13 @@ export default function EventGuest() {
   }, [])
 
 
-  useEffect(() => {
-
-    setTimeout(() => {
-      let x = 0;
 
 
-      !!myData && myData?.mainConvidado?.guestsTicketsTypeNumber.map((e) => {
-        if (e.available > 0) {
-          x = (+x + +e.available)
-        }
-      })
-
-      setTotalInvites(x)
-    }, 1000)
-
-  }, [typesData, myData])
-
+  if (isLoading) {
+    <div className="clientEventMain flexc" >
+      <Loader />
+    </div>
+  }
 
   return (
     <div className="clientEventMain flexc" >
@@ -399,9 +384,8 @@ export default function EventGuest() {
         place={eventPlace}
         invites={totalInvites}
         date={date} hour={hour}
-        tickets={!!myData ? myData?.mainConvidado?.guestsTicketsTypeNumber : []}>
+        tickets={!!myData ? myData?.mainConvidado?.guestsTicketsTypeNumber : []} />
 
-      </ClientInfo>
 
       <div className="margin5percent flexc" style={{ width: '100%', justifyContent: "flex-start", alignItems: "flex-start" }}>
         <button className="btnBlueThird flexr"
@@ -417,14 +401,13 @@ export default function EventGuest() {
         </button>
 
         <GuestInfo
-
           data={!!myData ? [{ ...myData?.mainConvidado, itsMe: true }, ...myData?.acompanhantes] : null}
           setGuestDeleteId={setGuestDeleteId}
           setDeleteGuestModalIsOpen={setDeleteGuestModalIsOpen}
           setGuestData={setGuestData}
           setAddGuestModalIsOpen={setAddGuestModalIsOpen}
           setNewpasswordModal={setNewpasswordModal}
-        ></GuestInfo>
+        />
       </div>
 
     </div>
