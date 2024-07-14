@@ -40,6 +40,7 @@ export default function Turmas() {
     const [turmaEdit, setTurmaEdit] = useState();
     const [turmaNameEdit, setTurmaNameEdit] = useState();
     const [isFetching, setisFetching] = useState(false);
+    const [oppenedGuest, setOppenedGuest] = useState();
     const [eventName, setEventName] = useState();
     const [eventPlace, setEventPlace] = useState();
     const [date, setDate] = useState("");
@@ -429,6 +430,8 @@ export default function Turmas() {
     const jsonToExcel = (jsonData) => {
         setIsLoading(true)
 
+        console.log('888', jsonData)
+
         let fileName = new Date().toString();
         const rows = [];
 
@@ -436,7 +439,7 @@ export default function Turmas() {
             const { id, name, types } = item;
             types.forEach(type => {
                 rows.push({
-                    id,
+                    // id,
                     name,
                     type_id: type.id,
                     description: type.description,
@@ -904,7 +907,7 @@ export default function Turmas() {
                                             <>
                                                 <div
                                                     style={{ overflowX: 'auto', overflowY: 'hidden', }}
-                                                    onClick={(event) => goView(event, e.id)}
+                                                    onClick={() => setOppenedGuest(y == oppenedGuest ? undefined : y)}
                                                     key={y} className="guestLine flex flex-row justify-between items-center"
                                                 >
                                                     <div className=' flexr'>
@@ -948,6 +951,8 @@ export default function Turmas() {
                                                     </div>
                                                 </div>
                                                 {
+                                                    y == oppenedGuest
+                                                    &&
                                                     e.other_guests?.length > 0
                                                     &&
                                                     e.other_guests?.map((j, w) => {
@@ -969,7 +974,7 @@ export default function Turmas() {
                     }
 
                     {tabStep == 3 &&
-                        <div style={{ marginTop: '20px', flexDirection: "column" }}>
+                        <div style={{ marginTop: '20px', flexDirection: "column", width: '100%' }}>
 
                             {addUser && <div style={{ display: "flex", flexDirection: "column", borderStyle: 'solid', borderWidth: 1, borderRadius: 10, padding: 10, }}>
                                 <div style={{ display: "flex", flexDirection: "column", marginBottom: 10, }}>
@@ -1012,17 +1017,17 @@ export default function Turmas() {
                             }
 
 
-                            {!addUser && <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                            {!addUser && <div style={{ display: "flex", justifyContent: "flex-end", width: '100%' }}>
                                 <button
                                     onClick={(e) => { setAddUser(true) }}
                                     style={{ maxHeight: '30px', whiteSpace: 'nowrap', fontSize: '13px', width: 'auto' }}
-                                    className="btnBlueThird flexr newEventBtn gap-4">Adicionar Usuário
+                                    className="btnBlueThird flexr newEventBtn gap-4">ADICIONAR USUÁRIO
                                 </button>
                             </div>}
 
-                            <div className="clientListTitle flexr" style={{ marginTop: 16, flexDirection: "column" }}>
+                            <div className="clientListTitle flexr" style={{ marginTop: 16, flexDirection: "column", alignItems: 'flex-start' }}>
                                 <div className="clientListTitle flexr">
-                                    <h2 className="eventNameLi">Id</h2>
+                                    {/* <h2 className="eventNameLi">Id</h2> */}
                                     <h2 className="clienteTypeLi" style={{ textAlign: 'start' }}>Usuário</h2>
                                 </div>
                                 {isLoading && <div style={{ width: '100%' }} className="flexc"><Loader></Loader></div>}
@@ -1031,7 +1036,7 @@ export default function Turmas() {
                                         <div
                                             onClick={() => { setIdUser(e.id); setNameUser(e.name); setAddUser(true); }}
                                             key={y} className="clienteLine flexr">
-                                            <p className="eventNameLi">{e.id}</p>
+                                            {/* <p className="eventNameLi">{e.id}</p> */}
                                             <p className="clienteTypeLi" style={{ textAlign: 'start' }}>{e.name}</p>
                                         </div>
                                     )

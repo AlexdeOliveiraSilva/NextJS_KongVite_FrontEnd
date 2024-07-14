@@ -52,7 +52,7 @@ export const GlobalProvider = ({ children }) => {
     const guestSideBar = ["evento", "transferencias"];
 
     const estbSidebarItens = ["eventos", "novo-evento"];
-    const estbSidebarEvent = ["turmas", "sair-evento"];
+    const estbSidebarEvent = ["eventos", "turmas", "sair-evento"];
 
 
     const [userName, setUserName] = useState()
