@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import ChangeGuestModal from "@/components/Modal/changeGuestPassword";
+import { FaLongArrowAltRight } from "react-icons/fa";
 
 export default function GuestEdit() {
   const router = useRouter();
