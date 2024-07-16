@@ -27,7 +27,9 @@ export default function AdminUsers() {
   const [deleteIdSelected, setDeleteIdSelected] = useState();
   const [isLoading, setisLoading] = useState(false)
   const [isFetching, setisFetching] = useState(false);
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState(""),
+    [listPage, setListPage] = useState(1),
+    [totalListPages, setTotalListPages] = useState(1);
 
   async function getEstablishments() {
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
@@ -37,13 +39,15 @@ export default function AdminUsers() {
     if (!!jwt) {
       setisFetching(true);
       try {
-        x = await (await fetch(`${KONG_URL}/companys/1?name=`, {
+        x = await (await fetch(`${KONG_URL}/companys/${listPage}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': jwt
           }
         })).json()
+
+        setTotalListPages(x.totalPages)
         setisFetching(false);
         setEstbList(x.data)
         setEstbListCopy(x.data)
@@ -148,7 +152,7 @@ export default function AdminUsers() {
 
   useEffect(() => {
     getEstablishments();
-  }, [])
+  }, [listPage])
 
   useEffect(() => {
     onSearch();
@@ -223,6 +227,20 @@ export default function AdminUsers() {
                   </div>
                 )
               })}
+            <div className="flexr gap-6 paginationList">
+              <h6>Páginas </h6>
+              {totalListPages ?
+                Array.from({ length: totalListPages }, (_, index) => (
+                  <p key={index}
+                    onClick={listPage == index + 1 ? () => console.log('') : () => setListPage(index + 1)}
+                    style={listPage == index + 1 ? { fontWeight: 700, textDecoration: 'underline' } : { fontWeight: 400, cursor: 'pointer' }}>
+                    {index + 1}
+                  </p>
+                ))
+                : null}
+
+            </div>
+
           </div>
         </div>
       </div>
