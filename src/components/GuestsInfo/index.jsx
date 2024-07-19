@@ -152,53 +152,64 @@ export default function GuestInfo({ data, setGuestDeleteId, setDeleteGuestModalI
                         <p className="lastChild"></p>
                     </div>
                     <Separator width={'100%'} height={"1px"} color={"#71798639"}></Separator>
-                    {!!dataCopy ? dataCopy.sort((a, b) => a.tycketsType?.description.localeCompare(b.tycketsType?.description)).map((e, y) => {
-                        const ticket = tickets.find(ticket => ticket.name === e.tycketsType?.description);
-                        const backgroundColor = ticket ? ticket.color : 'transparent';
-                        return (
-                            <React.Fragment key={y}>
-                                <div className="GuestInsideLines">
-                                    <div className="firstChild">
-                                        <p style={{ backgroundColor }}>{e.tycketsType?.description}</p>
-                                    </div>
-                                    <div className="secondChild">
-                                        {e.name}
-                                    </div>
-                                    <div className="trhirdChild flexr">
-                                        {e.status === 'AUSENTE' ?
-                                            "Ausente"
-                                            : "Presente"
-                                        }
-                                    </div>
-                                    <div className="lastChild flexr">
-                                        {isLoading != e.uuid ?
-                                            <BsDownload
-                                                style={{ cursor: "pointer" }}
-                                                onClick={() => toDownload(e.uuid)}
-                                                size={30} color="#71798691" />
-                                            :
-                                            <Loader></Loader>
-                                        }
-                                        {!e.itsMe &&
-                                            <>
-                                                <FaRegEdit
+                    {!!dataCopy ? dataCopy
+                        .sort((a, b) => a.tycketsType?.description.localeCompare(b.tycketsType?.description))
+                        .sort((a, b) => {
+                            if (a.itsMe && !b.itsMe) {
+                                return -1;
+                            } else if (!a.itsMe && b.itsMe) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        })
+                        .map((e, y) => {
+                            const ticket = tickets.find(ticket => ticket.name === e.tycketsType?.description);
+                            const backgroundColor = ticket ? ticket.color : 'transparent';
+                            return (
+                                <React.Fragment key={y}>
+                                    <div className="GuestInsideLines">
+                                        <div className="firstChild">
+                                            <p style={{ backgroundColor }}>{e.tycketsType?.description}</p>
+                                        </div>
+                                        <div className="secondChild">
+                                            {e.name}
+                                        </div>
+                                        <div className="trhirdChild flexr">
+                                            {e.status === 'AUSENTE' ?
+                                                "Ausente"
+                                                : "Presente"
+                                            }
+                                        </div>
+                                        <div className="lastChild flexr">
+                                            {isLoading != e.uuid ?
+                                                <BsDownload
                                                     style={{ cursor: "pointer" }}
-                                                    onClick={(event) => openEditGuest(event, e)}
+                                                    onClick={() => toDownload(e.uuid)}
                                                     size={30} color="#71798691" />
-                                                {e.status !== "PRESENTE" &&
-                                                    <RiDeleteBinLine
+                                                :
+                                                <Loader></Loader>
+                                            }
+                                            {!e.itsMe &&
+                                                <>
+                                                    <FaRegEdit
                                                         style={{ cursor: "pointer" }}
-                                                        onClick={(event) => { openDeleteGuest(event, e.id) }}
+                                                        onClick={(event) => openEditGuest(event, e)}
                                                         size={30} color="#71798691" />
-                                                }
-                                            </>
-                                        }
+                                                    {e.status !== "PRESENTE" &&
+                                                        <RiDeleteBinLine
+                                                            style={{ cursor: "pointer" }}
+                                                            onClick={(event) => { openDeleteGuest(event, e.id) }}
+                                                            size={30} color="#71798691" />
+                                                    }
+                                                </>
+                                            }
+                                        </div>
                                     </div>
-                                </div>
-                                <Separator width={'100%'} height={"1px"} color={"#71798639"}></Separator>
-                            </React.Fragment>
-                        )
-                    })
+                                    <Separator width={'100%'} height={"1px"} color={"#71798639"}></Separator>
+                                </React.Fragment>
+                            )
+                        })
                         :
                         !data ? <p style={{ margin: "30px 0" }}>Carregando...</p> : <p style={{ margin: "30px 0" }}>Sem Convidados...</p>
                     }

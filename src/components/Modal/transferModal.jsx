@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-export default function TransferModal({ close, myData }) {
+export default function TransferModal({ close }) {
     const { KONG_URL, user, eventChoice } = useContext(GlobalContext);
     const [isLoading, setIsLoading] = useState(false),
         [transferError, setTransferError] = useState(""),
@@ -18,11 +18,10 @@ export default function TransferModal({ close, myData }) {
         [step, setStep] = useState(1),
         [myColleagues, setMyColleagues] = useState([]),
         [myColleaguesCopy, setMyColleaguesCopy] = useState([]),
+        [myData, setMyData] = useState(),
         [searchUser, setSearchuser] = useState();
 
-    const [counters, setCounters] = useState(
-        myData?.mainConvidado?.guestsTicketsTypeNumber?.map(ticket => 0) || []
-    );
+    const [counters, setCounters] = useState();
 
     const increaseCount = (index) => {
         const newCounters = [...counters];
@@ -43,6 +42,7 @@ export default function TransferModal({ close, myData }) {
         let myClass = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
         let x;
 
+
         try {
             x = await (await fetch(`${KONG_URL}/student/myColleagues/${myClass?.classEvent?.id}`, {
                 method: 'GET',
@@ -54,7 +54,33 @@ export default function TransferModal({ close, myData }) {
 
             if (!x.message) {
                 setMyColleagues(x)
+                return ""
+            }
 
+        } catch (error) {
+
+            return ""
+        }
+
+    }
+
+    async function getMyData() {
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
+        let myClass = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
+        let x;
+
+        try {
+            x = await (await fetch(`${KONG_URL}/user/guests/${myClass?.classEvent?.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': jwt
+                }
+            })).json()
+
+            if (!x.message) {
+                setMyData(x)
+                setCounters(x?.guestsTicketsTypeNumber?.map(ticket => 0) || [])
                 return ""
             }
 
@@ -68,11 +94,11 @@ export default function TransferModal({ close, myData }) {
     async function tranferNow(id) {
         let jwt = user?.jwt || localStorage.getItem("user_jwt");
 
+
         if (!!jwt && !!id) {
             setIsLoading(true);
-
             try {
-                await Promise.all(myData?.mainConvidado?.guestsTicketsTypeNumber?.map(async (e, y) => {
+                await Promise.all(myData?.guestsTicketsTypeNumber?.map(async (e, y) => {
                     if ((e.available - counters[y]) > 0) {
                         const response = await fetch(`${KONG_URL}/student/transferInvites/${id}`, {
                             method: 'POST',
@@ -87,8 +113,10 @@ export default function TransferModal({ close, myData }) {
                         });
 
                         if (response.ok) {
+
                             toast.success("Transferido com sucesso!");
                         } else {
+
                             console.log("erro")
                         }
                     }
@@ -96,6 +124,9 @@ export default function TransferModal({ close, myData }) {
 
                 close();
                 setIsLoading(false);
+                if (!!window) {
+                    window.location.reload()
+                }
                 return ""
             } catch (error) {
                 console.error("Error transferir tickets:", error);
@@ -134,6 +165,7 @@ export default function TransferModal({ close, myData }) {
     useEffect(() => {
         getGuests();
         onSearchClear();
+        getMyData()
     }, [])
 
 
@@ -185,7 +217,7 @@ export default function TransferModal({ close, myData }) {
                             <div className="flexr inputDiv" style={{ gap: "10px" }}>
                                 {!!myData
                                     ?
-                                    myData?.mainConvidado?.guestsTicketsTypeNumber?.map((e, y) => {
+                                    myData?.guestsTicketsTypeNumber?.map((e, y) => {
                                         return (
                                             <div className="flexc invitesDivContent" key={y} style={{ gap: "10px" }}>
                                                 <p>Tipo: <span>{e.tycketsType?.description}</span></p>

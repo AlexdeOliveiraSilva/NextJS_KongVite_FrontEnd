@@ -226,6 +226,12 @@
   width: 400px;
 }
 
+.paginationList {
+  width: 100%;
+  justify-content: flex-end;
+  padding: 30px 3%;
+}
+
 @media (max-width: 1300px) {
   .adminUsersTitle h1 {
     display: none;

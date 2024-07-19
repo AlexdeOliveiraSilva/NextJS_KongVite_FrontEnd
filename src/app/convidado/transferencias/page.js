@@ -15,19 +15,31 @@ import Separator from "@/components/fragments/separatorLine";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Loader from "@/components/fragments/loader";
+import TransferModal from "@/components/Modal/transferModal";
 
 export default function Dashboard() {
   const router = useRouter();
   const { KONG_URL, user, eventEdit, eventChoice, eventClasses, setRefreshPage, refreshPage } = useContext(GlobalContext);
   const [isLoading, setIsLoading] = useState(false);
   const [myData, setMyData] = useState();
-  const [loadData, setLoadData] = useState(false);
+  const [loadData, setLoadData] = useState(false),
+    [transferIsOpen, setTransferIsOpen] = useState(false);
+  const [transferHistoricId, setTranferHistoricId] = useState();
 
+  function openTransferModal(e, id) {
+    e.preventDefault();
+    setTransferIsOpen(true);
+  }
+
+  function closeTransferModal() {
+    setTransferIsOpen(false);
+  }
 
   async function getGuests() {
 
     let x;
     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let userId = !!user.id ? JSON.parse(user.id) : JSON.parse(localStorage.getItem("user_id"))
     let classId = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"))
 
     if (!!jwt && !!classId) {
@@ -44,6 +56,7 @@ export default function Dashboard() {
 
         if (!x.message) {
           setMyData(x)
+          setTranferHistoricId(+userId)
           setLoadData(false)
           return ""
         }
@@ -74,12 +87,18 @@ export default function Dashboard() {
     getGuests();
   }, [])
 
+
   return (
     <div className="clientEventMain flexc" >
+      {transferIsOpen == true && <TransferModal close={() => closeTransferModal()}></TransferModal>}
       <div className="margin5percent flexc gap-4" style={{ justifyContent: 'center', alignItems: 'flex-start', marginTop: '60px' }}>
-        <div className="newTopSitemap flexr">
+        <div className="newTopSitemap flexr justify-between" style={{ width: '100%' }}>
           <h1 style={{ fontWeight: 600, marginRight: 10 }}>Transferências</h1>
+          <button
+            onClick={(e) => openTransferModal(e)}
+            className="btnBlueThird flexr newEventBtn gap-4">TRANSFERIR INGRESSO</button>
         </div>
+
         <div className="clientListTitle flexr">
           <h2 className="clienteTypeLi">Ingresso</h2>
           <h2 className="eventNameLi">Nome</h2>
