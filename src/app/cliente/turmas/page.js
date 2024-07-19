@@ -25,7 +25,7 @@ import { Tooltip } from "@mui/material";
 import ReplyIcon from '@mui/icons-material/Reply';
 import TransformIcon from '@mui/icons-material/Transform';
 import AddIcon from '@mui/icons-material/Add';
-
+import moment from "moment"
 
 export default function Turmas() {
     const router = useRouter();
@@ -376,6 +376,7 @@ export default function Turmas() {
     }
 
     function formatHourToInput(dataString) {
+        return moment(dataString).utc().format("HH:mm")
         const data = new Date(dataString);
 
         const ano = data.getFullYear();
