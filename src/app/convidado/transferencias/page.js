@@ -16,7 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Loader from "@/components/fragments/loader";
 import TransferModal from "@/components/Modal/transferModal";
-
+import moment from "moment"
 export default function Dashboard() {
   const router = useRouter();
   const { KONG_URL, user, eventEdit, eventChoice, eventClasses, setRefreshPage, refreshPage } = useContext(GlobalContext);
@@ -72,15 +72,7 @@ export default function Dashboard() {
   }
 
   function formatDateToInput(dataString) {
-    const data = new Date(dataString);
-
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    const horas = String(data.getHours()).padStart(2, '0');
-    const minutos = String(data.getMinutes()).padStart(2, '0');
-
-    return `${dia}-${mes}-${ano}`;
+    return moment(dataString).format("DD/MM/YYY HH:mm")
   }
 
   useEffect(() => {
@@ -100,6 +92,7 @@ export default function Dashboard() {
         </div>
 
         <div className="clientListTitle flexr">
+          <h2 className="clienteTypeLi"></h2>
           <h2 className="clienteTypeLi">Ingresso</h2>
           <h2 className="eventNameLi">Nome</h2>
           <h2 className="eventDateLi">Data</h2>
@@ -114,6 +107,7 @@ export default function Dashboard() {
               <div
                 onClick={(event) => goView(event, e.id)}
                 key={y} className="clienteLine flexr">
+                <p className="clienteTypeLi">{e.direction == "Envio" ? <span style={{ color: "red" }}>Enviou</span> : <span style={{ color: "green" }}>Recebeu</span>}</p>
                 <p className="clienteTypeLi">{e.amount} - {e.tycketsType?.description}</p>
                 <p className="eventNameLi">{e.guests_guestsTransfers_guestIdDestinyToguests?.name}</p>
                 <p className="eventNameLi">{formatDateToInput(e.createdAt)}</p>
