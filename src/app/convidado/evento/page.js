@@ -268,7 +268,7 @@ export default function EventGuest() {
     let w = !!eventClasses ? eventClasses : localStorage.getItem("event_classes");
     let z = JSON.parse(w)
 
-
+    console.log("xxxx", x, w)
 
     if (!!y && !!z) {
       getGuests(y.classEvent.id);

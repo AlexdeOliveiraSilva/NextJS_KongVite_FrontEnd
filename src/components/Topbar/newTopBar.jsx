@@ -75,41 +75,41 @@ export default function NewTopBar() {
         setEventChoiceModal(false);
     }
 
-    // async function getAvaibles() {
-    //     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
-    //     let y = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
+    async function getAvaibles() {
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
+        let y = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
 
-    //     let theClass = y?.classEvent?.id
+        let theClass = y?.classEvent?.id
 
-    //     let x;
+        let x;
 
-    //     if (!!jwt && !!theClass) {
-    //         setLoadData(true)
-    //         try {
-    //             x = await (await fetch(`${KONG_URL}/user/guests/${theClass}`, {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': jwt
-    //                 }
-    //             })).json()
+        if (!!jwt && !!theClass) {
+            setLoadData(true)
+            try {
+                x = await (await fetch(`${KONG_URL}/user/guests/${theClass}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': jwt
+                    }
+                })).json()
 
-    //             if (!x?.message) {
-    //                 invitesGuestCount(x.guestsTicketsTypeNumber);
-    //                 setLoadData(false)
-    //             } else {
-    //                 console.log("error", x)
-    //                 setLoadData(false)
-    //             }
+                if (!x?.message) {
+                    invitesGuestCount(x.guestsTicketsTypeNumber);
+                    setLoadData(false)
+                } else {
+                    console.log("error", x)
+                    setLoadData(false)
+                }
 
 
-    //         } catch (error) {
-    //             setLoadData(false)
-    //             console.log("catch", error)
-    //             return ""
-    //         }
-    //     }
-    // }
+            } catch (error) {
+                setLoadData(false)
+                console.log("catch", error)
+                return ""
+            }
+        }
+    }
 
     // async function getAllData(myId) {
     //     let x;
@@ -149,13 +149,13 @@ export default function NewTopBar() {
         let x = !!user?.type ? user.type : localStorage.getItem("user_type")
         let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
 
-        // if ((x == "3" || x == 3)) {
-        //     getAvaibles();
+        if ((x == "3" || x == 3)) {
+            getAvaibles();
 
-        //     if (!y) {
-        //         setEventChoiceModal(true);
-        //     }
-        // }
+            if (!y) {
+                setEventChoiceModal(true);
+            }
+        }
 
         // getAllData(!!user?.id ? user?.id : localStorage.getItem("user_id"));
 

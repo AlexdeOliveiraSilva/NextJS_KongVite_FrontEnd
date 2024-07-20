@@ -94,7 +94,8 @@ export default function Dashboard() {
         <div className="clientListTitle flexr">
           <h2 className="clienteTypeLi"></h2>
           <h2 className="clienteTypeLi">Ingresso</h2>
-          <h2 className="eventNameLi">Nome</h2>
+          <h2 className="eventNameLi">De</h2>
+          <h2 className="eventNameLi">Para</h2>
           <h2 className="eventDateLi">Data</h2>
         </div>
         {loadData == true ?
@@ -109,6 +110,7 @@ export default function Dashboard() {
                 key={y} className="clienteLine flexr">
                 <p className="clienteTypeLi">{e.direction == "Envio" ? <span style={{ color: "red" }}>Enviou</span> : <span style={{ color: "green" }}>Recebeu</span>}</p>
                 <p className="clienteTypeLi">{e.amount} - {e.tycketsType?.description}</p>
+                <p className="eventNameLi">{e.guests_guestsTransfers_guestsIdOrigenToguests?.name}</p>
                 <p className="eventNameLi">{e.guests_guestsTransfers_guestIdDestinyToguests?.name}</p>
                 <p className="eventNameLi">{formatDateToInput(e.createdAt)}</p>
               </div>

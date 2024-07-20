@@ -167,7 +167,7 @@
 }
 .clienteLine {
   width: 100%;
-  max-width: 900px;
+  /* max-width: 900px; */
   height: 60px;
   flex-wrap: nowrap;
   border-radius: 8px;
