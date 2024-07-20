@@ -68,9 +68,8 @@ export default function TransferModal({ close }) {
         let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
         let myClass = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
         let x;
-
         try {
-            x = await (await fetch(`${KONG_URL}/user/guests/${myClass?.classEvent?.id}`, {
+            x = await (await fetch(`${KONG_URL}/student/${myClass?.user?.id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,8 +78,9 @@ export default function TransferModal({ close }) {
             })).json()
 
             if (!x.message) {
+                console.log("AAAA", x)
                 setMyData(x)
-                setCounters(x?.guestsTicketsTypeNumber?.map(ticket => 0) || [])
+                setCounters(x?.mainConvidado.guestsTicketsTypeNumber?.map(ticket => 0) || [])
                 return ""
             }
 
@@ -98,7 +98,7 @@ export default function TransferModal({ close }) {
         if (!!jwt && !!id) {
             setIsLoading(true);
             try {
-                await Promise.all(myData?.guestsTicketsTypeNumber?.map(async (e, y) => {
+                await Promise.all(myData?.mainConvidado.guestsTicketsTypeNumber?.map(async (e, y) => {
                     if ((e.available - counters[y]) > 0) {
                         const response = await fetch(`${KONG_URL}/student/transferInvites/${id}`, {
                             method: 'POST',
@@ -217,7 +217,7 @@ export default function TransferModal({ close }) {
                             <div className="flexr inputDiv" style={{ gap: "10px" }}>
                                 {!!myData
                                     ?
-                                    myData?.guestsTicketsTypeNumber?.map((e, y) => {
+                                    myData?.mainConvidado?.guestsTicketsTypeNumber?.map((e, y) => {
                                         return (
                                             <div className="flexc invitesDivContent" key={y} style={{ gap: "10px" }}>
                                                 <p>Tipo: <span>{e.tycketsType?.description}</span></p>

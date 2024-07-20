@@ -108,8 +108,9 @@ export default function EventGuest() {
           }
         })).json()
         if (!x.message) {
+          console.log("x.mainConvidado.guestsTicketsTypeNumber", x.mainConvidado.guestsTicketsTypeNumber)
           setMyData(x)
-          setTotalInvites(x.mainConvidado.guestsTicketsTypeNumber.reduce(p, c => {
+          setTotalInvites(x.mainConvidado.guestsTicketsTypeNumber.reduce((p, c) => {
             console.log(c.available)
             return p + c.available
           }, 0))
@@ -296,9 +297,6 @@ export default function EventGuest() {
 
   }, [myId])
 
-  // useEffect(() => {
-  //   setGuestData('')
-  // }, [])
 
   function formatDateToInput(dataString) {
     return moment(dataString).utc().format("DD/MM/YYYY");
@@ -309,9 +307,6 @@ export default function EventGuest() {
   }
 
   function f5() {
-    // if (!!window) {
-    //   window.location.reload();
-    // }
     getAllData()
   }
 

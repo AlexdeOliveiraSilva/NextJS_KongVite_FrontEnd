@@ -75,72 +75,71 @@ export default function NewTopBar() {
         setEventChoiceModal(false);
     }
 
-    async function getAvaibles() {
-        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
-        let y = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
+    // async function getAvaibles() {
+    //     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
+    //     let y = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
 
-        let theClass = y?.classEvent?.id
+    //     let theClass = y?.classEvent?.id
 
-        let x;
+    //     let x;
 
-        if (!!jwt && !!theClass) {
-            setLoadData(true)
-            try {
-                x = await (await fetch(`${KONG_URL}/user/guests/${theClass}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': jwt
-                    }
-                })).json()
+    //     if (!!jwt && !!theClass) {
+    //         setLoadData(true)
+    //         try {
+    //             x = await (await fetch(`${KONG_URL}/user/guests/${theClass}`, {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': jwt
+    //                 }
+    //             })).json()
 
-                if (!x?.message) {
-                    invitesGuestCount(x.guestsTicketsTypeNumber);
-                    setLoadData(false)
-                } else {
-                    console.log("error", x)
-                    setLoadData(false)
-                }
+    //             if (!x?.message) {
+    //                 invitesGuestCount(x.guestsTicketsTypeNumber);
+    //                 setLoadData(false)
+    //             } else {
+    //                 console.log("error", x)
+    //                 setLoadData(false)
+    //             }
 
 
-            } catch (error) {
-                setLoadData(false)
-                console.log("catch", error)
-                return ""
-            }
-        }
-    }
+    //         } catch (error) {
+    //             setLoadData(false)
+    //             console.log("catch", error)
+    //             return ""
+    //         }
+    //     }
+    // }
 
-    async function getAllData(myId) {
+    // async function getAllData(myId) {
+    //     let x;
+    //     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    //     alert(`${KONG_URL}/student/${myId}`)
+    //     if (!!myId) {
 
-        let x;
-        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    //         try {
+    //             x = await (await fetch(`${KONG_URL}/student/${myId}`, {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': jwt
+    //                 }
+    //             })).json()
 
-        if (!!myId) {
+    //             if (!x.message) {
+    //                 setMyData(x)
+    //                 return ""
+    //             }
 
-            try {
-                x = await (await fetch(`${KONG_URL}/student/${myId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': jwt
-                    }
-                })).json()
+    //         } catch (error) {
 
-                if (!x.message) {
-                    setMyData(x)
-                    return ""
-                }
+    //             return ""
+    //         }
+    //     } else {
 
-            } catch (error) {
-
-                return ""
-            }
-        } else {
-
-            return ""
-        }
-    }
+    //         return ""
+    //     }
+    // }
 
 
 
@@ -150,15 +149,15 @@ export default function NewTopBar() {
         let x = !!user?.type ? user.type : localStorage.getItem("user_type")
         let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
 
-        if ((x == "3" || x == 3)) {
-            getAvaibles();
+        // if ((x == "3" || x == 3)) {
+        //     getAvaibles();
 
-            if (!y) {
-                setEventChoiceModal(true);
-            }
-        }
+        //     if (!y) {
+        //         setEventChoiceModal(true);
+        //     }
+        // }
 
-        getAllData(!!user?.id ? user?.id : localStorage.getItem("user_id"));
+        // getAllData(!!user?.id ? user?.id : localStorage.getItem("user_id"));
 
         setcompanyData({
             id: !!company?.id ? company.id : localStorage.getItem('company_id'),
