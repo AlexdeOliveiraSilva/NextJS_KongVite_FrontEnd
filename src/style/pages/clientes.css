@@ -966,11 +966,11 @@
 }
 .clientListOver {
   width: 100%;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   justify-content: flex-start;
   align-items: flex-start;
   padding-top: 5px;
-  max-height: 80px;
+  /* max-height: 80px; */
 }
 .clientListDash {
   width: 100%;
@@ -1040,7 +1040,7 @@
 }
 .TurmaCard {
   background-color: var(--white-primary);
-  height: 150px;
+  /* height: 150px; */
   width: 100%;
   border-radius: 12px;
   box-shadow: var(--shad-ligth);

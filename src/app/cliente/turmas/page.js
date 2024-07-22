@@ -378,15 +378,6 @@ export default function Turmas() {
 
     function formatHourToInput(dataString) {
         return moment(dataString).utc().format("HH:mm")
-        const data = new Date(dataString);
-
-        const ano = data.getFullYear();
-        const mes = String(data.getMonth() + 1).padStart(2, '0');
-        const dia = String(data.getDate()).padStart(2, '0');
-        const horas = String(data.getHours()).padStart(2, '0');
-        const minutos = String(data.getMinutes()).padStart(2, '0');
-
-        return `${horas}:${minutos}`;
     }
     const colors = [
         '#0B192E',
@@ -428,30 +419,19 @@ export default function Turmas() {
 
 
 
-    const jsonToExcel = (jsonData) => {
+    const jsonToExcel = async () => {
         setIsLoading(true)
-
-        console.log('888', jsonData)
-
+        let eventId = !!eventEdit ? eventEdit : localStorage.getItem("event_edit");
+        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+        let x = await (await fetch(`${KONG_URL}/companys/events/export/${eventId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': jwt
+            }
+        })).json()
         let fileName = new Date().toString();
-        const rows = [];
-
-        jsonData.forEach(item => {
-            const { id, name, types } = item;
-            types.forEach(type => {
-                rows.push({
-                    // id,
-                    name,
-                    type_id: type.id,
-                    description: type.description,
-                    presente: type.presente,
-                    ausente: type.ausente,
-                    total: type.total,
-                });
-            });
-        });
-
-        const worksheet = XLSX.utils.json_to_sheet(rows);
+        const worksheet = XLSX.utils.json_to_sheet(x);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
@@ -752,7 +732,7 @@ export default function Turmas() {
                                 }
                                 {!!data &&
                                     <button
-                                        onClick={() => jsonToExcel(data)}
+                                        onClick={() => jsonToExcel()}
                                         disabled={isLoading}
                                         style={{ maxHeight: '30px', whiteSpace: 'nowrap', border: 'none', fontSize: '13px', width: '120px' }}
                                         className="TurmaDashButton btnBlue">
