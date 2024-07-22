@@ -275,6 +275,8 @@ export default function EventsEdit() {
     }
   }
 
+
+
   async function addPassType(event) {
     event.preventDefault();
 

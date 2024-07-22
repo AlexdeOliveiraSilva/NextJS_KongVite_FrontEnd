@@ -108,10 +108,10 @@ export default function EventGuest() {
           }
         })).json()
         if (!x.message) {
-          console.log("x.mainConvidado.guestsTicketsTypeNumber", x.mainConvidado.guestsTicketsTypeNumber)
+
           setMyData(x)
           setTotalInvites(x.mainConvidado.guestsTicketsTypeNumber.reduce((p, c) => {
-            console.log(c.available)
+
             return p + c.available
           }, 0))
         }

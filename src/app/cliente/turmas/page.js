@@ -883,7 +883,7 @@ export default function Turmas() {
 
 
                                     !!turmaGuest && turmaGuest.map((e, y) => {
-                                        console.log(e)
+
                                         return (
                                             <>
                                                 <div

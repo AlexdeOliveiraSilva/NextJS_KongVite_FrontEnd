@@ -176,20 +176,6 @@ export default function EventsAdd() {
 
       try {
 
-        console.log('**********', {
-          name: name,
-          date: combineDateTime(),
-          address: address,
-          place: place,
-          zipcode: zipcode,
-          number: numberAdress,
-          neighborhood: neighborhood,
-          city: city,
-          uf: uf,
-          notifyUsersAboutDeletingInvitations: notifyUsersAboutDeletingInvitations,
-          type: type,
-          subType: subType
-        })
         x = await (await fetch(`${KONG_URL}/companys/events/`, {
           method: 'POST',
           headers: {
@@ -314,14 +300,10 @@ export default function EventsAdd() {
       }
     }
 
-    console.log('aqqqqq')
 
     if (passTypeObject.name.length != 0 && passTypeObject.image.length != 0) {
-      console.log('aqqqqq2222')
       setPassType([...passType, { ...passTypeObject, image }]);
-      console.log('aqqqqq3333')
       setPassTypeObject({ name: '', image: '' });
-      console.log('aqqqqq44444')
     }
   };
 
@@ -579,7 +561,7 @@ export default function EventsAdd() {
 
             {passType?.length > 0 &&
               passType.map((e, y) => {
-                console.log(e)
+
                 return (
                   <div className="inputNewStyle flexr" key={y}>
                     <p className="pNone"></p>
