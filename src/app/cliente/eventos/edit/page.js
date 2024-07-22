@@ -13,6 +13,8 @@ import { TiPlus } from "react-icons/ti";
 import { FaImage } from "react-icons/fa";
 import DeleteIcon from '@mui/icons-material/Delete';
 import moment from "moment";
+import { FaEdit } from "react-icons/fa";
+import EditPassType from "@/components/Modal/editTypePass";
 
 
 export default function EventsEdit() {
@@ -44,6 +46,9 @@ export default function EventsEdit() {
   const [typeStack, setTypeStack] = useState("");
   const [imageURL, setImageURL] = useState("");
   const [imageToShow, setImageToShow] = useState("");
+
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false),
+    [typeToEdit, setTypeToEdit] = useState();
 
   const [alreadyPassType, setAlreadyPassType] = useState([]);
   const [passType, setPassType] = useState([]);
@@ -338,7 +343,6 @@ export default function EventsEdit() {
             'Authorization': jwt
           }
         })).json()
-        console.log(formatDateToInput(x.date))
         if (!x?.message) {
 
           setEventData(x);
@@ -430,14 +434,6 @@ export default function EventsEdit() {
 
   function formatDateToInput(dataString) {
 
-    // data.setHours(data.getHours() - 3);
-
-    // const ano = data.getFullYear();
-    // const mes = String(data.getMonth() + 1).padStart(2, '0');
-    // const dia = String(data.getDate()).padStart(2, '0');
-    // const horas = String(data.getHours()).padStart(2, '0');
-    // const minutos = String(data.getMinutes()).padStart(2, '0');
-
     return moment(dataString).utc().format("YYYY-MM-DD HH:mm");
 
   }
@@ -455,6 +451,16 @@ export default function EventsEdit() {
     setOnlyHour(timePart);
   };
 
+  const setToEdit = (e) => {
+    setTypeToEdit(e)
+    setEditModalIsOpen(true)
+  }
+
+  const toEditClose = () => {
+    setTypeToEdit()
+    setEditModalIsOpen(false)
+  }
+
   useEffect(() => {
     dataVerify();
   }, [name, uf, address, neighborhood, zipcode, city])
@@ -467,12 +473,13 @@ export default function EventsEdit() {
   useEffect(() => {
 
   }, [passType, imageURL])
-  console.log(notifyUsersAboutDeletingInvitations)
+
   return (
     <>
       <div className="clientEventMain flexc">
         <ToastContainer></ToastContainer>
         {!!imageToShow && <ImageModal close={() => setImageToShow('')} image={imageToShow}></ImageModal>}
+        {!!editModalIsOpen && <EditPassType typeToEdit={typeToEdit} close={toEditClose}></EditPassType>}
         <div className="margin5percent" style={{ position: 'relative' }}>
           <div className="newTopSitemap flexc" style={{ alignItems: 'flex-start' }}>
             <h1 className=" flexr gap-2" style={{ fontWeight: 600, marginRight: 10 }}>
@@ -692,10 +699,17 @@ export default function EventsEdit() {
                       </div>
                       <div className="userConfigbtns flexr">
                         <div
-                          onClick={(event) => setImageToShow(e.image)}
+                          onClick={() => setImageToShow(e.image)}
                           className="userConfigbtn flexr">
                           <FaImage className="userConfigIcon"></FaImage></div>
                         <div
+                          onClick={() => setToEdit(e)}
+                          className="userConfigbtn flexr"
+                          style={{ marginRight: '-3px' }}
+                        >
+                          <FaEdit className="userConfigIcon"></FaEdit></div>
+                        <div
+                          style={{ marginLeft: '-5px' }}
                           onClick={(event) => { event.stopPropagation(), deletePassType(e.description, event, e.id) }}
                           className="userConfigbtn flexr">
                           <DeleteIcon className="userConfigIcon"></DeleteIcon>
@@ -753,53 +767,3 @@ export default function EventsEdit() {
     </>
   );
 }
-
-
-{/* <div className="clienteMain flexr">
-
-    <div className="passTypeFull flexc">
-      <div className="passTypeBlock flexr">
-        {alreadyPassType?.length > 0 &&
-          alreadyPassType.map((e, y) => {
-            return (
-              <div
-                onClick={(event) => setImageToShow(e.image)}
-                key={y} className="passTypeBlockItem flexr">
-                <p>{e.description}</p>
-                <CloseIcon
-                  onClick={(event) => { event.stopPropagation(), deletePassType(e.description, event, e.id) }}
-                  style={{ color: "#ffffff" }}></CloseIcon>
-              </div>
-            )
-          })
-        }
-        {passType?.length > 0 &&
-          passType.map((e, y) => {
-
-            return (
-              <div
-                onClick={(event) => setImageToShow(e.image)}
-                key={y} className="passTypeBlockItem flexr">
-                <p>{e.name}</p>
-                <CloseIcon
-                  onClick={(event) => deletePassType(e.name, event)}
-                  style={{ color: "#ffffff" }}></CloseIcon>
-              </div>
-            )
-          })
-        }
-      </div>
-    </div >
-    <div className="adminUsersHeader flexr" style={{ margin: "15px 0" }}>
-      {/* <div className="adminUsersTitle flexr">
-            <h1>Editar Evento{!!eventData && `- ${eventData.name}`}</h1>
-          </div> */}
-//       <div className="adminUsersAdd flexr">
-//         <button
-//           onClick={(event) => editTheEvent(event)}
-//           style={{ minWidth: "150px" }}
-//           className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
-//       </div>
-//     </div>
-//   </div>
-// </div > */}

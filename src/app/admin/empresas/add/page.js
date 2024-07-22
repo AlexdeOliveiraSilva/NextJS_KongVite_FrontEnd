@@ -336,7 +336,7 @@ export default function AdminCompanyAdd() {
                 onChange={(e) => setName(e.target.value)}
                 value={name}
                 className="inputStyle"
-                label={!!name ? '' : "Nome do usuário"}
+                label={!!name ? '' : "Nome Completo"}
                 id="outlined-size-normal" placeholder={`Digite o Nome:'`} type="text" />
               {!!nameError && <p className="errorP">* O Nome deve conter mais que 3 caracteres.</p>}
               <div className="userAdminDoubleInputs flexr">
