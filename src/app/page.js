@@ -39,8 +39,20 @@ export default function Login() {
   const changeSetForgotPassword = () => {
     setForgotPassword(!forgotPassword)
   }
-  const sendEmail = () => {
+  const sendEmail = async () => {
+    setIsLoading(true)
+    await fetch(`${KONG_URL}/forgetPassword`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email
+      })
+    })
+
     setEmailSended(true)
+    setIsLoading(false)
   }
   const resetRecoverFlow = () => {
     setEmailSended(false);
@@ -239,11 +251,12 @@ export default function Login() {
                 </div>
                 <form className="flexc inputsDivLogin">
                   <div className="flexr inputDiv">
-                    <TextField className="inputStyle" label="E-mail" id="outlined-size-normal" placeholder="Digite seu E-mail" type="text" />
+                    <TextField onChange={(e) => setEmail(e.target.value)} className="inputStyle" label="E-mail" id="outlined-size-normal" placeholder="Digite seu E-mail" type="text" />
                   </div>
 
                   <div className="btnLoginDiv flexr">
                     <button
+                      type="button"
                       onClick={() => sendEmail()}
                       className="btnBlue btnRecoverPassword" style={{ width: "60%", marginTop: "40px" }}>{isLoading == false ? "Recuperar Senha" : <Loader></Loader>}</button>
                   </div>
