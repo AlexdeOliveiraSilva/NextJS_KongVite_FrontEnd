@@ -359,6 +359,7 @@ export default function EventsEdit() {
           setNeighborhood(x.neighborhood);
           setCity(x.city)
           setUf(x.uf)
+          setPlace(x.place)
 
           if (!!x.eventsClasses && x.eventsClasses.length > 0) {
 

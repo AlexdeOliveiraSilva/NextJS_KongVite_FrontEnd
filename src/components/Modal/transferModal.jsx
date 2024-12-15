@@ -78,7 +78,6 @@ export default function TransferModal({ close }) {
             })).json()
 
             if (!x.message) {
-                console.log("AAAA", x)
                 setMyData(x)
                 setCounters(x?.mainConvidado.guestsTicketsTypeNumber?.map(ticket => 0) || [])
                 return ""
@@ -99,31 +98,35 @@ export default function TransferModal({ close }) {
             setIsLoading(true);
             try {
                 await Promise.all(myData?.mainConvidado.guestsTicketsTypeNumber?.map(async (e, y) => {
-                    if ((e.available - counters[y]) > 0) {
-                        const response = await fetch(`${KONG_URL}/student/transferInvites/${id}`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': jwt
-                            },
-                            body: JSON.stringify({
-                                amount: counters[y],
-                                tycketsTypeId: e.tycketsType.id
-                            })
-                        });
 
-                        if (response.ok) {
+                    if (!!counters[y] && +counters[y] > 0) {
+                        if (+e.available >= +counters[y]) {
+                            const response = await fetch(`${KONG_URL}/student/transferInvites/${id}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': jwt
+                                },
+                                body: JSON.stringify({
+                                    amount: +counters[y],
+                                    tycketsTypeId: +e.tycketsType.id
+                                })
+                            });
+                            if (response.ok) {
 
-                            toast.success("Transferido com sucesso!");
-                        } else {
-
-                            console.log("erro")
+                                toast.success(`Transferido ${e.tycketsType?.description} com sucesso!`);
+                            } else {
+                                toast.error(`Falha ao transferir ${e.tycketsType?.description}!`);
+                                console.log(`Falha ao transferir ${e.tycketsType?.description}!`)
+                            }
                         }
                     }
+
                 }));
 
                 close();
                 setIsLoading(false);
+
                 if (!!window) {
                     window.location.reload()
                 }

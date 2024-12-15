@@ -157,7 +157,7 @@ export default function EventsAdd() {
 
   async function addNewEvent(e) {
     e.preventDefault();
-    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
+    let jwt = !!user?.jwt ? user?.jwt : localStorage?.getItem("user_jwt")
 
     let x;
 
@@ -203,8 +203,8 @@ export default function EventsAdd() {
             position: "top-right"
           });
 
-          for (let index = 0; index < passType.length; index++) {
-            addPassTypes(jwt, x.id, passType[index]);
+          for (let index = 0; index < passType?.length; index++) {
+            addPassTypes(jwt, x?.id, passType[index]);
           }
 
 
@@ -238,16 +238,16 @@ export default function EventsAdd() {
             'Authorization': jwt
           },
           body: JSON.stringify({
-            description: data.name,
+            description: data?.name,
             eventsId: event,
-            image: data.image
+            image: data?.image
           })
         })).json()
 
         return x
       } catch (error) {
         console.log("Error ao cadastro de tipo de ingresso", error)
-        toast.error(`Erro ao Cadastrar Tipo de Ingresso ${data.name}, tente novamente.`, {
+        toast.error(`Erro ao Cadastrar Tipo de Ingresso ${data?.name}, tente novamente.`, {
           position: "top-right"
         });
       }
@@ -259,7 +259,7 @@ export default function EventsAdd() {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
-        const base64String = reader.result.split(',')[1];
+        const base64String = reader?.result?.split(',')[1];
         resolve(base64String);
       };
       reader.onerror = (error) => {
@@ -301,7 +301,7 @@ export default function EventsAdd() {
     }
 
 
-    if (passTypeObject.name.length != 0 && passTypeObject.image.length != 0) {
+    if (passTypeObject?.name?.length != 0 && passTypeObject?.image?.length != 0) {
       setPassType([...passType, { ...passTypeObject, image }]);
       setPassTypeObject({ name: '', image: '' });
     }
@@ -310,7 +310,7 @@ export default function EventsAdd() {
   const deletePassType = (name, event) => {
     event.preventDefault();
 
-    const updatedPassType = passType.filter(item => item.name !== name);
+    const updatedPassType = passType?.filter(item => item?.name !== name);
 
     setPassType(updatedPassType);
   };
@@ -318,7 +318,7 @@ export default function EventsAdd() {
   async function searchCEP(zipcode) {
     try {
       const response = await fetch(`https://viacep.com.br/ws/${zipcode.toString().trim().replaceAll("-", "")}/json/`);
-      if (!response.ok) {
+      if (!response?.ok) {
         throw new Error('CEP não encontrado');
       }
       const data = await response.json();
@@ -330,7 +330,7 @@ export default function EventsAdd() {
       setNeighborhood(data?.bairro)
 
     } catch (error) {
-      console.error('Erro ao buscar informações do CEP:', error.message);
+      console.error('Erro ao buscar informações do CEP:', error?.message);
       return null;
     }
   }
@@ -369,7 +369,7 @@ export default function EventsAdd() {
               <p>Nome do Evento</p>
               <input
                 onChange={(e) => setName(e.target.value)}
-                value={name}
+                value={name ? name : ''}
                 type="text"
               ></input>
             </div>
@@ -380,7 +380,7 @@ export default function EventsAdd() {
               <p>Local do Evento</p>
               <input
                 onChange={(e) => setPlace(e.target.value)}
-                value={place}
+                value={place ? place : ''}
                 type="text"
               ></input>
             </div>
@@ -389,10 +389,10 @@ export default function EventsAdd() {
               <div className="inputNewStyle flexr">
                 <p>Tipo do Evento</p>
                 <select
-                  value={type}
+                  value={type ? type : ''}
                   onChange={(e) => setType(e.target.value)}
                 >
-                  {!!eventsType && eventsType.map((e, y) => {
+                  {!!eventsType && eventsType?.map((e, y) => {
                     return (
                       <option key={y} value={e.toUpperCase()}>{e}</option>
                     )
@@ -402,10 +402,10 @@ export default function EventsAdd() {
               <div className="inputNewStyle flexr">
                 <p style={{ textAlign: 'center' }}>Periodo</p>
                 <select
-                  value={subType}
+                  value={subType ? subType : ''}
                   onChange={(e) => setSubType(e.target.value)}
                 >
-                  {!!eventsSubType && eventsSubType.map((e, y) => {
+                  {!!eventsSubType && eventsSubType?.map((e, y) => {
                     return (
                       <option key={y} value={e.toUpperCase()}>{e}</option>
                     )
@@ -419,7 +419,7 @@ export default function EventsAdd() {
                 <p>Data</p>
                 <input
                   onChange={(e) => setOnlyDate(e.target.value)}
-                  value={onlyDate}
+                  value={onlyDate ? onlyDate : ''}
                   type="date"
                 />
               </div>
@@ -427,7 +427,7 @@ export default function EventsAdd() {
                 <p style={{ textAlign: 'center' }}>Horário</p>
                 <input
                   onChange={(e) => setOnlyHour(e.target.value)}
-                  value={onlyHour}
+                  value={onlyHour ? onlyHour : ''}
                   type="time"
                 />
               </div>
@@ -439,7 +439,7 @@ export default function EventsAdd() {
                 <p>CEP</p>
                 <input
                   onChange={(e) => setZipcode(e.target.value)}
-                  value={zipcode}
+                  value={zipcode ? zipcode : ''}
                   type="number"
                 />
               </div>
@@ -451,7 +451,7 @@ export default function EventsAdd() {
               <p>Endereço</p>
               <input
                 onChange={(e) => setAddress(e.target.value)}
-                value={address}
+                value={address ? address : ''}
                 type="text"
               ></input>
             </div>
@@ -462,7 +462,7 @@ export default function EventsAdd() {
                 <p>Número</p>
                 <input
                   onChange={(e) => setNumberAdress(e.target.value)}
-                  value={numberAdress}
+                  value={numberAdress ? numberAdress : ''}
                   type="number"
                 />
               </div>
@@ -470,7 +470,7 @@ export default function EventsAdd() {
                 <p style={{ textAlign: 'center' }}>Bairro</p>
                 <input
                   onChange={(e) => setNeighborhood(e.target.value)}
-                  value={neighborhood}
+                  value={neighborhood ? neighborhood : ''}
                   type="text" />
               </div>
             </div>
@@ -482,14 +482,14 @@ export default function EventsAdd() {
                 <p>Cidade</p>
                 <input
                   onChange={(e) => setCity(e.target.value)}
-                  value={city}
+                  value={city ? city : ''}
                   type="text" />
               </div>
               <div className="inputNewStyle flexr">
                 <p style={{ textAlign: 'center' }}>Estado</p>
                 <select
                   onChange={(e) => setUf(e.target.value)}
-                  value={uf}
+                  value={uf ? uf : ''}
                 >
                   {statesBR.map((e, y) => {
                     return (
@@ -529,9 +529,9 @@ export default function EventsAdd() {
               <div className="inputNewStyle DoubleUnique flexr">
                 <p>Nome do Ingresso</p>
                 <input
-                  onChange={(e) => setPassTypeObject({ image: passTypeObject.image, name: e.target.value })}
-                  label={!!passTypeObject.name ? '' : "Tipo do Ingresso"}
-                  value={passTypeObject.name}
+                  onChange={(e) => setPassTypeObject({ image: passTypeObject?.image, name: e.target.value })}
+                  label={!!passTypeObject?.name ? '' : "Tipo do Ingresso"}
+                  value={passTypeObject?.name ? passTypeObject?.name : ''}
                 />
               </div>
             </div>
@@ -541,8 +541,8 @@ export default function EventsAdd() {
                 <p>Arte do Ingresso</p>
                 <input
                   style={{ height: 'auto', backgroundColor: 'transparent', width: '100%' }}
-                  onChange={(e) => { setImageStack(e.target.files[0]); setPassTypeObject({ name: passTypeObject.name, image: e.target.files[0] }) }}
-                  value={imageStack[0]}
+                  onChange={(e) => { setImageStack(e.target.files[0]); setPassTypeObject({ name: passTypeObject?.name, image: e.target.files[0] }) }}
+                  value={imageStack[0] ? imageStack[0] : null}
                   type="file"
                 />
               </div>
@@ -560,7 +560,7 @@ export default function EventsAdd() {
             </div>
 
             {passType?.length > 0 &&
-              passType.map((e, y) => {
+              passType?.map((e, y) => {
 
                 return (
                   <div className="inputNewStyle flexr" key={y}>
@@ -604,210 +604,5 @@ export default function EventsAdd() {
 
 
     </>
-
-
-
-    // <div className="clienteMain flexr">
-    //   <ToastContainer></ToastContainer>
-    //   <div className="clienteContent flexc">
-    //     <div className="adminUsersHeader flexr">
-    //       <div className="adminUsersTitle flexr">
-    //         <h1>Novo Evento</h1>
-    //       </div>
-    //       <div className="adminUsersAdd flexr">
-    //       </div>
-    //     </div>
-    //     <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-    //     <div className="clienteUl flexc" style={{ margin: "0", padding: "30px 0" }}>
-    //       <div className="userAdminDoubleInputs flexr">
-    //         <TextField
-    //           onChange={(e) => setName(e.target.value)}
-    //           className="inputStyle"
-    //           label={!!name ? '' : "Nome do Evento"}
-    //           id="outlined-size-normal"
-    //           placeholder={`Digite o Nome:'`}
-    //           type="text" />
-    //         <div className="userAdminDoubleInputsTwo flexr" style={{ width: "100%" }}>
-    //           <FormControl className="InputsTwoSelect">
-    //             <InputLabel id="demo-simple-select-label">Tipo</InputLabel>
-    //             <Select
-    //               className="InputsTwoSelect"
-    //               labelId="demo-simple-select-label"
-    //               id="demo-simple-select"
-    //               value={type}
-    //               onChange={(e) => setType(e.target.value)}
-    //             >
-    //               {!!eventsType && eventsType.map((e, y) => {
-    //                 return (
-    //                   <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
-    //                 )
-    //               })}
-    //             </Select>
-    //           </FormControl>
-    //           <FormControl className="InputsTwoSelect">
-    //             <InputLabel id="demo-simple-select-label">Período</InputLabel>
-    //             <Select
-    //               className="InputsTwoSelect"
-    //               labelId="demo-simple-select-label"
-    //               id="demo-simple-select"
-    //               value={subType}
-    //               onChange={(e) => setSubType(e.target.value)}
-    //             >
-    //               {!!eventsSubType && eventsSubType.map((e, y) => {
-    //                 return (
-    //                   <MenuItem key={y} value={e.toUpperCase()}>{e}</MenuItem>
-    //                 )
-    //               })}
-    //             </Select>
-    //           </FormControl>
-    //           <FormControl className="InputsTwoSelect">
-    //             <InputLabel id="demo-simple-select-label">Notificações</InputLabel>
-    //             <Select
-    //               className="InputsTwoSelect"
-    //               labelId="demo-simple-select-label"
-    //               id="demo-simple-select"
-    //               value={notifyUsersAboutDeletingInvitations}
-    //               onChange={(e) => setNotifyUsersAboutDeletingInvitations(e.target.value)}
-    //             >
-    //               <MenuItem value={"SIM"}>Sim</MenuItem>
-    //               <MenuItem value={"NAO"}>Não</MenuItem>
-    //             </Select>
-    //           </FormControl>
-    //         </div>
-    //       </div>
-    //       {!!nameError && <p className="errorP">* O Nome deve conter mais que 3 caracteres.</p>}
-    //       <div className="userAdminDoubleInputs flexr">
-    //         <TextField
-    //           onChange={(e) => setDate(e.target.value)}
-    //           className="inputStyle"
-    //           id="outlined-size-normal"
-    //           value={date}
-    //           placeholder={`Digite a Data:'`}
-    //           type={"datetime-local"} />
-    //         <TextField
-    //           onChange={(e) => setZipcode(e.target.value)}
-    //           className="inputStyle"
-    //           label={!!zipcode ? '' : "CEP"}
-    //           id="outlined-size-normal"
-    //           placeholder={`Digite o CEP:'`}
-    //           type="number" />
-    //       </div>
-    //       {!!dateError && <p className="errorP">* Preencha uma Data.</p>}
-    //       {!!cepError && <p className="errorP" style={{ textAlign: "right" }}>* Preencha um CEP.</p>}
-    //       <div className="userAdminDoubleInputs flexr">
-    //         <TextField
-    //           onChange={(e) => setPlace(e.target.value)}
-    //           className="inputStyle"
-    //           label={!!place ? '' : "Local do evento"}
-    //           value={place || ''}
-    //           id="outlined-size-normal"
-    //           placeholder={`Local do evento:'`}
-    //           type="text" />
-    //         <TextField
-    //           onChange={(e) => setAddress(e.target.value)}
-    //           className="inputStyle"
-    //           label={!!address ? '' : "Rua"}
-    //           value={address || ''}
-    //           id="outlined-size-normal"
-    //           placeholder={`Nome da Rua:'`}
-    //           type="text" />
-    //       </div>
-    //       <div className="userAdminDoubleInputs flexr">
-    //         <TextField
-    //           onChange={(e) => setNumberAdress(e.target.value)}
-    //           className="inputStyle"
-    //           value={numberAdress || ''}
-    //           label={!!numberAdress ? '' : "Numero"}
-    //           id="outlined-size-normal"
-    //           placeholder={`Digite o Numero:'`}
-    //           type="number" />
-    //         <TextField
-    //           onChange={(e) => setNeighborhood(e.target.value)}
-    //           className="inputStyle"
-    //           value={neighborhood || ''}
-    //           label={!!neighborhood ? '' : "Bairro"}
-    //           id="outlined-size-normal"
-    //           placeholder={`Digite o Bairro:'`}
-    //           type="text" />
-    //         <TextField
-    //           onChange={(e) => setCity(e.target.value)}
-    //           className="inputStyle"
-    //           value={city || ''}
-    //           label={!!city ? '' : "Cidade"}
-    //           id="outlined-size-normal"
-    //           placeholder={`Digite a Cidade:'`}
-    //           type="text" />
-    //         <TextField
-    //           onChange={(e) => setUf(e.target.value)}
-    //           className="inputStyle"
-    //           label={!!uf ? '' : "Estado"}
-    //           value={uf || ''}
-    //           id="outlined-size-normal"
-    //           placeholder={`Digite o Estado:'`}
-    //           type="text" />
-    //       </div>
-
-    //       {!!adressError && <p className="errorP">* Preencha um Endereço.</p>}
-    //       {!!adressNumberError && <p className="errorP">* Preencha um Numero.</p>}
-    //       {!!neighborhoodError && <p className="errorP">* Preencha um Bairro.</p>}
-    //       {!!cityError && <p className="errorP">* Preencha uma Cidade.</p>}
-    //       {!!ufError && <p className="errorP">* Preencha um Estado.</p>}
-    //     </div>
-    //     <Separator color={"var(--grey-ligth)"} width="100%" height="1px"></Separator>
-    //     <div className="passTypeHeader flexr">
-    //       <div className="passTypeTitle flexr">
-    //         <h1>Tipo de Entrada</h1>
-    //       </div>
-    //       <div className="passTypeBlockFirts flexr">
-    //         <TextField
-    //           onChange={(e) => setPassTypeObject({ image: passTypeObject.image, name: e.target.value })}
-    //           className="inputStyle"
-    //           label={!!passTypeObject.name ? '' : "Tipo do Ingresso"}
-    //           value={passTypeObject.name}
-    //           id="outlined-size-normal"
-    //           placeholder={`Tipo do Ingresso:`}
-    //           type="text" />
-    //         <TextField
-    //           onChange={(e) => setPassTypeObject({ name: passTypeObject.name, image: e.target.files[0] })}
-    //           className="inputStyle"
-    //           value={passTypeObject.image[0]}
-    //           id="outlined-size-normal"
-    //           type="file" />
-    //         <button
-    //           onClick={(event) => addPassType(event)}
-    //           style={{ minWidth: "110px", fontSize: "16px" }}
-    //           className="btnBlue">Adicionar</button>
-    //       </div>
-    //     </div>
-    //     <div className="passTypeFull flexc">
-    //       <div className="passTypeBlock flexr">
-    //         {passType?.length > 0 &&
-    //           passType.map((e, y) => {
-
-    //             return (
-    //               <div
-    //                 key={y}
-    //                 className="passTypeBlockItem flexr">
-    //                 <p>{e.name}</p>
-    //                 <CloseIcon
-    //                   className="passTypeBlockIcon"
-    //                   onClick={(event) => deletePassType(e.name, event)}
-    //                   style={{ color: "#000000" }}></CloseIcon>
-    //               </div>
-    //             )
-    //           })
-    //         }
-    //       </div>
-    //     </div >
-    //     <div className="adminUsersHeader flexr">
-    //       <div className="adminUsersAdd flexr">
-    //         <button
-    //           onClick={(event) => addNewEvent(event)}
-    //           style={{ minWidth: "150px" }}
-    //           className="btnOrange">{!!isLoading ? <Loader></Loader> : "Salvar"}</button>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div >
   );
 }

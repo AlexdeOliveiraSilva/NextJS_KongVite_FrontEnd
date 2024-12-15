@@ -760,6 +760,7 @@ export default function Turmas() {
                                                     <Separator color={"#BEBEBE"} width="100%" height="1px"></Separator>
                                                     <div className="clientListOver flexc">
                                                         {e.types?.map((x, z) => {
+
                                                             return (
                                                                 <>
                                                                     <div className="clientListDash flexr">
@@ -938,7 +939,7 @@ export default function Turmas() {
                                                     &&
                                                     e.other_guests?.map((j, w) => {
                                                         return (
-                                                            <div className="clienteOtherLine flexr gap-5" style={w == e.other_guests?.length - 1 ? { marginBottom: '10px' } : { marginBottom: '0px' }}>
+                                                            <div key={w} className="clienteOtherLine flexr gap-5" style={w == e.other_guests?.length - 1 ? { marginBottom: '10px' } : { marginBottom: '0px' }}>
                                                                 <h6 className="clienteTypeLi">Convidado <span>{w + 1 < 10 ? `0${w + 1}` : w + 1}</span></h6>
                                                                 <h6 className="clienteNameLi">Nome: <span>{!!j.name ? j.name : "Não preencheu"}</span></h6>
                                                                 <h6 className="clienteTypeLi">Ingresso: <span>{!!j.tycketsType?.description ? j.tycketsType?.description : "Não preencheu"}</span></h6>

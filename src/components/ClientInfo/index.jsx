@@ -56,6 +56,7 @@ export default function ClientInfo({ eventName, place, invites, date, hour, tick
             <div className="typeCardBox flexr">
                 {!!ticketsSorted && ticketsSorted.map((e, y) => {
                     const c = colors[y % colors.length];
+                    console.log(e)
                     return (
                         <div key={y} className="typeCard flexr" style={{ borderLeft: "10px solid", borderColor: c }}>
                             <div className="typeCardAvaible flexr" style={{ backgroundColor: c }}>{e.available}</div>
@@ -64,7 +65,7 @@ export default function ClientInfo({ eventName, place, invites, date, hour, tick
                                     <BsFillTicketPerforatedFill size={25} />
                                     <h6 style={{ color: c }}>{e.tycketsType?.description}</h6>
                                 </div>
-                                <p>Total de <i>{e.number}</i> disponíveis.</p>
+                                <p>Total de <i>{e.available}/{e.number}</i> disponíveis.</p>
                             </div>
                         </div>
                     )
