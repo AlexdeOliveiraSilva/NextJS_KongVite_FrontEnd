@@ -69,31 +69,14 @@ export const GlobalProvider = ({ children }) => {
     const [eventChoice, setEventChoice] = useState();
 
     useEffect(() => {
-        setUserName(localStorage.getItem("user_name"))
-        setUserEmail(localStorage.getItem("user_email"))
-        setUserType(localStorage.getItem("user_type"))
-        setUserJwt(localStorage.getItem("user_jwt"))
-        setUserId(localStorage.getItem("user_id"))
         setUser(JSON.parse(localStorage.getItem("user", null)))
-    }, [])
+    }, [user])
 
     return (
         <GlobalContext.Provider value={{
             adminSidebarItens,
             estbSidebarItens,
             KONG_URL,
-            user: {
-                name: userName,
-                email: userEmail,
-                type: userType,
-                jwt: userJwt,
-                id: userId
-            },
-            company: {
-                id: companyId,
-                name: companyName,
-                document: companyDoc
-            },
             sendtos3,
             setUserName,
             setUserEmail,
