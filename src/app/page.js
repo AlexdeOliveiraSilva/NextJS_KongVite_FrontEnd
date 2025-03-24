@@ -19,7 +19,7 @@ export default function Login() {
   const router = useRouter();
   const path = usePathname();
 
-  const { KONG_URL, setUserName, setUserEmail, setUserType, setUserJwt, setUserId, setCompanyId, setCompanyName, setCompanyDoc, setEventClasses, setUser } = useContext(GlobalContext);
+  const { KONG_URL, setEventClasses, setUser, user } = useContext(GlobalContext);
   const [passwordVisibble, setPasswordVisible] = useState(true)
   const [saveData, setSaveData] = useState(false)
   const [forgotPassword, setForgotPassword] = useState(false)
@@ -90,38 +90,7 @@ export default function Login() {
           setLoginError("");
           setIsError(false);
 
-          localStorage.setItem("user", JSON.stringify(x));
-          setUser(x)
-          toast.success("Login Efetuado com Sucesso!", {
-            autoClose: 2000,
-            position: "top-right"
-          });
-
-
-          localStorage.setItem("user_jwt", x.jwt);
-          localStorage.setItem("user_name", x.name);
-          localStorage.setItem("user_type", x.usersType.id);
-          localStorage.setItem("user_email", email);
-          localStorage.setItem("user_id", x.id);
-          setUserId(x.id);
-          setUserJwt(x.jwt);
-          setUserName(x.name);
-          setUserType(x.usersType.id);
-          setUserEmail(email);
-
-
-          if (x.usersType?.id == 2) {
-
-            localStorage.setItem("company_id", x.companys?.id);
-            localStorage.setItem("company_name", x.companys?.name);
-            localStorage.setItem("company_document", x.companys?.document);
-            setCompanyId(x.companys?.id);
-            setCompanyName(x.companys?.name);
-            setCompanyDoc(x.companys?.document);
-          }
-
           if (x.usersType?.id === 3) {
-
             if (!!x.eventsClasses) {
               const eventsClassesString = JSON.stringify(x.eventsClasses);
               setEventClasses(eventsClassesString);
@@ -129,22 +98,13 @@ export default function Login() {
             }
           }
 
-          switch (x?.usersType?.id) {
 
-            case 1:
-              router.push('/admin/dashboard/');
-              break;
-            case 2:
-              router.push('/cliente/eventos/');
-              break;
-            case 3:
-              router.push('/convidado/evento/');
-              break;
-
-            default:
-              break;
-          }
-
+          localStorage.setItem("user", JSON.stringify(x));
+          setUser(x)
+          toast.success("Login Efetuado com Sucesso!", {
+            autoClose: 2000,
+            position: "top-right"
+          });
         }
 
       } catch (error) {
@@ -181,24 +141,17 @@ export default function Login() {
 
 
   useEffect(() => {
-    let user = localStorage.getItem("user_jwt")
-
-    if (!!user && path == "/") {
-      setUserJwt(localStorage.getItem("user_jwt"));
-      setUserName(localStorage.getItem("user_name"));
-      setUserType(localStorage.getItem("user_type"));
-      setUserEmail(localStorage.getItem("user_email"));
-
-
-      if (localStorage.getItem("user_type") == 3) {
-        router.push('/convidado/evento/');
-      } else if (localStorage.getItem("user_type") == 2) {
+    if (user) {
+      console.log(user)
+      if (user.usersType.id == 1) {
+        router.push('/admin/evento/');
+      } else if (user.usersType.id == 2) {
         router.push('/cliente/eventos/');
-      } else {
-        router.push('/admin/dashboard/');
+      } else if (user.usersType.id === 3) {
+        router.push('/convidado/evento/');
       }
     }
-  }, [])
+  }, [user])
 
 
   const checkboxLabel = { inputProps: { 'aria-label': 'Checkbox demo' } };

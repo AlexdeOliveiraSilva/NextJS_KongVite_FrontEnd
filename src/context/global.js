@@ -1,12 +1,12 @@
 'use client'
 
 import React, { createContext, useEffect, useState } from 'react';
-
+import { usePathname, useRouter } from "next/navigation";
 export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
     const KONG_URL = "https://api.kongvite.com";
-
+    const router = useRouter();
     async function sendtos3(key, extension, base64Data) {
 
         let res;
@@ -50,27 +50,22 @@ export const GlobalProvider = ({ children }) => {
     const eventsSubType = ["Almoço", "Jantar"];
     const adminSidebarItens = ["dashboard", "administradores", "empresas"];
     const guestSideBar = ["evento", "transferencias"];
-
     const estbSidebarItens = ["eventos", "novo-evento"];
     const estbSidebarEvent = ["eventos", "turmas", "sair-evento"];
 
     const [user, setUser] = useState()
 
-    const [userName, setUserName] = useState()
-    const [userEmail, setUserEmail] = useState()
-    const [userType, setUserType] = useState()
-    const [userJwt, setUserJwt] = useState()
-    const [userId, setUserId] = useState()
-
-    const [companyId, setCompanyId] = useState()
-    const [companyName, setCompanyName] = useState()
-    const [companyDoc, setCompanyDoc] = useState()
     const [eventClasses, setEventClasses] = useState()
     const [eventChoice, setEventChoice] = useState();
 
     useEffect(() => {
-        setUser(JSON.parse(localStorage.getItem("user", null)))
-    }, [user])
+        let data = localStorage.getItem("user", null)
+        if (!data) {
+            router.push('/');
+        } else {
+            setUser(JSON.parse(localStorage.getItem("user")))
+        }
+    }, [router.pathname])
 
     return (
         <GlobalContext.Provider value={{
@@ -78,20 +73,12 @@ export const GlobalProvider = ({ children }) => {
             estbSidebarItens,
             KONG_URL,
             sendtos3,
-            setUserName,
-            setUserEmail,
-            setUserType,
-            setUserJwt,
-            setUserId,
             userEdit,
             setUserEdit,
             companyEdit,
             setCompanyEdit,
             companyNameEdit,
             setCompanyNameEdit,
-            setCompanyId,
-            setCompanyName,
-            setCompanyDoc,
             eventSelected,
             setEventSelected,
             estbSidebarEvent,
