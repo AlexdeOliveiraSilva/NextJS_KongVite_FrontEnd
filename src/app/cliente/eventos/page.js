@@ -237,27 +237,27 @@ export default function Eventos() {
 
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    getEvents();
-  }, [])
+  //   getEvents();
+  // }, [])
 
-  useEffect(() => {
-    let bannercopy = textTeste
-    let x;
+  // useEffect(() => {
+  //   let bannercopy = textTeste
+  //   let x;
 
-    textTeste.map((e, y) => {
+  //   textTeste.map((e, y) => {
 
-      if (!!localStorage.getItem(`${e.cookie.toString()}`)) {
-        x == !!bannercopy && bannercopy.filter((z) => +e.id != z.id)
+  //     if (!!localStorage.getItem(`${e.cookie.toString()}`)) {
+  //       x == !!bannercopy && bannercopy.filter((z) => +e.id != z.id)
 
-        bannercopy = x
-      }
-    })
+  //       bannercopy = x
+  //     }
+  //   })
 
-    setInforBannerCopy(bannercopy)
+  //   setInforBannerCopy(bannercopy)
 
-  }, [])
+  // }, [])
 
   return null
 
