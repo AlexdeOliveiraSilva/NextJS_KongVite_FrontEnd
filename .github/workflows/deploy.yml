@@ -34,3 +34,11 @@ jobs:
         AWS_REGION: 'us-east-1'
         SOURCE_DIR: './out'
         # DEST_DIR: '/'
+    
+    - name: Invalidate CloudFront Cache
+      run: |
+        aws cloudfront create-invalidation --distribution-id "E1IYLKET1494K8" --paths "/*"
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'us-east-1'

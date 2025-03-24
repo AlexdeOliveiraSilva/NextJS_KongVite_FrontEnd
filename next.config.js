@@ -8,6 +8,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  webpack: (config) => {
+    config.optimization.minimize = false; // Desativa minificação para ver erros reais
+    return config;
+  },
 };
 
 module.exports = nextConfig;
