@@ -21,18 +21,13 @@ export default function Sidebar() {
     const [barOpen, setBarOpen] = useState(true);
     const [event, setEvent] = useState()
     const [pathType, setPathType] = useState();
-    const [menu, setMenu] = useState();
+    const [menu, setMenu] = useState([]);
 
     const {
         estbSidebarItens,
         adminSidebarItens,
         user,
-        setUserName,
-        setUserEmail,
-        setUserType,
-        setUserJwt,
         eventSelected,
-        setEventSelected,
         estbSidebarEvent,
         guestSideBar
 
@@ -110,23 +105,19 @@ export default function Sidebar() {
         router.push(`${path}`);
     }
 
-    function ToSetMenu(x) {
-
+    function toSetMenu(x) {
         switch (x) {
-
-            case "1":
+            case 1:
                 setMenu(adminSidebarItens);
                 break;
-
-            case "2":
+            case 2:
                 if (path.startsWith('/cliente/event-view') || path.startsWith('/cliente/turmas') || path.startsWith('/cliente/dashboard')) {
                     setMenu(estbSidebarEvent);
                 } else {
                     setMenu(estbSidebarItens);
                 }
                 break;
-
-            case "3":
+            case 3:
                 setMenu(guestSideBar);
                 break;
 
@@ -137,8 +128,6 @@ export default function Sidebar() {
 
     useEffect(() => {
         const sidebarMain = document.getElementById('sidebarMain');
-
-
         if (!barOpen) {
             sidebarMain.classList.add('sidebarMainClose');
         } else {
@@ -147,33 +136,25 @@ export default function Sidebar() {
     }, [barOpen]);
 
     useEffect(() => {
-        setEvent(!!eventSelected ? eventSelected : localStorage.getItem('event_selected'))
-        let userTypeHere = !!user?.type ? user?.type : localStorage.getItem('user_type')
-
-        ToSetMenu(userTypeHere);
-
-        switch (userTypeHere) {
-            case "1":
-                setPathType('admin')
-                break;
-            case "2":
-                setPathType('cliente')
-                break;
-            case "3":
-                setPathType('convidado')
-                break;
-            default:
-                setPathType('admin')
-                break;
+        if (user) {
+            setEvent(!!eventSelected ? eventSelected : localStorage.getItem('event_selected'))
+            toSetMenu(user.usersType.id);
+            switch (user.usersType.id) {
+                case "1":
+                    setPathType('admin')
+                    break;
+                case "2":
+                    setPathType('cliente')
+                    break;
+                case "3":
+                    setPathType('convidado')
+                    break;
+                default:
+                    setPathType('admin')
+                    break;
+            }
         }
-    }, [])
-
-    useEffect(() => {
-        let userTypeHere = !!user?.type ? user?.type : localStorage.getItem('user_type')
-
-        ToSetMenu(userTypeHere);
-    }, [path])
-
+    }, [path, user])
 
     return (
         <div id="sidebarMain" className="sidebarMain flexc">
@@ -184,7 +165,7 @@ export default function Sidebar() {
                 <button onClick={() => setBarOpen(!barOpen)}>{!!barOpen == true ? <ArrowCircleLeftIcon className="sideIconActive" /> : <ArrowCircleRightIcon className="sideIcon" />}</button>
             </div>
             <div className="flexc sidebarMenuItens">
-                {!!menu && menu.map((e, y) => {
+                {menu.map((e, y) => {
                     return (
                         <div
                             onClick={(event) => Redirect(event, `/${pathType}/${e == 'sair-evento' ? 'eventos' : e}`)}
@@ -197,6 +178,6 @@ export default function Sidebar() {
             </div>
             <div className="flexr sidebarFooter">
             </div>
-        </div >
+        </div>
     );
 }

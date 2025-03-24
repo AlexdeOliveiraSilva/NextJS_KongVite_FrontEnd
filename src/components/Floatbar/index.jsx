@@ -5,15 +5,10 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { GlobalContext } from "@/context/global";
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import PermDataSettingIcon from '@mui/icons-material/PermDataSetting';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import PaidIcon from '@mui/icons-material/Paid';
-import StoreIcon from '@mui/icons-material/Store';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+
 import LogoutIcon from '@mui/icons-material/Logout';
 import CancelIcon from '@mui/icons-material/Cancel';
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
@@ -23,16 +18,9 @@ export default function FloatBar({ itens }) {
     const [barOpen, setBarOpen] = useState(true);
     const [event, setEvent] = useState()
     const [pathType, setPathType] = useState();
-    const [menu, setMenu] = useState();
+    const [menu, setMenu] = useState([]);
     const [floatOpen, setFloatOpen] = useState(false);
-    const { KONG_URL, estbSidebarItens, adminSidebarItens, user, estbSidebarEvent, guestSideBar, eventSelected } = useContext(GlobalContext);
-    const [userLogged, setUserLogged] = useState({
-        name: "",
-        email: "",
-        type: 0,
-        jwt: ""
-    });
-
+    const { estbSidebarItens, adminSidebarItens, user, estbSidebarEvent, guestSideBar, eventSelected } = useContext(GlobalContext);
     const router = useRouter();
 
     const getIcon = (x) => {
@@ -111,7 +99,7 @@ export default function FloatBar({ itens }) {
 
     }
 
-    function ToSetMenu(x) {
+    function toSetMenu(x) {
 
         switch (x) {
 
@@ -148,35 +136,25 @@ export default function FloatBar({ itens }) {
 
 
     useEffect(() => {
-        setEvent(!!eventSelected ? eventSelected : localStorage.getItem('event_selected'))
-        let userTypeHere = !!user?.type ? user?.type : localStorage.getItem('user_type')
-
-        setUserLogged({
-            name: localStorage.getItem("user_name"),
-            email: localStorage.getItem("user_email"),
-            type: localStorage.getItem("user_type"),
-            jwt: localStorage.getItem("user_jwt")
-        })
-
-
-
-        ToSetMenu(userTypeHere);
-
-        switch (userTypeHere) {
-            case "1":
-                setPathType('admin')
-                break;
-            case "2":
-                setPathType('cliente')
-                break;
-            case "3":
-                setPathType('convidado')
-                break;
-            default:
-                setPathType('admin')
-                break;
+        if (user) {
+            setEvent(!!eventSelected ? eventSelected : localStorage.getItem('event_selected'))
+            toSetMenu(user.usersType.id);
+            switch (user.usersType.id) {
+                case "1":
+                    setPathType('admin')
+                    break;
+                case "2":
+                    setPathType('cliente')
+                    break;
+                case "3":
+                    setPathType('convidado')
+                    break;
+                default:
+                    setPathType('admin')
+                    break;
+            }
         }
-    }, [])
+    }, [user])
 
 
 
@@ -195,7 +173,7 @@ export default function FloatBar({ itens }) {
                         <CancelIcon style={{ width: "45px", height: "45px", color: "var(--blue-primary)" }} />
                     </div>
                     <div className="flexc sidebarMenuItens" style={{ height: "70%" }}>
-                        {!!menu && menu.map((e, y) => {
+                        {menu.map((e, y) => {
                             return (
                                 <div
                                     onClick={(event) => Redirect(event, `/${pathType}/${e == 'sair-evento' ? 'eventos' : e}`)}

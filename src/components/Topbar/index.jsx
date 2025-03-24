@@ -18,12 +18,8 @@ export default function Topbar() {
     const router = useRouter();
     const { user,
         KONG_URL,
-        setUserName,
-        setUserEmail,
-        setUserType,
-        setUserJwt,
+        setUser,
         eventChoice,
-        setEventChoice,
         company } = useContext(GlobalContext);
     const [companyData, setcompanyData] = useState();
     const [barOpen, setBarOpen] = useState(false);
@@ -35,17 +31,9 @@ export default function Topbar() {
 
     const logout = (e) => {
         e.preventDefault()
-        localStorage.clear("user_jwt");
-        localStorage.clear("user_name");
-        localStorage.clear("user_type");
-        localStorage.clear("user_email");
-        localStorage.clear("event_choice");
-        setEventChoice('')
-        setUserName('')
-        setUserEmail('')
-        setUserType('')
-        setUserJwt('')
-
+        localStorage.clear();
+        sessionStorage.clear();
+        setUser(null)
         router.push('/');
     }
 

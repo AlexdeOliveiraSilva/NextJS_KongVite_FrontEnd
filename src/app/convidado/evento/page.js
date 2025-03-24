@@ -61,11 +61,8 @@ export default function EventGuest() {
   const [infobannerCopy, setInforBannerCopy] = useState([]);
 
   async function getGuests(eventId) {
-
     let x;
-    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
-
-    if (!!jwt && !!eventId) {
+    if (user && !!eventId) {
 
       setGetingGuests(true);
       try {
@@ -73,7 +70,7 @@ export default function EventGuest() {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': jwt
+            'Authorization': user.jwt
           }
         })).json()
 
@@ -97,14 +94,14 @@ export default function EventGuest() {
   async function getAllData() {
     setIsLoading(true)
     let x;
-    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
-    if (!!myId) {
+
+    if (user) {
       try {
         x = await (await fetch(`${KONG_URL}/student/${myId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': jwt
+            'Authorization': user.jwt
           }
         })).json()
         if (!x.message) {
@@ -124,19 +121,16 @@ export default function EventGuest() {
 
 
   async function deleteGuest() {
-
-    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
-
     let x;
 
-    if (!!jwt && !!classGuestId && !!guestDeleteId) {
+    if (user && !!classGuestId && !!guestDeleteId) {
       setIsLoading(true);
       try {
         x = await (await fetch(`${KONG_URL}/student/acompanhante/add/${classGuestId}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': jwt
+            'Authorization': user.jwt
           },
           body: JSON.stringify({
             id: guestDeleteId,
@@ -220,20 +214,17 @@ export default function EventGuest() {
 
 
   async function getAvaibles() {
-    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
     let y = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
-
     let theClass = y?.classEvent.id
-
     let x;
 
-    if (!!jwt && !!theClass) {
+    if (user && !!theClass) {
       try {
         x = await (await fetch(`${KONG_URL}/user/guests/${theClass}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': jwt
+            'Authorization': user.jwt
           }
         })).json()
 
@@ -288,12 +279,10 @@ export default function EventGuest() {
 
   useEffect(() => {
     getAvaibles();
-
   }, [addGuestModalIsOpen])
 
   useEffect(() => {
     getAllData()
-
   }, [myId])
 
 

@@ -142,14 +142,17 @@ export default function Login() {
 
   useEffect(() => {
     if (user) {
-      console.log(user)
-      if (user.usersType.id == 1) {
-        router.push('/admin/evento/');
-      } else if (user.usersType.id == 2) {
-        router.push('/cliente/eventos/');
-      } else if (user.usersType.id === 3) {
-        router.push('/convidado/evento/');
+      let data = localStorage.getItem("user", null)
+      if (data) {
+        if (user.usersType.id == 1) {
+          router.push('/admin/evento/');
+        } else if (user.usersType.id == 2) {
+          router.push('/cliente/eventos/');
+        } else if (user.usersType.id === 3) {
+          router.push('/convidado/evento/');
+        }
       }
+      setUser(null)
     }
   }, [user])
 

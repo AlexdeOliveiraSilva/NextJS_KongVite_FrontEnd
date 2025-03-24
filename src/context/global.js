@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useEffect, useState } from 'react';
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
@@ -60,12 +60,13 @@ export const GlobalProvider = ({ children }) => {
 
     useEffect(() => {
         let data = localStorage.getItem("user", null)
-        if (!data) {
-            router.push('/');
-        } else {
+        if (data) {
             setUser(JSON.parse(localStorage.getItem("user")))
         }
-    }, [router.pathname])
+        if (!data) {
+            router.push("/")
+        }
+    }, [])
 
     return (
         <GlobalContext.Provider value={{

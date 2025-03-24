@@ -10,19 +10,13 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import TotalInvites from "./fragments/totalInvites";
 
 export default function NewClientTopBar() {
-    const path = usePathname();
     const router = useRouter();
     const {
         user,
         KONG_URL,
-        setUserName,
-        setUserEmail,
-        setUserType,
-        setUserJwt,
-        eventChoice,
-        setEventChoice,
-        company } = useContext(GlobalContext);
-    const [companyData, setcompanyData] = useState();
+        setUser,
+        eventChoice } = useContext(GlobalContext);
+
     const [barOpen, setBarOpen] = useState(false);
     const [eventChoiceModal, setEventChoiceModal] = useState(false);
     const [inviteslaking, setInvitesLaking] = useState(0);
@@ -30,18 +24,11 @@ export default function NewClientTopBar() {
 
     const logout = (e) => {
         e.preventDefault()
-        localStorage.clear("user_jwt");
-        localStorage.clear("user_name");
-        localStorage.clear("user_type");
-        localStorage.clear("user_email");
-        localStorage.clear("event_choice");
-        setEventChoice('')
-        setUserName('')
-        setUserEmail('')
-        setUserType('')
-        setUserJwt('')
-
+        localStorage.clear();
+        sessionStorage.clear();
+        setUser(null)
         router.push('/');
+
     }
 
     function barClick() {
