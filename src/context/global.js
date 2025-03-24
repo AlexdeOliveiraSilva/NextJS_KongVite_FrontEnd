@@ -54,6 +54,7 @@ export const GlobalProvider = ({ children }) => {
     const estbSidebarItens = ["eventos", "novo-evento"];
     const estbSidebarEvent = ["eventos", "turmas", "sair-evento"];
 
+    const [user, setUser] = useState()
 
     const [userName, setUserName] = useState()
     const [userEmail, setUserEmail] = useState()
@@ -73,6 +74,7 @@ export const GlobalProvider = ({ children }) => {
         setUserType(localStorage.getItem("user_type"))
         setUserJwt(localStorage.getItem("user_jwt"))
         setUserId(localStorage.getItem("user_id"))
+        setUser(JSON.parse(localStorage.getItem("user", null)))
     }, [])
 
     return (
@@ -126,7 +128,9 @@ export const GlobalProvider = ({ children }) => {
             eventChoice,
             setEventChoice,
             refreshPage,
-            setRefreshPage
+            setRefreshPage,
+            user,
+            setUser
 
         }}>
             {children}

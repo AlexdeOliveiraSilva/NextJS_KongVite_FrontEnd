@@ -19,7 +19,7 @@ export default function Login() {
   const router = useRouter();
   const path = usePathname();
 
-  const { KONG_URL, setUserName, setUserEmail, setUserType, setUserJwt, setUserId, setCompanyId, setCompanyName, setCompanyDoc, setEventClasses } = useContext(GlobalContext);
+  const { KONG_URL, setUserName, setUserEmail, setUserType, setUserJwt, setUserId, setCompanyId, setCompanyName, setCompanyDoc, setEventClasses, setUser } = useContext(GlobalContext);
   const [passwordVisibble, setPasswordVisible] = useState(true)
   const [saveData, setSaveData] = useState(false)
   const [forgotPassword, setForgotPassword] = useState(false)
@@ -90,6 +90,8 @@ export default function Login() {
           setLoginError("");
           setIsError(false);
 
+          localStorage.setItem("user", JSON.stringify(x));
+          setUser(x)
           toast.success("Login Efetuado com Sucesso!", {
             autoClose: 2000,
             position: "top-right"

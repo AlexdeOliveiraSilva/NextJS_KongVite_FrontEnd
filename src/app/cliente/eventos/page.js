@@ -3,7 +3,6 @@
 import { useState, useEffect, useContext } from "react"
 import { GlobalContext } from "@/context/global";
 import { useRouter } from "next/navigation";
-import Separator from "@/components/fragments/separatorLine";
 import { FaEdit } from "react-icons/fa";
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeletModal from "@/components/Modal/deletModal";

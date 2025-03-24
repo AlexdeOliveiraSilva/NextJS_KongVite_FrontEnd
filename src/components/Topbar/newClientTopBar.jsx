@@ -4,9 +4,7 @@ import { useState, useEffect, useContext } from "react"
 import { usePathname } from "next/navigation";
 import { GlobalContext } from "@/context/global";
 import LogoutIcon from '@mui/icons-material/Logout';
-import GetEventGuest from "../Modal/type3eventSelect";
 import { useRouter } from "next/navigation";
-import { LuPlus } from "react-icons/lu";
 import Separator from "@/components/fragments/separatorLine";
 import { FaRegCircleUser } from "react-icons/fa6";
 import TotalInvites from "./fragments/totalInvites";
@@ -14,7 +12,8 @@ import TotalInvites from "./fragments/totalInvites";
 export default function NewClientTopBar() {
     const path = usePathname();
     const router = useRouter();
-    const { user,
+    const {
+        user,
         KONG_URL,
         setUserName,
         setUserEmail,
@@ -27,7 +26,6 @@ export default function NewClientTopBar() {
     const [barOpen, setBarOpen] = useState(false);
     const [eventChoiceModal, setEventChoiceModal] = useState(false);
     const [inviteslaking, setInvitesLaking] = useState(0);
-    const [myData, setMyData] = useState();
     const [loadData, setLoadData] = useState(false);
 
     const logout = (e) => {
@@ -57,76 +55,6 @@ export default function NewClientTopBar() {
         }
     }
 
-    const changeTitle = (x) => {
-        switch (x) {
-            case "/admin/dashboard/":
-                return "Dashboard"
-
-            case "/admin/administradores/":
-                return "Administradores"
-
-            case '/admin/administradores/add':
-                return "Administradores"
-
-            case '/admin/administradores/edit':
-                return "Administradores"
-
-            case "/admin/empresas/":
-                return "Empresas"
-
-            case '/admin/empresas/add/':
-                return "Empresas"
-
-            case '/admin/empresas/edit/':
-                return "Empresas"
-
-            case '/admin/empresas/usuarios/':
-                return "Empresas - Usuários"
-
-            case '/admin/empresas/usuarios/add/':
-                return "Empresas - Usuários"
-
-            case '/admin/empresas/usuarios/edit/':
-                return "Empresas - Usuários"
-
-            case "/cliente/empresas/":
-                return "Dashboard"
-
-            case "/cliente/usuarios/":
-                return "Usuários"
-
-            case "/cliente/eventos/":
-                return "Eventos"
-
-            case "/cliente/novo-evento/":
-                return "Evento"
-
-            case "/cliente/eventos/edit/":
-                return "Evento"
-
-            case '/cliente/event-view/':
-                return "Evento"
-
-            case '/cliente/dashboard/':
-                return "Dashboard"
-
-            case '/cliente/turmas/':
-                return "Turmas"
-
-            case '/cliente/turmas/turma-view/':
-                return "Turmas"
-
-            case '/convidado/evento/':
-                return "Evento"
-
-            case '/convidado/transferencias/':
-                return "Transferências"
-
-            default:
-                break;
-        }
-    }
-
     function invitesGuestCount(z) {
         if (!!z && z.length > 0) {
 
@@ -147,7 +75,7 @@ export default function NewClientTopBar() {
     }
 
     async function getAvaibles() {
-        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
+        let jwt = user.jwt
         let y = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"));
 
         let theClass = y?.classEvent?.id
@@ -182,70 +110,20 @@ export default function NewClientTopBar() {
         }
     }
 
-    async function getAllData(myId) {
-
-        let x;
-        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
-
-        if (!!myId) {
-
-            try {
-                x = await (await fetch(`${KONG_URL}/student/${myId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': jwt
-                    }
-                })).json()
-
-                if (!x.message) {
-                    setMyData(x)
-                    return ""
-                }
-
-            } catch (error) {
-
-                return ""
-            }
-        } else {
-
-            return ""
-        }
-    }
 
 
 
     useEffect(() => {
-
-
-        let x = !!user?.type ? user.type : localStorage.getItem("user_type")
+        let x = user?.usersType.id
         let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
-
-        if ((x == "3" || x == 3)) {
+        // Estudante
+        if (user?.usersType.id == "3") {
             getAvaibles();
-
             if (!y) {
                 setEventChoiceModal(true);
             }
         }
-
-        getAllData(!!user?.id ? user?.id : localStorage.getItem("user_id"));
-
-        setcompanyData({
-            id: !!company?.id ? company.id : localStorage.getItem('company_id'),
-            name: !!company?.name ? company.name : localStorage.getItem('company_name'),
-            document: !!company?.document ? company.document : localStorage.getItem('company_document')
-        })
     }, [])
-
-    {/* {user?.type == 1
-                        ?
-                        <TopbarAdmin></TopbarAdmin>
-                        : user?.type == 2 ?
-                            <TopbarCompany data={companyData}></TopbarCompany>
-                            :
-                            <TopbarGuest invites={inviteslaking} open={() => openTransferPassword()} load={loadData}></TopbarGuest>
-                    } */}
 
 
     return (
@@ -270,7 +148,7 @@ export default function NewClientTopBar() {
                     <div
                         className="flexc">
                         <h6>{!!user?.name ? user?.name.split(' ')[0] : ""}</h6>
-                        <p>PERFIL</p>
+                        <p>{user?.usersType?.description}</p>
                         {!!barOpen &&
                             <div
                                 className="topbarPageGetOut flexc">

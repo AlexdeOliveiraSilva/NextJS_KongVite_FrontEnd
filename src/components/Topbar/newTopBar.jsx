@@ -111,53 +111,19 @@ export default function NewTopBar() {
         }
     }
 
-    // async function getAllData(myId) {
-    //     let x;
-    //     let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
-    //     alert(`${KONG_URL}/student/${myId}`)
-    //     if (!!myId) {
-
-    //         try {
-    //             x = await (await fetch(`${KONG_URL}/student/${myId}`, {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': jwt
-    //                 }
-    //             })).json()
-
-    //             if (!x.message) {
-    //                 setMyData(x)
-    //                 return ""
-    //             }
-
-    //         } catch (error) {
-
-    //             return ""
-    //         }
-    //     } else {
-
-    //         return ""
-    //     }
-    // }
 
 
 
     useEffect(() => {
-
-
         let x = !!user?.type ? user.type : localStorage.getItem("user_type")
         let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
-
         if ((x == "3" || x == 3)) {
             getAvaibles();
-
             if (!y) {
                 setEventChoiceModal(true);
             }
         }
 
-        // getAllData(!!user?.id ? user?.id : localStorage.getItem("user_id"));
 
         setcompanyData({
             id: !!company?.id ? company.id : localStorage.getItem('company_id'),
@@ -170,10 +136,6 @@ export default function NewTopBar() {
     return (
         <div className="newTopMain flexr">
             {eventChoiceModal == true && <GetEventGuest close={() => closeGuestModalF()} seteffect={(e) => { e.preventDefault(); doRefresh() }}></GetEventGuest>}
-            {/* <div className="newTopMail flexr">
-                <div className="newTopMailAcent flexr">1</div>
-                <GoMail size={18} color="var(--white-primary)" />
-            </div> */}
             <Separator width={'1px'} height={'100%'} color={'#DFE0E6'} />
             <div
                 onClick={(e) => {
@@ -185,7 +147,7 @@ export default function NewTopBar() {
                 <div
                     className="flexc">
                     <h6>{!!user?.name ? user?.name.split(' ')[0] : ""}</h6>
-                    <p>PERFIL</p>
+                    <p>{user?.usersType.description}</p>
                     {!!barOpen &&
                         <div
                             className="topbarPageGetOut flexc">
