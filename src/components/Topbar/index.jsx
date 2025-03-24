@@ -21,7 +21,6 @@ export default function Topbar() {
         setUser,
         eventChoice,
         company } = useContext(GlobalContext);
-    const [companyData, setcompanyData] = useState();
     const [barOpen, setBarOpen] = useState(false);
     const [eventChoiceModal, setEventChoiceModal] = useState(false);
     const [transferModalIsOpen, setTransferModalIsOpen] = useState(false);
@@ -218,27 +217,17 @@ export default function Topbar() {
 
 
     useEffect(() => {
-
-
-        let x = !!user?.type ? user.type : localStorage.getItem("user_type")
-        let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
-
-        if ((x == "3" || x == 3)) {
-            getAvaibles();
-
-            if (!y) {
-                setEventChoiceModal(true);
+        if (user) {
+            let y = !!eventChoice ? eventChoice : localStorage.getItem("event_choice");
+            if (user.usersType.id == 3) {
+                getAvaibles();
+                if (!y) {
+                    setEventChoiceModal(true);
+                }
             }
+            getAllData(user?.id);
         }
-
-        getAllData(!!user?.id ? user?.id : localStorage.getItem("user_id"));
-
-        setcompanyData({
-            id: !!company?.id ? company.id : localStorage.getItem('company_id'),
-            name: !!company?.name ? company.name : localStorage.getItem('company_name'),
-            document: !!company?.document ? company.document : localStorage.getItem('company_document')
-        })
-    }, [])
+    }, [user])
 
 
     return (

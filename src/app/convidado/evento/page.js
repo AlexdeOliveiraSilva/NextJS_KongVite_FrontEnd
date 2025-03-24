@@ -348,7 +348,7 @@ export default function EventGuest() {
     <div className="clientEventMain flexc" >
       <ToastContainer></ToastContainer>
       {!!newPasswordModal && <ChangeModal close={(event) => deleteChangePassword(event)}></ChangeModal>}
-      {!!invitesOpen && <InvitesModal close={() => setInvitesCloseModal()} data={myData} jwt={!!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")} url={KONG_URL} ></InvitesModal>}
+      {!!invitesOpen && <InvitesModal close={() => setInvitesCloseModal()} data={myData} jwt={user?.jwt} url={KONG_URL} ></InvitesModal>}
       {!!deleteGuestModalIsOpen && <DeletModal close={() => closeDeleteGuest()} func={() => deleteGuest()} word={"confirmar"}></DeletModal>}
       {!!addGuestModalIsOpen && <AddGuest close={() => closeAddGuest()} classId={classGuestId} typesData={typesData} guestData={guestData}></AddGuest>}
 

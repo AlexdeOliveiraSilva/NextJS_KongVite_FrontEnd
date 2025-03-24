@@ -28,11 +28,9 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
 
     async function addGuest(event) {
         event.preventDefault();
-
-        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt");
         let x;
 
-        if (!!jwt && !!classId && !!name && !!selfPass) {
+        if (user && !!classId && !!name && !!selfPass) {
             setIsLoading(true);
             try {
 
@@ -40,7 +38,7 @@ export default function AddGuest({ close, classId, typesData, guestData }) {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': jwt
+                        'Authorization': user.jwt
                     },
                     body: JSON.stringify({
                         name: name,

@@ -38,11 +38,10 @@ export default function Dashboard() {
   async function getGuests() {
 
     let x;
-    let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
     let userId = !!user.id ? JSON.parse(user.id) : JSON.parse(localStorage.getItem("user_id"))
     let classId = !!eventChoice ? JSON.parse(eventChoice) : JSON.parse(localStorage.getItem("event_choice"))
 
-    if (!!jwt && !!classId) {
+    if (user && !!classId) {
 
       setLoadData(true)
       try {
@@ -50,7 +49,7 @@ export default function Dashboard() {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': jwt
+            'Authorization': user.jwt
           }
         })).json()
 

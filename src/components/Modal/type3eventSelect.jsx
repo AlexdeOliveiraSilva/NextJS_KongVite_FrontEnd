@@ -11,31 +11,19 @@ import { useRouter } from "next/navigation";
 
 
 export default function GetEventGuest({ close }) {
-    const { KONG_URL, user, eventClasses, setEventChoice, setEventClasses } = useContext(GlobalContext);
+    const { KONG_URL, user, setEventChoice, setEventClasses } = useContext(GlobalContext);
     const [eventData, setEventData] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
-    function SetingEventData() {
-        let x = !!eventClasses ? eventClasses : localStorage.getItem("event_classes")
-
-        try {
-            const jsonArray = JSON.parse(x);
-
-            setEventData(jsonArray)
-
-        } catch (error) {
-            console.error('Erro ao fazer o parse da string JSON:', error);
-        }
-
-
+    function setingEventData() {
+        setEventData(user.eventsClasses)
+        console.log(user)
     }
 
     async function SelectEvent(classId, classEvent, event) {
-        let jwt = !!user?.jwt ? user.jwt : localStorage.getItem("user_jwt")
         let x;
-
-        if (!!jwt && !!classId) {
+        if (user && !!classId) {
             setIsLoading(true);
 
             try {
@@ -43,7 +31,7 @@ export default function GetEventGuest({ close }) {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': jwt
+                        'Authorization': user.jwt
                     }
                 })).json()
 
@@ -85,8 +73,8 @@ export default function GetEventGuest({ close }) {
     }
 
     useEffect(() => {
-        SetingEventData();
-    }, [])
+        setingEventData();
+    }, [user])
 
     return (
         <div
